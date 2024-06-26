@@ -98,7 +98,7 @@
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                {{ __('Next') }}
             </x-primary-button>
         </div>
     </form>
