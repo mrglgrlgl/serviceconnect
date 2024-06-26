@@ -15,6 +15,10 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
 
+                // address and map
+    Route::get('address', [RegisteredUserController::class, 'createAddress'])
+                ->name('address');
+
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])

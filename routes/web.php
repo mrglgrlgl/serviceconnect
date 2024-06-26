@@ -7,10 +7,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/chat', function () {
+    return view('chat');
+})->middleware(['auth', 'verified'])->name('chat');
+
+// Provider Profile Display
+Route::get('/profile/show', function () {
+    return view('profile.profile'); 
+})->middleware(['auth', 'verified'])->name('profile.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
