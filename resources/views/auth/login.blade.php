@@ -57,7 +57,7 @@
             <x-primary-button class="h-12 w-full justify-center text-xl bg-transparent border-2 border-custom-dark-blue text-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
             {{ __('Sign up') }}
             </x-primary-button>
-            </>
+</div>
 
 
 </x-guest-layout>

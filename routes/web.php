@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -21,11 +22,19 @@ Route::get('/profile/show', function () {
     return view('profile.profile'); 
 })->middleware(['auth', 'verified'])->name('profile.show');
 
-Route::get('home', function () {
+Route::get('/home', function () {
     return view('home'); 
 })->middleware(['auth', 'verified'])->name('home');
 
 
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,5 +46,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-// // Route::get('/address/{userId}', [RegisteredUserController::class, 'showAddressForm'])->name('address.create');
-// Route::post('/address', [RegisteredUserController::class, 'storeAddress'])->name('address.store');
