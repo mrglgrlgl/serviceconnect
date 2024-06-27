@@ -15,10 +15,16 @@ Route::get('/chat', function () {
     return view('chat');
 })->middleware(['auth', 'verified'])->name('chat');
 
-// Provider Profile Display
+// Profile Display
 Route::get('/profile/show', function () {
     return view('profile.profile'); 
 })->middleware(['auth', 'verified'])->name('profile.show');
+
+Route::get('home', function () {
+    return view('home'); 
+})->middleware(['auth', 'verified'])->name('home');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

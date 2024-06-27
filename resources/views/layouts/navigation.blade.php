@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="bg-custom-light-blue border-b border-gray-100">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class=" mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <!-- Left Side: Logo -->
             <div class="flex items-center">
@@ -15,7 +15,7 @@
             <div class="flex">
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex space-x-4 sm:-my-px">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
 
