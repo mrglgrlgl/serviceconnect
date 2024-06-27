@@ -124,8 +124,7 @@
             </label>
         </div>
 
-        <div class="flex items-center justify-center mt-4">
-            <x-primary-button class="h-12 w-full justify-center text-xl border-transparent text-white">
+            <x-primary-button class="ms-4">
                 {{ __('Next') }}
             </x-primary-button>
         </div>
