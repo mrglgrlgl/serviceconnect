@@ -1,0 +1,89 @@
+<x-seekerhome>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{{ asset('js/map.js') }}"></script>
+    <script src="{{ asset('js/category-swipe.js') }}"></script>
+
+    <form method="POST" action="{{ route('register') }}" class="grid grid-rows-auto items-center justify-center sm:pt-0 w-full">
+        @csrf
+
+        {{-- Category Bar --}}
+        <div class="flex justify-center text-center w-10/12 md:w-8/12 mx-auto pt-4 overflow-x-auto">
+            <x-category-link :href="route('home')" class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    <span>{{ __('Popular') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">household_supplies</span>
+                    <span>{{ __('Cleaning') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">electric_bolt</span>
+                    <span>{{ __('Category 3') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">carpenter</span>
+                    <span>{{ __('Category 4') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">plumbing</span>
+                    <span>{{ __('Category 5') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block mr-4">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">tv</span>
+                    <span>{{ __('Category 6') }}</span>
+                </div>
+            </x-category-link>
+            <x-category-link class="inline-block">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined">tv</span>
+                    <span>{{ __('Category 7') }}</span>
+                </div>
+            </x-category-link>
+        </div>
+
+        <div class="border-t my-2 relative text-center"></div>
+
+        {{-- Filter --}}
+        <div class="h-28 bg-custom-light-blue rounded-t-lg w-10/12 md:w-8/12 mx-auto"></div>
+
+        <!-- Grid for providers and map -->
+        <div class="grid grid-cols-1 md:grid-cols-3 w-10/12 mx-auto pb-6">
+
+            <!-- Map -->
+            <div id="map" class="h-80 md:h-144 w-full md:shadow-md shadow-none md:col-span-1 order-1 md:order-2 rounded-t-lg sm:rounded-b-none md:rounded-r-lg md:rounded-none"></div>
+
+            <!-- Provider List -->
+            <div class="p-4 bg-white shadow-md md:col-span-2 order-2 md:order-1 rounded-b-lg md:rounded-l-lg md:rounded-none">
+
+                <div class="w-full">
+                    <x-text-input id="address" class="block mt-1 w-full rounded-2xl" type="text" name="address" required autofocus autocomplete="address" />
+                    <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                </div>
+                
+                {{-- List of provider component --}}
+                <div class="h-96">
+                    <x-provider-list></x-provider-list>
+                </div>
+            </div>
+        </div>
+
+        {{-- <div class="mt-4 flex justify-end items-end">
+            <x-primary-button class="text-white">
+                {{ __('Submit') }}
+            </x-primary-button>
+        </div> --}}
+    </form>
+</x-seekerhome>

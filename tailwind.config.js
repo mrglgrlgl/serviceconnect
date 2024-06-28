@@ -13,6 +13,13 @@ export default {
 
     theme: {
         extend: {
+            height:{
+                '128': '32rem',
+                '144': '36rem',
+                '160': '40rem',
+                '176': '44rem',
+                '192': '48rem',
+            },
             maxHeight: {
                 '128': '32rem',
                 '144': '36rem',
@@ -57,7 +64,8 @@ export default {
                     'light-text': '#666666', 
                     'nav-bg': '#EBEDEF', 
                     'yellow': '#F8A619',
-                    'fields': '#BABABA'
+                    'fields': '#BABABA',
+                    'cat-border': '486284'
         },
             width:{
                 custom: {
