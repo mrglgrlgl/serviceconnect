@@ -36,8 +36,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => ['required', 'string', 'max:255'],
             'birth_date_month' => ['integer', 'max:12'],
@@ -46,9 +45,9 @@ class RegisteredUserController extends Controller
         ]);
 
         $birth_date = $request->input('birth_date_year') . '-' . str_pad($request->input('birth_date_month'), 2, '0', STR_PAD_LEFT) . '-' . str_pad($request->input('birth_date_day'), 2, '0', STR_PAD_LEFT);
-
+        
         $user = User::create([
-            'name' => $request->name . ' '. $request->last_name,
+            'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'gender' => $request->input('gender'),
@@ -59,37 +58,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Redirect to the address form after successful registration
         return redirect()->route('address.create', ['userId' => $user->id]);
-    }
-
-    /**
-     * Display the address form view.
-     *
-     * @param int $userId
-     * @return \Illuminate\View\View
-     */
-    public function showAddressForm($userId)
-    {
-        return view('auth.address', ['userId' => $userId]);
-    }
-
-    /**
-     * Handle the address form submission and save the address data.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function storeAddress(Request $request)
-    {
-        $request->validate([
-            'address' => ['required', 'string', 'max:255'],
-        ]);
-
-        $userId = $request->input('userId');
-        $user = User::findOrFail($userId);
-        $user->address = $request->input('address');
-        $user->save();
-
-        return redirect()->route('dashboard');
+        
     }
 }
