@@ -12,7 +12,15 @@
             </div>
 
             <!-- Right Side: Navigation Links and Settings Dropdown -->
+
+            {{-- Create Service Request button --}}
             <div class="flex">
+                <div class=" justify-center pt-2 px-8">
+                    <button class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
+                        {{ __('Create Service Request') }}
+                    </button>
+                </div>
+
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex space-x-4 sm:-my-px">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">

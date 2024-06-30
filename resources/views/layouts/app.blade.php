@@ -21,8 +21,7 @@
         @include('layouts.navigation')
 
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
-
+            <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg w-3/5">
 
                 @isset($profilepic)
                 <div class=shadow">
@@ -32,10 +31,9 @@
                     </>
                     @endisset
 
-
-                    <main>
-                        {{ $slot }}
-                    </main>
+                    <div>
+                        {{ $providerinfo }}
+                    </div>
                 </div>
             </div>
         </div>
