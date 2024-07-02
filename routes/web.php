@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -17,8 +17,11 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 Route::get('/chat', function () {
-    return view('chat'); // Replace with your chat view or logic
+    return view('chat'); 
 })->name('chat');
+Route::get('/become-provider', function () {
+    return view('auth.become_provider');
+})->name('become-provider');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
@@ -26,18 +29,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    // Route for address form after registration
-    // Route::get('/address', [AddressController::class, 'create'])->name('address.create');
-    // Route::post('/address', [AddressController::class, 'store'])->name('address.store');
+    Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
 
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
     
     
-    // Route::get('/address/{userId}', [RegisteredUserController::class, 'showAddressForm'])->name('address.create'); // Define the route with 'address.create' name
-    // Route::post('/address', [AddressController::class, 'store'])->name('address.store'); // Assuming AddressController has a 'store' method
-});
-
+}); 
 
 require __DIR__.'/auth.php';
