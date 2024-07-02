@@ -4,12 +4,14 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="{{ asset('js/map.js') }}"></script>
 
+    <x-service-request-create id="serviceRequestModal" />
+
     <form method="POST" action="{{ route('register') }}" class="grid grid-rows-auto items-center justify-center sm:pt-0 w-full">
         @csrf
 
 
         {{-- Category Bar --}}
-        <div class="relative w-10/12 md:w-8/12 mx-auto pt-4 overflow-hidden">
+        <div class="relative w-10/12 md:w-8/12 mx-auto pt-4 content overflow-hidden">
             <div class="flex justify-center text-center w-full">
                 <div id="categoryContainer" class="flex items-center space-x-4 overflow-x-auto md:overflow-hidden">
 
@@ -115,6 +117,10 @@
             </div>
         </div>
         
+
+    
+
+
         {{-- Other components (Map and Provider List) --}}
         <div class="grid grid-cols-1 md:grid-cols-3 w-10/12 mx-auto pb-6">
 
@@ -135,7 +141,6 @@
         </div>
     </div>
         
-
                 {{-- provider list component --}}
                 <div class="h-96">
                     <x-provider-list></x-provider-list>

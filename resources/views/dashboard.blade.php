@@ -1,4 +1,6 @@
 <x-dashboard>
+    <x-service-request-create id="serviceRequestModal" />
+    
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboarddd') }}
@@ -12,6 +14,7 @@
                     {{ __("Service Requests") }}
                 </div>
             </div>
+asfasfafgv
         </div>
     </div>
 </x-dashboard>

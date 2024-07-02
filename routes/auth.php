@@ -16,7 +16,7 @@ Route::middleware('guest')->group(function () {
                 ->name('register');
 
                 // address and map
-    Route::get('address', [RegisteredUserController::class, 'createAddress'])
+    Route::get('address', [RegisteredUserController::class, 'create.address'])
                 ->name('address');
 
     Route::post('register', [RegisteredUserController::class, 'store']);

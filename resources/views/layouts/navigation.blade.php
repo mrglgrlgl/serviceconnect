@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-custom-light-blue border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-custom-light-blue border-b border-gray-100 font-sans">
     <!-- Primary Navigation Menu -->
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -16,10 +16,17 @@
             {{-- Create Service Request button --}}
             <div class="flex">
                 <div class=" justify-center pt-2 px-8">
-                    <button class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
+                    <button @click="$dispatch('open-modal', { id: 'serviceRequestModal' })" class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
                         {{ __('Create Service Request') }}
                     </button>
                 </div>
+
+                <div class="flex">
+                    <div class=" justify-center pt-2 px-8">
+                        <a href="{{ route('become-provider') }}" class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
+                            {{ __('Become a Provider') }}
+                        </a>
+                    </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex space-x-4 sm:-my-px">
@@ -100,7 +107,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-responsive-nav-link :href="route('profile.show')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 

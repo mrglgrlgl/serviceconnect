@@ -48,13 +48,13 @@ export default {
             fontSize: {
                 'xs': '0.75rem', // Extra small         12px
                 'sm': '0.875rem', // Small              14px
-                'base': '1rem', // Base/default size    16px  
-                'lg': '1.125rem', // Large              18px
-                'xl': '1.25rem', // Extra large         20px
-                '2xl': '1.5rem', // 2 times large       24px
-                '3xl': '1.875rem', // 3 times large //header 30px
-                '4xl': '2.25rem', // 4 times large      36px
-                '5xl': '3rem', // 5 times large         48px
+                'base': '1rem', // Base/default size    16px  orig-1rem
+                'lg': '1.125rem', // Large              18px  orig-1.125rem
+                'xl': '1.25rem', // Extra large         20px  orig-1.25rem
+                '2xl': '1.5rem', // 2 times large       24px  orig-1.5rem
+                '3xl': '1.875rem', // 3 times large //header 30px   1.875rem
+                '4xl': '2.25rem', // 4 times large      36px        2.25rem
+                '5xl': '3rem', // 5 times large         48px        3rem
                 '6xl': '4rem', // 6 times large         60px
                 '7xl': '5rem', // 7 times large         72px
                 '8xl': '6rem', // 8 times large         96px

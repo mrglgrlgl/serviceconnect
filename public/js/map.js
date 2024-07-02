@@ -8,4 +8,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var marker = L.marker([10.6713, 122.9511]).addTo(map)
         .bindPopup('Aaaaa.')
         .openPopup();
+
+    var serviceRequestModal = document.getElementById('serviceRequestModal');
+    if (serviceRequestModal) {
+        serviceRequestModal.addEventListener('click', function () {
+            var mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.style.filter = 'blur(8px)';
+            }
+        });
+    }
+
+    console.log('Script loaded successfully');
 });

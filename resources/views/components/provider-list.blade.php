@@ -12,7 +12,7 @@
             </div>
             <div>{{ 'Ratings:'}}</div>
 
-            <div class="w-full text-sm font-normal">
+            <div class="w-full text-base font-normal">
                 @php
                     $description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque id leo ac eleifend. Nulla sed leo maximus, tempor nisl vitae, interdum diam. Nullam varius dui nibh, sed porta augue pharetra quis. Proin vulputate velit ac purus congue venenatis.';
                     $limit = 225; // Limit of characters
@@ -21,7 +21,7 @@
             </div>
 
             <div class="flex justify-end items-center mt-2">
-                <x-primary-button class="text-sm h-8 w-36 rounded-1 bg-transparent border-2 border-custom-dark-blue text-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
+                <x-primary-button class="text-base h-8 w-38 rounded-1 bg-transparent border-2 border-custom-dark-blue text-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
                     {{ __('View Profile') }}
                 </x-primary-button>
             </div>
