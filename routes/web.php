@@ -34,17 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
+    Route::get('/becomeprovider', [App\Http\Controllers\YourController::class, 'yourMethod'])->name('becomeprovider');
 
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
-    
+}); 
 
     // SERVICE REQUEST -> Waay pa ni unod controller
     Route::post('/service/request', [ServiceRequestController::class, 'store'])->name('service.request');
-
-    // Route::get('/address/{userId}', [RegisteredUserController::class, 'showAddressForm'])->name('address.create'); // Define the route with 'address.create' name
-    // Route::post('/address', [AddressController::class, 'store'])->name('address.store'); // Assuming AddressController has a 'store' method
-});
-
 
 require __DIR__.'/auth.php';

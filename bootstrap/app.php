@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\Authorizer;
+use App\Http\Middleware\Provider;
+use App\Http\Middleware\Normal;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+        'authorizer'=>Authorizer::class,
+        'provider'=>Provider::class,
+        'normal'=>Normal::class
+
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
