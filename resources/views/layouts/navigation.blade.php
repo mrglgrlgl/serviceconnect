@@ -25,17 +25,13 @@
                 {{-- Create Service Request button --}}
                 <div class="flex">
                     <div class="justify-center pt-2 px-8">
-                        <button
+                        <button :href="route('dashboard')"
                             class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
                             {{ __('Create Service Request') }}
                         </button>
                     </div>
-                    <div class="justify-center pt-2 px-8">
-                        <a href="{{ route('become-provider') }}"
-                            class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
-                            {{ __('Become a Provider') }}
-                        </a>
-                    </div>
+
+                
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
                         <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
@@ -45,6 +41,7 @@
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             {{ __('Service Requests') }}
                         </x-nav-link>
+                        
 
                         <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
@@ -70,7 +67,11 @@
 
                                 <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
                                     <x-dropdown-link :href="route('profile.show')">
-                                        {{ __('Profile') }}
+                                     {{ __('Profile') }}
+                                    </x-dropdown-link>
+
+                                    <x-dropdown-link :href="route('become-provider')">
+                                        {{ __('Become a Provider!') }}
                                     </x-dropdown-link>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

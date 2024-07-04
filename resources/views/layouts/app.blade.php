@@ -19,17 +19,37 @@
 
 <body class="font-open-sans antialiased">
     <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
 
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header ?? '' }}
-            </div>
-        </header>
+        {{-- Check what type of user --}}
+        @if(Auth::check())
+            @if(Auth::user()->role == 1)
+                @include('layouts.auth-navigation')
+            @elseif(Auth::user()->role == 2 || Auth::user()->role == 3)
+                @include('layouts.navigation')
+            @endif
+        @endif
+
+        {{-- Display header if there's a header set in the blade.php --}}
+        @isset($header)
+            <header class="bg-white shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endisset
+
+
+        @if(Auth::check() && Auth::user()->role == 1)
+        <div>
+            {{ $tabble ?? '' }}
+        </div>
+        @endif
+
 
         <main>
             {{ $slot }}
         </main>
+
     </div>
 </body>
 

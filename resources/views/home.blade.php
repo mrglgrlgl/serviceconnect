@@ -9,7 +9,6 @@
     <form method="POST" action="{{ route('register') }}" class="grid grid-rows-auto items-center justify-center sm:pt-0 w-full">
         @csrf
 
-
         {{-- Category Bar --}}
         <div class="relative w-10/12 md:w-8/12 mx-auto pt-4 content overflow-hidden">
             <div class="flex justify-center text-center w-full">
@@ -68,8 +67,10 @@
                 </div>
             </div>
         </div>
-        
-        <div class="border-t my-2 relative text-center"></div>
+
+        <div class="flex justify-center">
+        <div class="border-t my-2 md:w-8/12 text-center"></div>
+        </div>
 
 
         {{-- Filter Section --}}
@@ -134,7 +135,7 @@
         <!-- Search Bar -->
         <div class="pt-4">
         <div class="relative shadow-sm">
-            <x-text-input type="text" id="provider-search" class="w-full rounded-3xl  h-12 border border-custom-fields focus:border-custom-dark-blue pl-4 pr-10" placeholder="Search..."></x-text-input>
+            <input type="text" id="provider-search" class="w-full rounded-3xl  h-12 border border-custom-fields focus:border-custom-dark-blue pl-4 pr-10" placeholder="Search..."></input>
             <button type="button" class="absolute right-0 top-0 h-full px-6 flex items-center justify-center bg-custom-light-blue text-white rounded-r-3xl rounded-l-md">
                 <span class="material-symbols-outlined">search</span>
             </button>
