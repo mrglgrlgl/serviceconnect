@@ -37,17 +37,26 @@ Route::get('/become-provider', function () {
 })->name('become-provider');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
+
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
-    Route::get('/becomeprovider', [App\Http\Controllers\YourController::class, 'yourMethod'])->name('becomeprovider');
+    Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
+
+// Example web.php route definitions
+Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept'])->name('requests.accept');
+Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
+
 
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  
+    Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
+Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
 
     
 }); 

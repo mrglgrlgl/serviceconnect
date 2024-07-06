@@ -30,9 +30,14 @@
                     </div>
                     </>
                     @endisset
+{{-- 
+<div class="">
+{{ $tabble }}
+</div> --}}
 
                     <div>
-                        {{ $providerinfo }}
+                    fhfdhdfhdf
+                        {{-- {{ $providerinfo }} --}}
                     </div>
                 </div>
             </div>

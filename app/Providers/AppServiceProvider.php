@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::component('seekerhome', Seekerhome::class);
+        // Blade::component('seekerhome', Seekerhome::class);
     }
 }
