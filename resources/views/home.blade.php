@@ -141,4 +141,7 @@
             </div>
         </div>
     </form>
+    @if(Auth::check())
+    <p>User Role: {{ Auth::user()->role }}</p>
+@endif
 </x-seekerhome>

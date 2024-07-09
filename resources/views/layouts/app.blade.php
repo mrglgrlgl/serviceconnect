@@ -29,11 +29,22 @@
             @endif
         @endif
 
-        {{-- Display header if there's a header set in the blade.php --}}
-        @isset($header)
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                @isset($profilepic)
+                <div class=shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $profilepic }}
+                    </div>
+                    </>
+                    @endisset
+{{-- 
+<div class="">
+{{ $tabble }}
+</div> --}}
+
+                    <div>
+                    fhfdhdfhdf
+                        {{-- {{ $providerinfo }} --}}
+                    </div>
                 </div>
             </header>
         @endisset

@@ -34,13 +34,6 @@ export default {
                 '176': '44rem',
                 '192': '48rem',
             },
-            height:{
-                '128': '32rem',
-                '144': '36rem',
-                '160': '40rem',
-                '176': '44rem',
-                '192': '48rem',
-            },
             fontFamily: {
                 'open-sans': ['Open Sans', 'sans-serif'],
                 'nunito-sans': ['Nunito Sans', 'sans-serif'],

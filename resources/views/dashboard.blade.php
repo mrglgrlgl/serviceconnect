@@ -46,4 +46,4 @@
             </div>
         </div> 
     </div>
-</x-dashboard>
+@endsection
