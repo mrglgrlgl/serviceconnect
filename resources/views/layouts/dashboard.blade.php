@@ -21,15 +21,17 @@
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
     
-            <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-                <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg w-3/5">
-                    <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                        {{ $slot }}
-                    </div>  
-                    </div>
+            <!-- Dashboard Bar -->
+            @if (isset($dashboardbar))
+                <div class="py-4">
+                    {{ $dashboardbar }}
                 </div>
-            </div>
+            @endif
+    
+                <div>
+                        {{ $slot }}
+                </div>  
+                </div>
     </body>
     
     </html>
-</div>

@@ -1,9 +1,10 @@
+become-provider
 <x-app-layout>
     <form action="{{ route('requests.store') }}" method="POST">
         @csrf
 
-        <div class="md:mt-3 md:px-12 md:py-12 bg-white shadow-md sm:rounded-lg md:w-3/6 flex mx-auto">
-            <div class="flex flex-col md:w-10/12 mx-auto justify-center items-center space-y-6">
+        <div class="md:mt-3 md:px-12 md:py-12 bg-white shadow-md sm:rounded-lg md:w-3/6 mx-auto">
+            <div class="flex flex-col items-center space-y-6">
                 <div class="text-2xl font-bold text-custom-light-blue">
                     {{ __("Become a Provider!") }}
                 </div>
@@ -26,6 +27,7 @@
                                     {{ __("Category 1") }}
                                 </label>
                             </div>
+                            
                             <x-selection class="mt-2 rounded shadow-sm focus:ring-custom-light-blue">
                                 <option value="">{{ __("Select an option") }}</option>
                                 <!-- Add more options as needed -->
@@ -43,6 +45,16 @@
                                 <option value="">{{ __("Select an option") }}</option>
                             </x-selection>
                         </div>
+
+                        <div class="flex flex-col items-start">
+                            <x-input-label for="provider_description" class="text-lg md:text-xl text-custom-dark-blue font-bold">
+                                {{ __('Description') }}
+                            </x-input-label>
+                            {{-- Description Box --}}
+                            <textarea id="provider_description" name="provider_description"
+                                class="rounded border border-gray-300 shadow-sm resize-none focus:ring-custom-light-blue w-full md:h-48 p-2"></textarea>
+                        </div>
+     
                     </div>
                 </div>
 
@@ -57,4 +69,4 @@
             </div>
         </div>
     </form>
-</x-app-layout> 
+</x-app-layout>

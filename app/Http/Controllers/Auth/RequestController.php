@@ -37,5 +37,4 @@ class RequestController extends Controller
     }
 }
 
-
         // dd($request->all()); // Add this line to dump the request data

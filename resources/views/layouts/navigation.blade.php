@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar with Alpine.js</title>
+    <title>Navbar</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body>
@@ -21,16 +21,16 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-
-                {{-- Create Service Request button --}}
                 <div class="flex">
-                    <div class="justify-center pt-2 px-8">
-                        <button :href="route('dashboard')"
-                            class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
-                            {{ __('Create Service Request') }}
-                        </button>
-                    </div>
-
+                    @if (Auth::user()->role == '3')
+                        {{-- Create Service Request button for seekers --}}
+                        <div class="justify-center pt-2 px-8 md:pr-16">
+                            <button :href="route('dashboard')"
+                                class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent ">
+                                {{ __('Create Service Request') }}
+                            </button>
+                        </div>
+                    @endif
                 
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
@@ -39,10 +39,9 @@
                         </x-nav-link>
 
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Service Requests') }}
+                            {{ __('Dashboard') }}
                         </x-nav-link>
                         
-
                         <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
                         </x-nav-link>

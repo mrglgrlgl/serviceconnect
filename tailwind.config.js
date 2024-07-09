@@ -66,13 +66,16 @@ export default {
                     'default-text': '#2F3033',
                     'light-blue': '#204860',
                     'dark-blue': '#1A202C',
+                    'lightest-blue': '#75E2FF',
+                    'lightestblue-accent': '#31A6C5',
                     'header': '#333333',
                     'dark-text': '#111111',
                     'light-text': '#666666', 
                     'nav-bg': '#EBEDEF', 
                     'yellow': '#F8A619',
                     'fields': '#BABABA',
-                    'cat-border': '486284'
+                    'cat-border': '486284',
+                    'danger': '#B43737',
         },
             width:{
                 custom: {
