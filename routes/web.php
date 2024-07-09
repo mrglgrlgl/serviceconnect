@@ -5,7 +5,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AddressController;
-
+use App\Http\Controllers\Auth\BecomeProviderController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 
 Route::get('/', function (){
@@ -32,9 +34,9 @@ Route::get('/chat', function () {
     return view('chat'); 
 })->name('chat');
 
-Route::get('/become-provider', function () {
-    return view('auth.become_provider');
-})->name('become-provider');
+// Route::get('/become-provider', function () {
+//     return view('auth.multistep.become_provider');
+// })->name('become-provider');
 
 Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
@@ -47,7 +49,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
     Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
 
-// Example web.php route definitions
+// Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
+// Route::post('/becomeprovider', [BecomeProviderController::class, 'store'])->name('becomeprovider.store');
+
+Route::get('provider-documents/{filename}', function ($filename) {
+    $path = storage_path('app/provider/documents/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+})->name('provider.documents');
+// // Example web.php route definitions
 Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept'])->name('requests.accept');
 Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
 
@@ -57,8 +77,15 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
  
     Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
 Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
+//become provider
+Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');
+Route::post('/save-step1', [BecomeProviderController::class, 'saveStep1'])->name('save-step1');
+Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->name('bp_step2');
 
-    
+Route::post('/save-step2', [BecomeProviderController::class, 'saveStep2'])->name('save-step2');
+Route::get('/bp_step3', [BecomeProviderController::class, 'showStep3Form'])->name('bp_step3');
+Route::post('/save-step3', [BecomeProviderController::class, 'saveStep3'])->name('save-step3');
+
 }); 
 
 require __DIR__.'/auth.php';

@@ -31,7 +31,7 @@
             white-space: nowrap;
             vertical-align: middle;
             cursor: pointer;
-            border: 1 px solid transparent;
+            border: 1px solid transparent;
             border-radius: 4px;
             text-decoration: none;
         }
@@ -64,24 +64,67 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($requests as $request)
-                <tr>
-                    <td>{{ $request->id }}</td>
-                       <td>{{ $request->user_id }}</td>
-                    <td>{{ $request->status }}</td>
-                    <td>{{ $request->created_at }}</td>
-                    <td>
-                        <form action="{{ route('requests.accept', $request->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-success">Accept</button>
-                        </form>
-                       <form action="{{ route('requests.decline', $request->id) }}" method="POST">
-    @csrf
-    <button type="submit" class="btn btn-danger">Decline</button>
-</form>
-                    </td>
-                </tr>
-                @endforeach
+            @foreach ($requests as $request)
+            <tr>
+                <td>{{ $request->id }}</td>
+                <td>{{ $request->user_id }}</td>
+                <td>{{ $request->status }}</td>
+                <td>{{ $request->created_at }}</td>
+                <td>
+                    <form action="{{ route('requests.accept', $request->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+                    <form action="{{ route('requests.decline', $request->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Decline</button>
+                    </form>
+                </td>
+            </tr>
+        @if ($request->providerDetail)
+<tr>
+    <td colspan="5">
+        <h2>Provider Details</h2>
+        <table>
+            <tr>
+                <th>Work Email</th>
+                <th>Contact Number</th>
+                <th>Service Category</th>
+                <th>Sub Category</th>
+                <th>Description</th>
+                <th>Government ID Front</th>
+                <th>Government ID Back</th>
+                <th>NBI Clearance</th>
+                <th>TESDA Certification</th>
+                <th>Other Credentials</th>
+            </tr>
+            <tr>
+                <td>{{ $request->providerDetail->work_email }}</td>
+                <td>{{ $request->providerDetail->contact_number }}</td>
+                <td>{{ $request->providerDetail->serviceCategory }}</td>
+                <td>{{ $request->providerDetail->subcategory }}</td>
+                <td>{{ $request->providerDetail->description }}</td>
+                <td>
+                    <img src="{{ asset('storage/' . $request->providerDetail->government_id_front) }}" alt="Government ID Front" width="100">
+                </td>
+                <td>
+<img src="{{ asset('storage/uploads/government_id_back/71/back_1720416963.jpg') }}" alt="Government ID Back">
+                </td>
+                <td>
+                    <img src="{{ asset('storage/' . $request->providerDetail->nbi_clearance) }}" alt="NBI Clearance" width="100">
+                </td>
+                <td>
+                    <img src="{{ asset('storage/' . $request->providerDetail->tesda_certification) }}" alt="TESDA Certification" width="100">
+                </td>
+                <td>
+                    <img src="{{ asset('storage/' . $request->providerDetail->other_credentials) }}" alt="Other Credentials" width="100">
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+@endif
+            @endforeach
             </tbody>
         </table>
         @else
@@ -90,3 +133,10 @@
     </div>
 </body>
 </html>
+
+{{ $request->providerDetail->government_id_front_url }}
+<!-- Debugging output -->
+<pre>{{ print_r($request->providerDetail->toArray(), true) }}</pre>
+
+<!-- Check individual URL -->
+<pre>{{ $request->providerDetail->government_id_front_url }}</pre>
