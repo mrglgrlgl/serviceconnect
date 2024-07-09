@@ -108,7 +108,7 @@
                     <img src="{{ asset('storage/' . $request->providerDetail->government_id_front) }}" alt="Government ID Front" width="100">
                 </td>
                 <td>
-<img src="{{ asset('storage/uploads/government_id_back/71/back_1720416963.jpg') }}" alt="Government ID Back">
+                    <img src="{{ asset('storage/' . $request->providerDetail->government_id_back) }}" alt="Government ID Back">
                 </td>
                 <td>
                     <img src="{{ asset('storage/' . $request->providerDetail->nbi_clearance) }}" alt="NBI Clearance" width="100">

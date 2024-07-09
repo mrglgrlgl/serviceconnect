@@ -98,7 +98,7 @@
 </html>
 
 <!-- Send Request Form -->
-<div class="container">
+{{-- <div class="container">
     <div class="card mt-4">
         <div class="card-body">
             <h5 class="card-title">Send Request</h5>
@@ -109,7 +109,7 @@
                 <button type="submit" class="btn btn-primary">Send Request</button>
             </form>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Success or Error Messages for sending request -->
     @if (session('success'))

@@ -122,12 +122,21 @@ public function __construct(RequestController $requestController)
         ]);
     
         // Store uploaded files
-        $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents', 'public');
+        // $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents');
+        // $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents');
+        // $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents') : null;
+        // $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents') : null;
+        // $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents') : null;
+    
+
+// Store uploaded files
+$governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents', 'public');
 $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents', 'public');
 $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents', 'public') : null;
 $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents', 'public') : null;
 $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents', 'public') : null;
-    
+
+
         // Create ProviderDetail instance
         $providerDetail = new ProviderDetail();
         $providerDetail->work_email = $sessionData['work_email'];
