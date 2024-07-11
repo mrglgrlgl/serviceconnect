@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar with Alpine.js</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
     <nav x-data="{ open: false, dropdownOpen: false }" class="bg-custom-light-blue border-b border-gray-100">
@@ -24,12 +27,22 @@
 
                 {{-- Create Service Request button --}}
                 <div class="flex">
-                    <div class="justify-center pt-2 px-8">
+                    {{-- <div class="justify-center pt-2 px-8">
                         <button
                             class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
                             {{ __('Create Service Request') }}
                         </button>
                     </div>
+                     --}}
+ <div class="justify-center pt-2 px-8">
+    <a href="{{ route('service-requests.create') }}" class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
+        {{ __('Create Service Request') }}
+    </a>
+</div>
+
+
+
+
                     <div class="justify-center pt-2 px-8">
                         <a href="{{ route('become-provider') }}"
                             class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
@@ -174,4 +187,6 @@
         </div>
     </nav>
 </body>
+
 </html>
+
