@@ -1,14 +1,11 @@
-
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
     
-    <div class="text-2xl text-center text-custom-header">Login</div>
-
-    <!-- Login Form -->
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
+        <div class="text-2xl text-center text-custom-header">Login</div>
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email address')" />
@@ -19,11 +16,15 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+
+            <x-text-input id="password" class="block mt-1 w-full"
+                            type="password"
+                            name="password"
+                            required autocomplete="current-password" />
+
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Forgot Password Link -->
         <div class="flex items-center justify-end mt-2">
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
@@ -32,7 +33,7 @@
             @endif
         </div>
 
-        <!-- Remember Me Checkbox -->
+        <!-- Remember Me -->
         <div class="block mb-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
@@ -40,23 +41,21 @@
             </label>
         </div>
 
-        <!-- Login Button -->
-        <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent">
-            {{ __('Log in') }}
-        </x-primary-button>
-    </form>
-
-    <!-- Sign Up Link -->
-    <div class="text-center justify-center mt-4">
-        <div class="border-t my-4 relative text-center"></div>
-        <div class="pb-2">
-            <span class="justify-center px-2 text-custom-header text-xl">Don't have an account?</span>
-        </div>
-        <a href="{{ route('register') }}">
-            <x-primary-button class="h-12 w-full justify-center text-xl bg-transparent border-2 border-custom-dark-blue text-custom-dark-blue hover:border-transparent hover:text-white">
-                {{ __('Sign up') }}
+        <!-- Login button -->
+            <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent">
+                {{ __('Log in') }}
             </x-primary-button>
-        </a>
+
+    <div class="text-center justify-center">
+            <div class="border-t my-4 relative text-center"></div>
+            <div class="pb-2">
+            <span class="justify-center px-2 text-custom-header text-xl">Don't have an account?</span>
+            </div>
     </div>
+  
+    </form>
+            <x-primary-button class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
+            {{ __('Sign up') }}
+            </x-primary-button>
+</div>
 </x-guest-layout>
-{{-- 

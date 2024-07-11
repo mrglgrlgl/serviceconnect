@@ -1,5 +1,5 @@
 <x-dashboard>
-    <x-service-request-create id="serviceRequestModal" />
+    {{-- <x-service-request-create id="serviceRequestModal" /> --}}
 
     <x-slot name="dashboardbar">
         <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden">
@@ -46,4 +46,4 @@
             </div>
         </div> 
     </div>
-@endsection
+</x-dashboard>

@@ -5,19 +5,11 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AddressController;
-<<<<<<< HEAD
-use App\Http\Controllers\Auth\ServiceRequestController;
-use App\Http\Controllers\Auth\RequestController;
-
-
-
-=======
 use App\Http\Controllers\Auth\BecomeProviderController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 
 
->>>>>>> 1f959e92dfaa6d6d2b6fff7569406ddfc44274f5
 Route::get('/', function (){
     return view('welcome');
 });
@@ -42,16 +34,9 @@ Route::get('/chat', function () {
     return view('chat'); 
 })->name('chat');
 
-<<<<<<< HEAD
-Route::get('/become-provider', function () {
-    return view('auth.become-provider');
-})->name('become-provider');
-
-=======
 // Route::get('/become-provider', function () {
 //     return view('auth.multistep.become_provider');
 // })->name('become-provider');
->>>>>>> 1f959e92dfaa6d6d2b6fff7569406ddfc44274f5
 
 Route::middleware('auth')->group(function () {
     Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
@@ -62,16 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
-<<<<<<< HEAD
-    Route::get('/becomeprovider', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'yourMethod'])->name('becomeprovider');
-
-    Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
-    Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
-}); 
-
-    // SERVICE REQUEST -> Waay pa ni unod controller
-    Route::post('/service/request', [ServiceRequestController::class, 'show'])->name('service.request');
-=======
     Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
 
 // Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
@@ -112,6 +87,5 @@ Route::get('/bp_step3', [BecomeProviderController::class, 'showStep3Form'])->nam
 Route::post('/save-step3', [BecomeProviderController::class, 'saveStep3'])->name('save-step3');
 
 }); 
->>>>>>> 1f959e92dfaa6d6d2b6fff7569406ddfc44274f5
 
 require __DIR__.'/auth.php';

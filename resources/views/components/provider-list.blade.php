@@ -7,12 +7,12 @@
 
         <div class="ml-4 flex-1 ">
         <div class="flex justify-between items-center pt-6">
-                <div class="font-medium">{{ 'Provider name' }}</div>
-                <div class="font-normal">{{ '16 hires' }}</div>
+                <div class="font-medium text-lg">{{ 'Provider name' }}</div>
+                <div class="font-normal text-custom-default-text">{{ '16 hires' }}</div>
             </div>
-            <div>{{ 'Ratings:'}}</div>
+            <div class="font-normal text-custom-default-text">{{ 'Ratings:'}}</div>
 
-            <div class="w-full text-base font-normal">
+            <div class="w-full font-normal text-custom-default-text">
                 @php
                     $description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque scelerisque id leo ac eleifend. Nulla sed leo maximus, tempor nisl vitae, interdum diam. Nullam varius dui nibh, sed porta augue pharetra quis. Proin vulputate velit ac purus congue venenatis.';
                     $limit = 225; // Limit of characters

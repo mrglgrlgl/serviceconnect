@@ -80,7 +80,7 @@
                     <div class="provideroverview pt-8">
                         <div class="text-2xl font-bold text-custom-light-blue md:mb-2">{{ __('Availability') }}</div>
                     </div>
-                    <div class="md:border-2 md:border-custom-light-text md:rounded-2xl md:p-4 ml-auto">
+                    <div class="md:border md:border-custom-light-text md:rounded-2xl md:p-4 ml-auto">
                         <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
                             <div class="flex justify-between items-center">
                                 <div>Mon - Wed</div>
@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="text-2xl font-bold text-custom-light-blue pt-2 md:mb-2">{{ __('Contact') }}</div>
-                    <div class="md:border-2 md:border-custom-light-text md:rounded-2xl p-4 ml-auto">
+                    <div class="md:border md:border-custom-light-text md:rounded-2xl p-4 ml-auto">
                         <x-contact-info/>
                     </div>
                 </div>

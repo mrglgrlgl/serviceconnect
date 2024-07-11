@@ -35,8 +35,8 @@ export default {
                 '192': '48rem',
             },
             fontFamily: {
-                'open-sans': ['Open Sans', 'sans-serif'],
-                'nunito-sans': ['Nunito Sans', 'sans-serif'],
+                // 'open-sans': ['Open Sans', 'sans-serif'],
+                // 'nunito-sans': ['Nunito Sans', 'sans-serif'],
             },
             fontSize: {
                 'xs': '0.75rem', // Extra small         12px

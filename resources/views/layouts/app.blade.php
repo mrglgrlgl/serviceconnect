@@ -17,7 +17,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-open-sans antialiased">
+<body class="antialiased">
     <div class="min-h-screen bg-gray-100">
 
         {{-- Check what type of user --}}
@@ -40,15 +40,6 @@
 <div class="">
 {{ $tabble }}
 </div> --}}
-
-                    <div>
-                    fhfdhdfhdf
-                        {{-- {{ $providerinfo }} --}}
-                    </div>
-                </div>
-            </header>
-        @endisset
-
 
         @if(Auth::check() && Auth::user()->role == 1)
         <div>
