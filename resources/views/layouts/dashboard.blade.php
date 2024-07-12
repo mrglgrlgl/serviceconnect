@@ -35,7 +35,7 @@
     </body>
     
     </html>
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
     <div class="min-h-screen bg-gray-100">
@@ -75,4 +75,4 @@
             </div>
         </div>
     </div>
-@endsection
+@endsection --}}
