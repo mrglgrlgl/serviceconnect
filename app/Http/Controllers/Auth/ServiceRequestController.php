@@ -8,6 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class ServiceRequestController extends Controller
 {
+
+    public function retrieveByUserRole()
+    {
+        // Fetch the authenticated user
+        $user = Auth::user();
+    
+        // Check if the user role is provider (assuming role 2 is for providers)
+        if ($user->role == 2) {
+            // Retrieve all service requests for providers
+            $serviceRequests = ServiceRequest::all();
+        } else {
+            // For other roles, handle accordingly (this is optional, depending on your application logic)
+            $serviceRequests = ServiceRequest::all(); // or any fallback logic you may have
+        }
+    
+        // Return the view with the retrieved service requests
+        return view('provider.dashboard', compact('serviceRequests'));
+    }
+
     public function create()
     {
         return view('layouts.modal'); // Ensure this view file exists

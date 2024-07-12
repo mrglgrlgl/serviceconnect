@@ -9,7 +9,7 @@ use App\Http\Controllers\Auth\BecomeProviderController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\ServiceRequestController;
-
+use App\Http\Controllers\Auth\ProviderSRController;
 
 
 Route::get('/', function (){
@@ -101,6 +101,10 @@ Route::middleware('auth')->group(function () {
     // Other authenticated routes...
 });
 // Resource routes for service requests
+
+Route::middleware('auth')->group(function () {
+    Route::get('/provider/dashboard', [ServiceRequestController::class, 'retrieveByUserRole'])->name('provider.dashboard');
+});
 Route::get('/service-requests', [ServiceRequestController::class, 'index'])->name('service-requests.index');
 Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
 Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('service-requests.edit');
@@ -109,6 +113,7 @@ Route::patch('/service-requests/{serviceRequest}', [ServiceRequestController::cl
 Route::get('/service-requests/{id}/edit', 'ServiceRequestController@edit')->name('service-requests.edit');
 Route::delete('/service-requests/{id}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
+
 
 }); 
 
