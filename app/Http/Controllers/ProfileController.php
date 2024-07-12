@@ -14,6 +14,13 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
+     public function show(): View
+     {
+         return view('profile.profile', [
+             'user' => Auth::user(),
+         ]);
+     }
+
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -58,3 +65,5 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 }
+
+

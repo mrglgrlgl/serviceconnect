@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar with Alpine.js</title>
+    <title>Navbar</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <!-- Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -24,9 +24,8 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-
-                {{-- Create Service Request button --}}
                 <div class="flex">
+<<<<<<< HEAD
                     {{-- <div class="justify-center pt-2 px-8">
                         <button
                             class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
@@ -49,6 +48,18 @@
                             {{ __('Become a Provider') }}
                         </a>
                     </div>
+=======
+                    @if (Auth::user()->role == '3')
+                        {{-- Create Service Request button for seekers --}}
+                        <div class="justify-center pt-2 px-8 md:pr-16">
+                            <button :href="route('dashboard')"
+                                class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent ">
+                                {{ __('Create Service Request') }}
+                            </button>
+                        </div>
+                    @endif
+                
+>>>>>>> 5cfce04c175a63e7acf85fb270bbaf94f2ac15ee
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
                         <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
@@ -56,13 +67,12 @@
                         </x-nav-link>
 
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Service Requests') }}
+                            {{ __('Dashboard') }}
                         </x-nav-link>
-
+                        
                         <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
                         </x-nav-link>
-                      
                     </div>
 
                     <!-- Settings Dropdown -->
@@ -84,7 +94,11 @@
 
                                 <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
                                     <x-dropdown-link :href="route('profile.show')">
-                                        {{ __('Profile') }}
+                                     {{ __('Profile') }}
+                                    </x-dropdown-link>
+
+                                    <x-dropdown-link :href="route('become-provider')">
+                                        {{ __('Become a Provider!') }}
                                     </x-dropdown-link>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -144,7 +158,7 @@
             </div>
 
             <!-- Responsive Settings Options -->
-            {{-- <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="pt-4 pb-1 border-t border-gray-200">
                 <div class="px-4">
                     <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
@@ -157,24 +171,7 @@
 
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
-                        @csrf --}}
-                          @if (Auth::user())
-        <div class="px-4">
-            <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-            <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-        </div>
-
-        <div class="mt-3 space-y-1">
-            <x-responsive-nav-link :href="route('profile.edit')">
-                {{ __('Profile') }}
-            </x-responsive-nav-link>
-
-            <!-- Authentication -->
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-            </form>
-        </div>
-    @endif
+                        @csrf
 
                         <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
@@ -187,6 +184,10 @@
         </div>
     </nav>
 </body>
+<<<<<<< HEAD
 
 </html>
 
+=======
+</html>
+>>>>>>> 5cfce04c175a63e7acf85fb270bbaf94f2ac15ee

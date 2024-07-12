@@ -11,17 +11,23 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
+<body class="antialiased">
     <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
 
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg w-3/5">
+        {{-- Check what type of user --}}
+        @if(Auth::check())
+            @if(Auth::user()->role == 1)
+                @include('layouts.auth-navigation')
+            @elseif(Auth::user()->role == 2 || Auth::user()->role == 3)
+                @include('layouts.navigation')
+            @endif
+        @endif
 
                 @isset($profilepic)
                 <div class=shadow">
@@ -35,13 +41,18 @@
 {{ $tabble }}
 </div> --}}
 
-                    <div>
-                    fhfdhdfhdf
-                        {{-- {{ $providerinfo }} --}}
-                    </div>
-                </div>
-            </div>
+        @if(Auth::check() && Auth::user()->role == 1)
+        <div>
+            {{ $tabble ?? '' }}
         </div>
+        @endif
+
+
+        <main>
+            {{ $slot }}
+        </main>
+
+    </div>
 </body>
 
 </html>
