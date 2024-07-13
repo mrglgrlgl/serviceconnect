@@ -44,11 +44,19 @@ class ServiceRequestController extends Controller
     // Validate the incoming request data
     $validatedData = $request->validate([
         'category' => 'required|string|max:255',
-        'subcategory' => 'required|string|max:255',
         'title' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
         'location' => 'required|string|max:255',
-        'start_time' => 'required|date',
-        'end_time' => 'required|date',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i',
+        'skill_tags' => 'required|string|max:255',
+        'provider_gender' => 'nullable|in:male,female',
+        'job_type' => 'required|in:project_based,hourly_rate',
+        'hourly_rate' => 'required|numeric|min:0',
+        'expected_price' => 'required|numeric|min:0',
+        'estimated_duration' => 'required|integer|min:0',
         'attach_media' => 'required|image|max:2048',
         'attach_media2' => 'nullable|image|max:2048',
         'attach_media3' => 'nullable|image|max:2048',
@@ -64,11 +72,19 @@ class ServiceRequestController extends Controller
     // Create new service request
     $serviceRequest = new ServiceRequest();
     $serviceRequest->category = $validatedData['category'];
-    $serviceRequest->subcategory = $validatedData['subcategory'];
     $serviceRequest->title = $validatedData['title'];
+    $serviceRequest->description = $validatedData['description'];
     $serviceRequest->location = $validatedData['location'];
+    $serviceRequest->start_date = $validatedData['start_date'];
+    $serviceRequest->end_date = $validatedData['end_date'];
     $serviceRequest->start_time = $validatedData['start_time'];
     $serviceRequest->end_time = $validatedData['end_time'];
+    $serviceRequest->skill_tags = $validatedData['skill_tags'];
+    $serviceRequest->provider_gender = $validatedData['provider_gender'];
+    $serviceRequest->job_type = $validatedData['job_type'];
+    $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
+    $serviceRequest->expected_price = $validatedData['expected_price'];
+    $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
     $serviceRequest->status = 'open'; // Default status
     $serviceRequest->user_id = auth()->id(); // Assuming the user is authenticated
     $serviceRequest->attach_media = $attachMediaPath;
@@ -93,11 +109,19 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'category' => 'required|string|max:255',
-        'subcategory' => 'required|string|max:255',
         'title' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
         'location' => 'required|string|max:255',
-        'start_time' => 'required|date',
-        'end_time' => 'required|date',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i',
+        'skill_tags' => 'required|string|max:255',
+        'provider_gender' => 'nullable|in:male,female',
+        'job_type' => 'required|in:project_based,hourly_rate',
+        'hourly_rate' => 'required|numeric|min:0',
+        'expected_price' => 'required|numeric|min:0',
+        'estimated_duration' => 'required|integer|min:0',
         'attach_media' => 'nullable|file|mimes:jpg,jpeg,png', // Adjust mime types as needed
         'attach_media2' => 'nullable|file|mimes:jpg,jpeg,png',
         'attach_media3' => 'nullable|file|mimes:jpg,jpeg,png',
@@ -106,11 +130,19 @@ public function update(Request $request, $id)
 
     $serviceRequest = ServiceRequest::findOrFail($id);
     $serviceRequest->category = $request->category;
-    $serviceRequest->subcategory = $request->subcategory;
     $serviceRequest->title = $request->title;
+    $serviceRequest->description = $request->description;
     $serviceRequest->location = $request->location;
+    $serviceRequest->start_date = $request->start_date;
+    $serviceRequest->end_date = $request->end_date;
     $serviceRequest->start_time = $request->start_time;
     $serviceRequest->end_time = $request->end_time;
+    $serviceRequest->skill_tags = $request->skill_tags;
+    $serviceRequest->provider_gender = $request->provider_gender;
+    $serviceRequest->job_type = $request->job_type;
+    $serviceRequest->hourly_rate = $request->hourly_rate;
+    $serviceRequest->expected_price = $request->expected_price;
+    $serviceRequest->estimated_duration = $request->estimated_duration;
 
     // Handle file uploads
     // if ($request->hasFile('attach_media')) {

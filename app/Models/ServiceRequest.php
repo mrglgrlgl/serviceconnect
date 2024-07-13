@@ -12,6 +12,7 @@ class ServiceRequest extends Model
         'category',
         'subcategory',
         'title',
+        'description',
         'location',
         'start_time',
         'end_time',
@@ -22,6 +23,12 @@ class ServiceRequest extends Model
         'provider_id',
         'user_id',
         'status',
+        'skill_tags',
+        'provider_gender',
+        'job_type',
+        'hourly_rate',
+        'expected_price',
+        'estimated_duration',
     ];
 
     public function user()

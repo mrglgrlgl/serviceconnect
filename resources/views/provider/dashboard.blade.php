@@ -1,30 +1,82 @@
-<x-dashboard>
-    <x-slot name="dashboardbar">
-        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden">
-            <div class="font-semibold text-3xl md:pb-4">{{ __('Dashboard') }}</div>
-            <div class="flex justify-center text-center w-full">
-                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                    <x-category-link :href="route('home')" class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl">
-                            {{ __('Service Requests') }}
-                        </div>
-                    </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl">
-                            {{ __('History') }}
-                        </div>
-                    </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl">
-                            {{ __('Archived') }}
-                        </div>
-                    </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl">
-                            {{ __('Analytics') }}
-                        </div>
-                    </x-category-link>
-                </div>
+<x-app-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Service Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+        .card-text {
+            margin-bottom: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 style="margin: 0;">Your Service Requests</h2>
             </div>
         </div>
 
@@ -90,4 +142,6 @@
             @endif
         </div>
     </div>
-</x-dashboard>
+</body>
+</html>
+</x-app-layout>
