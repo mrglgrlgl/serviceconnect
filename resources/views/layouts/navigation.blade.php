@@ -25,30 +25,6 @@
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
                 <div class="flex">
-<<<<<<< HEAD
-                    {{-- <div class="justify-center pt-2 px-8">
-                        <button
-                            class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
-                            {{ __('Create Service Request') }}
-                        </button>
-                    </div>
-                     --}}
- <div class="justify-center pt-2 px-8">
-    <a href="{{ route('service-requests.create') }}" class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
-        {{ __('Create Service Request') }}
-    </a>
-</div>
-
-
-
-
-                    <div class="justify-center pt-2 px-8">
-                        <a href="{{ route('become-provider') }}"
-                            class="h-11 mx-4 w-full justify-center text-sm rounded-lg bg-transparent border border-white text-white hover:border-gray-300 hover:text-gray-300">
-                            {{ __('Become a Provider') }}
-                        </a>
-                    </div>
-=======
                     @if (Auth::user()->role == '3')
                         {{-- Create Service Request button for seekers --}}
                         <div class="justify-center pt-2 px-8 md:pr-16">
@@ -59,7 +35,6 @@
                         </div>
                     @endif
                 
->>>>>>> 5cfce04c175a63e7acf85fb270bbaf94f2ac15ee
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
                         <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
@@ -184,10 +159,4 @@
         </div>
     </nav>
 </body>
-<<<<<<< HEAD
-
 </html>
-
-=======
-</html>
->>>>>>> 5cfce04c175a63e7acf85fb270bbaf94f2ac15ee
