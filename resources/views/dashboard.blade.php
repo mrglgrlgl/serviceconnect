@@ -29,7 +29,7 @@
         </div>
 
         <div class="flex justify-center">
-            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
+            <div class="border-t w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
         </div>
     </x-slot>
 
@@ -52,7 +52,7 @@
                                 <x-service-status :status="$serviceRequest->status" />
                             </div>
                             <div id="date" class="text-sm text-gray-600 md:mt-2">
-                                {{ $serviceRequest->start_time }} to {{ $serviceRequest->end_time }}
+                                {{ $serviceRequest->start_date }} {{ $serviceRequest->start_time }} to {{ $serviceRequest->end_date }} {{ $serviceRequest->end_time }}
                             </div>
                     </div>
 

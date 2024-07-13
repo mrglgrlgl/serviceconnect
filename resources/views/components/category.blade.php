@@ -4,13 +4,31 @@
     $icon = '';
     switch (strtolower($category)) {
         case 'carpentry':
-            $icon = 'construction';
+            $icon = 'carpenter';
             break;
         case 'plumbing':
             $icon = 'plumbing';
             break;
-        case 'cooking':
+        case 'welding':
+            $icon = 'head_mounted_device';
+            break;
+        case 'building_related':
+            $icon = 'construction';
+            break;
+        case 'electrical':
+            $icon = 'bolt';
+            break;
+        case 'food_service':
             $icon = 'restaurant';
+            break;
+        case 'stone_cutting_masonry':
+            $icon = 'masonry';
+            break;
+        case 'hairdressing':
+            $icon = 'self_care';
+            break;
+        case 'beauty_therapy':
+            $icon = 'spa';
             break;
         default:
             $icon = 'category'; // Default icon if the category does not match any case
