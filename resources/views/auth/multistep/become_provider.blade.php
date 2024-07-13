@@ -33,7 +33,7 @@
                     Service Category Details
                 </a>
                 <a class="text-center text-sm font-medium text-custom-dark-blue w-1/3">
-                    Step 3
+                    Upload Documents
                 </a>
             </div>
 
@@ -82,6 +82,7 @@
                     <x-input-label for="work_email" class="text-base text-custom-default-text">
                         {{ __('Work Email') }}
                     </x-input-label>
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     <div class="flex w-full">
                         <div class="rounded-l-lg border-r-none border border-gray-300 shadow-sm p-2">
                             <span class="material-symbols-outlined">mail</span>

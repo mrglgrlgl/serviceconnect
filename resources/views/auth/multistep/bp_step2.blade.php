@@ -26,7 +26,7 @@
                     Service Category Details
                 </a>
                 <a class="text-center text-sm font-medium text-custom-dark-blue w-1/3">
-                    Step 3
+                    Upload Documents
                 </a>
             </div>
 

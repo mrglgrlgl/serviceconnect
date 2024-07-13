@@ -1,79 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Service Request</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Create Service Request</h5>
+<x-dashboard>
+    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full md:w-5/12 mx-auto">
+        <div class="flex flex-col items-center">
+            <div class="text-2xl font-bold text-custom-light-blue">
+                {{ __('Create Service Request') }}
+            </div>
+
+            <div class="border-t my-4 w-full pb-6"></div>
+
+            <div class="w-full md:w-7/12 mx-auto space-y-6">
+                <form action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                            <x-text-input id="category" name="category" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
+                        </div>
+                        <div>
+                            <label for="subcategory" class="block text-sm font-medium text-gray-700">Subcategory</label>
+                            <x-text-input id="subcategory" name="subcategory" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="category" class="form-label">Category</label>
-                                <input type="text" class="form-control" id="category" name="category" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="subcategory" class="form-label">Subcategory</label>
-                                <input type="text" class="form-control" id="subcategory" name="subcategory" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
-                            </div>
 
-                            
-                            <div class="mb-3">
-                                <label for="location" class="form-label">Location</label>
-                                <input type="text" class="form-control" id="location" name="location" required>
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="start_time" class="form-label">Start Time</label>
-                                    <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="end_time" class="form-label">End Time</label>
-                                    <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="attach_media" class="form-label">Attach Media</label>
-                                <input type="file" class="form-control" id="attach_media" name="attach_media" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="attach_media2" class="form-label">Attach Media 2</label>
-                                <input type="file" class="form-control" id="attach_media2" name="attach_media2">
-                            </div>
-                            <div class="mb-3">
-                                <label for="attach_media3" class="form-label">Attach Media 3</label>
-                                <input type="file" class="form-control" id="attach_media3" name="attach_media3">
-                            </div>
-                            <div class="mb-3">
-                                <label for="attach_media4" class="form-label">Attach Media 4</label>
-                                <input type="file" class="form-control" id="attach_media4" name="attach_media4">
-                            </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg">Create Service Request</button>
-                            </div>
-                        </form>
+                    <div class="mb-6">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <x-text-input type="text" id="title" name="title" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
                     </div>
-                </div>
+
+                    <div class="mb-6">
+                        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                        <x-text-input type="text" id="location" name="location" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="description" name="description" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-gray-700">Start Time</label>
+                            <x-text-input type="datetime-local" id="start_time" name="start_time" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700">End Time</label>
+                            <x-text-input type="datetime-local" id="end_time" name="end_time" required class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md" />
+                        </div>
+                    </div>
+
+                    @foreach(range(1, 4) as $index)
+                        <div class="mb-6">
+                            <label for="attach_media{{ $index }}" class="block text-sm font-medium text-gray-700">Attach Media {{ $index }}</label>
+                            <input type="file" id="attach_media{{ $index }}" name="attach_media{{ $index }}" class="mt-1 block w-full border-gray-300 shadow-sm focus:ring-custom-light-blue focus:border-custom-light-blue sm:text-sm rounded-md">
+                        </div>
+                    @endforeach
+
+                    <div class="flex justify-center">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-custom-light-blue hover:bg-custom-light-blue-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-light-blue">Create Service Request</button>
+                    </div>
+                </form>
+
+                @if (session('success'))
+                    <div class="mt-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+</x-dashboard>
