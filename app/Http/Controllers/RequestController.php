@@ -94,6 +94,4 @@ class RequestController extends Controller
         // Redirect or return a response
         return redirect()->route('authorizer.dashboard')->with('success', 'Request declined successfully.');
     }
-
-    
 }
