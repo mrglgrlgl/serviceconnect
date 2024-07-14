@@ -27,7 +27,7 @@
 
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
-                        <x-nav-link class="text-slate-900" :href="route('dashboard')" :active="request()->routeIs('authorizer/dashboard')">
+                        <x-nav-link class="text-slate-900" :href="route('authorizer.dashboard')" :active="request()->routeIs('authorizer/dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
 
