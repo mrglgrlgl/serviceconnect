@@ -29,5 +29,8 @@ class ProviderDetail extends Model
     {
         return $this->belongsTo(RequestList::class, 'request_id', 'id');
     }
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

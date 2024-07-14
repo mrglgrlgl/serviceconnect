@@ -47,7 +47,7 @@ public function __construct(RequestController $requestController)
     {
         $request->validate([
             'service_category' => 'required|string',
-            'sub_category' => 'required|string',
+            // 'sub_category' => 'required|string',
             'description' => 'required|string',
             'have_tools' => 'nullable|boolean',
         ]);
@@ -59,7 +59,7 @@ public function __construct(RequestController $requestController)
     
         // Store validated data in session for the next step
         $request->session()->put('service_category', $request->service_category);
-        $request->session()->put('sub_category', $request->sub_category);
+        // $request->session()->put('sub_category', $request->sub_category);
         $request->session()->put('description', $request->description);
         $request->session()->put('have_tools', $request->input('have_tools', false));
     
@@ -84,7 +84,7 @@ public function __construct(RequestController $requestController)
             'work_email' => $request->session()->get('work_email'),
             'contact_number' => $request->session()->get('contact_number'),
             'service_category' => $request->session()->get('service_category'),
-            'sub_category' => $request->session()->get('sub_category'),
+            // 'sub_category' => $request->session()->get('sub_category'),
             'description' => $request->session()->get('description'),
             'have_tools' => $request->session()->get('have_tools'),
             'request_id' => $request->session()->get('request_id'),
@@ -94,78 +94,136 @@ public function __construct(RequestController $requestController)
         return view('auth.multistep.bp_step3', compact('sessionData'));
     }
 
-    public function saveStep3(Request $request)
-    {
-        // Retrieve session data from steps 1, 2, and 3
-        $sessionData = [
-            'work_email' => $request->session()->get('work_email'),
-            'contact_number' => $request->session()->get('contact_number'),
-            'service_category' => $request->session()->get('service_category'),
-            'sub_category' => $request->session()->get('sub_category'),
-            'description' => $request->session()->get('description'),
-            'have_tools' => $request->session()->get('have_tools'),
-            'request_id' => $request->session()->get('request_id'),
-        ];
+//     public function saveStep3(Request $request)
+//     {
+//         // Retrieve session data from steps 1, 2, and 3
+//         $sessionData = [
+//             'work_email' => $request->session()->get('work_email'),
+//             'contact_number' => $request->session()->get('contact_number'),
+//             'service_category' => $request->session()->get('service_category'),
+//             // 'sub_category' => $request->session()->get('sub_category'),
+//             'description' => $request->session()->get('description'),
+//             'have_tools' => $request->session()->get('have_tools'),
+//             'request_id' => $request->session()->get('request_id'),
+//         ];
     
-        // Validate session data
-        if (!$this->validateSessionData($sessionData)) {
-            return redirect()->back()->with('error', 'Missing required session data.');
-        }
+//         // Validate session data
+//         if (!$this->validateSessionData($sessionData)) {
+//             return redirect()->back()->with('error', 'Missing required session data.');
+//         }
     
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'government_id_front' => 'required|image|max:2048',
-            'government_id_back' => 'required|image|max:2048',
-            'nbi_clearance' => 'nullable|image|max:2048',
-            'tesda_certification' => 'nullable|image|max:2048',
-            'other_credentials' => 'nullable|image|max:2048',
-        ]);
+//         // Validate the incoming request data
+//         $validatedData = $request->validate([
+//             'government_id_front' => 'required|image|max:2048',
+//             'government_id_back' => 'required|image|max:2048',
+//             'nbi_clearance' => 'nullable|image|max:2048',
+//             'tesda_certification' => 'nullable|image|max:2048',
+//             'other_credentials' => 'nullable|image|max:2048',
+//         ]);
     
-        // Store uploaded files
-        // $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents');
-        // $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents');
-        // $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents') : null;
-        // $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents') : null;
-        // $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents') : null;
+//         // Store uploaded files
+//         // $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents');
+//         // $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents');
+//         // $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents') : null;
+//         // $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents') : null;
+//         // $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents') : null;
     
 
-// Store uploaded files
-$governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents', 'public');
-$governmentIdBackPath = $request->file('government_id_back')->store('provider/documents', 'public');
-$nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents', 'public') : null;
-$tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents', 'public') : null;
-$otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents', 'public') : null;
+// // Store uploaded files
+// $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents', 'public');
+// $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents', 'public');
+// $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents', 'public') : null;
+// $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents', 'public') : null;
+// $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents', 'public') : null;
 
 
-        // Create ProviderDetail instance
-        $providerDetail = new ProviderDetail();
-        $providerDetail->work_email = $sessionData['work_email'];
-        $providerDetail->contact_number = $sessionData['contact_number'];
-        $providerDetail->serviceCategory = $sessionData['service_category'];
-        $providerDetail->subcategory = $sessionData['sub_category'];
-        $providerDetail->description = $sessionData['description'];
-        $providerDetail->have_tools = $sessionData['have_tools'];
-        $providerDetail->government_id_front = $governmentIdFrontPath;
-        $providerDetail->government_id_back = $governmentIdBackPath;
-        $providerDetail->nbi_clearance = $nbiClearancePath;
-        $providerDetail->tesda_certification = $tesdaCertificationPath;
-        $providerDetail->other_credentials = $otherCredentialsPath;
-        $providerDetail->request_id = $sessionData['request_id'];
-        $providerDetail->save();
+//         // Create ProviderDetail instance
+//         $providerDetail = new ProviderDetail();
+//         $providerDetail->work_email = $sessionData['work_email'];
+//         $providerDetail->contact_number = $sessionData['contact_number'];
+//         $providerDetail->serviceCategory = $sessionData['service_category'];
+//         // $providerDetail->subcategory = $sessionData['sub_category'];
+//         $providerDetail->description = $sessionData['description'];
+//         $providerDetail->have_tools = $sessionData['have_tools'];
+//         $providerDetail->government_id_front = $governmentIdFrontPath;
+//         $providerDetail->government_id_back = $governmentIdBackPath;
+//         $providerDetail->nbi_clearance = $nbiClearancePath;
+//         $providerDetail->tesda_certification = $tesdaCertificationPath;
+//         $providerDetail->other_credentials = $otherCredentialsPath;
+//         $providerDetail->request_id = $sessionData['request_id'];
+//         $providerDetail->save();
     
-        // Clear session data
-        $request->session()->forget(['work_email', 'contact_number', 'service_category', 'sub_category', 'description', 'have_tools', 'request_id']);
+//         // Clear session data
+//         $request->session()->forget(['work_email', 'contact_number', 'service_category', 'description', 'have_tools', 'request_id']);
     
-        return redirect()->route('dashboard')->with('success', 'Provider details saved successfully.');
+//         return redirect()->route('home')->with('success', 'Provider details saved successfully.');
+//     }
+public function saveStep3(Request $request)
+{
+    // Retrieve session data from steps 1, 2, and 3
+    $sessionData = [
+        'work_email' => $request->session()->get('work_email'),
+        'contact_number' => $request->session()->get('contact_number'),
+        'service_category' => $request->session()->get('service_category'),
+        // 'sub_category' => $request->session()->get('sub_category'),
+        'description' => $request->session()->get('description'),
+        'have_tools' => $request->session()->get('have_tools'),
+        'request_id' => $request->session()->get('request_id'),
+    ];
+
+    // Validate session data
+    if (!$this->validateSessionData($sessionData)) {
+        return redirect()->back()->with('error', 'Missing required session data.');
     }
-    
+
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'government_id_front' => 'required|image|max:2048',
+        'government_id_back' => 'required|image|max:2048',
+        'nbi_clearance' => 'nullable|image|max:2048',
+        'tesda_certification' => 'nullable|image|max:2048',
+        'other_credentials' => 'nullable|image|max:2048',
+    ]);
+
+    // Store uploaded files
+    $governmentIdFrontPath = $request->file('government_id_front')->store('provider/documents', 'public');
+    $governmentIdBackPath = $request->file('government_id_back')->store('provider/documents', 'public');
+    $nbiClearancePath = $request->file('nbi_clearance') ? $request->file('nbi_clearance')->store('provider/documents', 'public') : null;
+    $tesdaCertificationPath = $request->file('tesda_certification') ? $request->file('tesda_certification')->store('provider/documents', 'public') : null;
+    $otherCredentialsPath = $request->file('other_credentials') ? $request->file('other_credentials')->store('provider/documents', 'public') : null;
+
+    // Create ProviderDetail instance
+    $providerDetail = new ProviderDetail();
+    $providerDetail->work_email = $sessionData['work_email'];
+    $providerDetail->contact_number = $sessionData['contact_number'];
+    $providerDetail->serviceCategory = $sessionData['service_category'];
+    // $providerDetail->subcategory = $sessionData['sub_category'];
+    $providerDetail->description = $sessionData['description'];
+    $providerDetail->have_tools = $sessionData['have_tools'];
+    $providerDetail->government_id_front = $governmentIdFrontPath;
+    $providerDetail->government_id_back = $governmentIdBackPath;
+    $providerDetail->nbi_clearance = $nbiClearancePath;
+    $providerDetail->tesda_certification = $tesdaCertificationPath;
+    $providerDetail->other_credentials = $otherCredentialsPath;
+    $providerDetail->request_id = $sessionData['request_id'];
+
+    // Assign the current authenticated user's ID to the provider detail
+    $providerDetail->provider_id = auth()->id();
+
+    $providerDetail->save();
+
+    // Clear session data
+    $request->session()->forget(['work_email', 'contact_number', 'service_category', 'description', 'have_tools', 'request_id']);
+
+    return redirect()->route('home')->with('success', 'Provider details saved successfully.');
+}
     protected function validateSessionData(array $sessionData)
     {
         // Validate session data and return true if all required data is present
         return !empty($sessionData['work_email']) &&
                !empty($sessionData['contact_number']) &&
                !empty($sessionData['service_category']) &&
-               !empty($sessionData['sub_category']) &&
+            //    !empty($sessionData['sub_category']) &&
                !empty($sessionData['description']) &&
                !empty($sessionData['request_id']);
     }
