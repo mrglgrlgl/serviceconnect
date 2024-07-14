@@ -63,6 +63,8 @@ class ServiceRequestController extends Controller
         'attach_media4' => 'nullable|image|max:2048',
     ]);
 
+    
+
     // Store uploaded files in 'service_requests/documents' folder
     $attachMediaPath = $request->file('attach_media')->store('service_requests/documents', 'public');
     $attachMedia2Path = $request->file('attach_media2') ? $request->file('attach_media2')->store('service_requests/documents', 'public') : null;
@@ -144,6 +146,7 @@ public function update(Request $request, $id)
     $serviceRequest->expected_price = $request->expected_price;
     $serviceRequest->estimated_duration = $request->estimated_duration;
 
+    
     // Handle file uploads
     // if ($request->hasFile('attach_media')) {
     //     // Delete existing file if remove checkbox is checked
@@ -161,6 +164,7 @@ public function update(Request $request, $id)
     $serviceRequest->save();
 
     return redirect()->route('dashboard')->with('success', 'Service Request updated successfully!');
+    
 }
 
 public function destroy($service_request = null)

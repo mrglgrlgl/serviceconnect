@@ -38,10 +38,27 @@
                             {{ __('Home') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
-                        
+                         --}}
+                          {{-- <x-nav-link :href="Auth::user()->role == '2' ? route('provider.dashboard') : route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link> --}}
+
+                          @if (Auth::user()->role == '2')
+                            <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                        @elseif (Auth::user()->role == '1')
+                            <x-nav-link :href="route('authorizer.dashboard')" :active="request()->routeIs('authorizer.dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                        @else
+                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-nav-link>
+                        @endif
                         <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
                         </x-nav-link>

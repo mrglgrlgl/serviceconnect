@@ -26,7 +26,7 @@
         <div class="bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-9 gap-4 p-4 bg-gray-200">
                 <div class="col-span-1 font-semibold text-sm">Date</div>
-                <div class="col-span-1 font-semibold text-sm">Service Category and Subcategory</div>
+                <div class="col-span-1 font-semibold text-sm">Category and Subcategory</div>
                 <div class="col-span-1 font-semibold text-sm">Name</div>
                 <div class="col-span-1 font-semibold text-sm">Contact Information</div>
                 <div class="col-span-2 font-semibold text-sm">Description</div>

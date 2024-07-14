@@ -115,7 +115,10 @@ Route::get('/service-requests/{id}/edit', 'ServiceRequestController@edit')->name
 Route::delete('/service-requests/{id}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
+// routes/web.php
+
 
 }); 
+
 
 require __DIR__.'/auth.php';

@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ServiceRequest::class);
     }
+
+    public static function getByRole(int $roleNumber)
+    {
+        return static::where('role', $roleNumber)->get();
+    }
 }
