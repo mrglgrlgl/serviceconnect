@@ -24,15 +24,17 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-                <div class="flex">
-                    @if (Auth::user()->role == '3')
-                        {{-- Create Service Request button for seekers --}}
-                        <div class="justify-center pt-2 px-8 md:pr-16">
-                            <button :href="route('dashboard')"
-                                class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent ">
-                                {{ __('Create Service Request') }}
-                            </button>
-                        </div>
+              <div class="flex">
+    @if (Auth::user()->role == '3')
+        {{-- Create Service Request button for seekers --}}
+        <div class="justify-center pt-2 px-8 md:pr-16">
+            <a href="{{ route('layouts.modal') }}"
+                class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center justify-center">
+                {{ __('Create Service Request') }}
+            </a>
+        </div>
+
+
                     @endif
                 
                     <!-- Navigation Links -->

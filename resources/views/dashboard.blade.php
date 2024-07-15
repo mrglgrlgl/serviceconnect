@@ -47,7 +47,6 @@
         </div> 
     </div>
 </x-dashboard>
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\ServiceRequestController;
 use App\Http\Controllers\Auth\ProviderSRController;
+use App\Http\Controllers\Auth\BidController;
 
 
 Route::get('/', function (){
@@ -115,6 +116,8 @@ Route::delete('/service-requests/{id}', [ServiceRequestController::class, 'destr
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
 // routes/web.php
+
+Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
 
 
 }); 
