@@ -35,5 +35,9 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+    public function bids()
+{
+    return $this->hasMany(Bid::class);
+}
+
 }
