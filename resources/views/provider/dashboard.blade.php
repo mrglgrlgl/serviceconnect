@@ -80,12 +80,21 @@
             <div class="card-header">
                 <h2 style="margin: 0;">Your Service Requests</h2>
             </div>
-            <div class="card-body">
-                @if ($serviceRequests->isEmpty())
-                    <div class="alert-info">
-                        No service requests found.
-                    </div>
-                @else
+        </div>
+
+        <div class="flex justify-center">
+            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto ">
+            @if ($serviceRequests->isEmpty())
+                <div class="alert-info">
+                    No service requests found.
+                </div>
+            @else
+                <div class="">
                     @foreach ($serviceRequests as $serviceRequest)
                         <div class="card">
                             <div class="card-body">
@@ -142,8 +151,8 @@
                             </div>
                         </div>
                     @endforeach
-                @endif
-            </div>
+                </div>
+            @endif
         </div>
     </div>
 

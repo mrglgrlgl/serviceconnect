@@ -75,6 +75,7 @@ Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept
 Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
 
 
+
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  

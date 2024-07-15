@@ -7,14 +7,14 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body>
-    <nav x-data="{ open: false, dropdownOpen: false }" class="bg-custom-light-blue border-b border-gray-100">
+    <nav x-data="{ open: false, dropdownOpen: false }" class="bg-gray-300 border-gray-100">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <!-- Left Side: Logo -->
                 <div class="flex items-center">
                     <div class="shrink-0">
-                        <a href="{{ route('dashboard') }}">
+                        <a>
                             <img class="h-8 w-auto" src="{{ asset('..\images\horizontal-logo.png') }}" alt="Your Company">
                         </a>
                     </div>
@@ -27,8 +27,7 @@
 
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
-                        
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link class="text-slate-900" :href="route('authorizer.dashboard')" :active="request()->routeIs('authorizer/dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
 
@@ -46,7 +45,7 @@
                         @endif
                     </div>
 
-                <x-nav-link :href="route('logout')" class="md:pl-6 text-red-300">
+                <x-nav-link :href="route('logout')" class="md:pl-6 text-red-500">
                     {{ __('Logout') }}
                 </x-nav-link>
 

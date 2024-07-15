@@ -1,29 +1,25 @@
 <x-dashboard>
-    {{-- <x-service-request-create id="serviceRequestModal" /> --}}
-
     <x-slot name="dashboardbar">
         <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden">
             <div class="font-semibold text-3xl md:pb-4">{{ __('Dashboard') }}</div>
             <div class="flex justify-center text-center w-full">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                    {{--  Categories --}}
-                    {{-- Insert routes per individual x-category link--}}
-                    <x-category-link :href="route('home')" class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                    <x-category-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue focus:border-cyan-600">
                         <div class="flex flex-col items-center text-base md:text-xl">
                             {{ __('Service Requests') }}
                         </div>
                     </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue focus:border-cyan-600">
                         <div class="flex flex-col items-center text-base md:text-xl">
                             {{ __('History') }}
                         </div>
                     </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue focus:border-cyan-600">
                         <div class="flex flex-col items-center text-base md:text-xl">
                             {{ __('Archived') }}
                         </div>
                     </x-category-link>
-                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue focus:border-cyan-600">
                         <div class="flex flex-col items-center text-base md:text-xl">
                             {{ __('Analytics') }}
                         </div>
@@ -33,39 +29,73 @@
         </div>
 
         <div class="flex justify-center">
-            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
+            <div class="border-t w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 font-medium">
-                    <x-service-request-individual/>
+        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto ">
+            @if ($serviceRequests->isEmpty())
+                <div class="alert-info">
+                    No service requests found.
                 </div>
-            </div>
-        </div> 
+            @else
+    
+                    @foreach ($serviceRequests as $serviceRequest)
+                    <div class="servicerequestindividual p-4 bg-white shadow-sm rounded-lg md:mb-4">
+                        <div class="flex justify-between items-start mb-4">
+                            <div id="category" class="flex flex-col items-start">
+                                <div class="flex items-center">
+                                    <x-category :category="$serviceRequest->category" class="mr-2" />
+                                    <span class="text-gray-700"> - {{ $serviceRequest->subcategory }}</span>
+                                </div>
+                                <x-service-status :status="$serviceRequest->status" />
+                            </div>
+                            <div id="date" class="text-sm text-gray-600 md:mt-2">
+                                {{ $serviceRequest->start_date }} {{ $serviceRequest->start_time }} to {{ $serviceRequest->end_date }} {{ $serviceRequest->end_time }}
+                            </div>
+                    </div>
+
+                            <div class="mt-4 text-center">
+                                <div class="font-semibold text-xl mb-2">
+                                    {{ $serviceRequest->title }}
+                                </div>
+
+                                <div id="requestdesc" class="mb-4">
+                                    {{ $serviceRequest->description }}
+                                </div>
+
+                                <div id="requestimg" class="mb-4">
+                                    {{-- Request image here --}}
+                                </div>
+
+                                <div class="flex flex-col md:flex-row justify-center items-center md:space-x-2 space-y-2 md:space-y-0">
+                                    <x-outline-button href="{{ route('service-requests.edit', $serviceRequest) }}" class="flex-1 md:flex-none w-full md:w-auto">
+                                        Edit
+                                    </x-outline-button>
+                                    <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-danger-button class="flex-1 md:flex-none w-full md:w-auto" onclick="return confirm('Are you sure you want to delete this service request?')">
+                                            Delete
+                                        </x-danger-button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="flex justify-end font-semibold text-custom-light-blue">
+                                Bids >
+                            </div>
+                        </div>
+                    @endforeach
+            @endif
+        </div>
     </div>
+</div>
 </x-dashboard>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Dashboard</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        .card-img-top {
-            max-height: 200px; /* Adjust max-height as needed */
-            object-fit: cover;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-4">
+
+    
+    
+    {{-- <div class="container mt-4">
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -132,4 +162,52 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-</html>
+</html> --}}
+{{-- <x-dashboard>
+
+
+    <x-slot name="dashboardbar">
+        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden">
+            <div class="font-semibold text-3xl md:pb-4">{{ __('Dashboard') }}</div>
+            <div class="flex justify-center text-center w-full">
+                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+
+                    <x-category-link :href="route('home')" class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl">
+                            {{ __('Service Requests') }}
+                        </div>
+                    </x-category-link>
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl">
+                            {{ __('History') }}
+                        </div>
+                    </x-category-link>
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl">
+                            {{ __('Archived') }}
+                        </div>
+                    </x-category-link>
+                    <x-category-link class="inline-block hover:border-custom-lightest-blue border-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl">
+                            {{ __('Analytics') }}
+                        </div>
+                    </x-category-link>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-center">
+            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center"></div>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 font-medium">
+                    <x-service-request-individual/>
+                </div>
+            </div>
+        </div> 
+    </div>
+</x-dashboard> --}}
