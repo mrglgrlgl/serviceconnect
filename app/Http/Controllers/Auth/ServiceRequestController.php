@@ -108,7 +108,16 @@ public function showDashboard()
 
 
 public function update(Request $request, $id)
-{
+{       
+        // Find the existing service request
+        $serviceRequest = ServiceRequest::findOrFail($id);
+
+        // Set default values for start_time and end_time to existing ones if not present in the request
+        $request->merge([
+            'start_time' => $request->input('start_time', $serviceRequest->start_time),
+            'end_time' => $request->input('end_time', $serviceRequest->end_time),
+        ]);
+
     $request->validate([
         'category' => 'required|string|max:255',
         'title' => 'required|string|max:255',
@@ -116,8 +125,8 @@ public function update(Request $request, $id)
         'location' => 'required|string|max:255',
         'start_date' => 'required|date',
         'end_date' => 'required|date',
-        'start_time' => 'required|date_format:h:i A',
-        'end_time' => 'required|date_format:h:i A',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i',
         'skill_tags' => 'required|string|max:255',
         'provider_gender' => 'nullable|in:male,female',
         'job_type' => 'required|in:project_based,hourly_rate',
@@ -130,15 +139,22 @@ public function update(Request $request, $id)
         'attach_media4' => 'nullable|file|mimes:jpg,jpeg,png',
     ]);
 
-    $serviceRequest = ServiceRequest::findOrFail($id);
+
     $serviceRequest->category = $request->category;
     $serviceRequest->title = $request->title;
     $serviceRequest->description = $request->description;
     $serviceRequest->location = $request->location;
     $serviceRequest->start_date = $request->start_date;
     $serviceRequest->end_date = $request->end_date;
-    $serviceRequest->start_time = $request->start_time;
-    $serviceRequest->end_time = $request->end_time;
+    
+
+    // Convert start_time and end_time to 24-hour format before saving
+    $serviceRequest->start_time = \Carbon\Carbon::createFromFormat('H:i', $request->start_time)->format('H:i:s');
+    $serviceRequest->end_time = \Carbon\Carbon::createFromFormat('H:i', $request->end_time)->format('H:i:s');
+
+
+    // $serviceRequest->start_time = $request->start_time;
+    // $serviceRequest->end_time = $request->end_time;
     $serviceRequest->skill_tags = $request->skill_tags;
     $serviceRequest->provider_gender = $request->provider_gender;
     $serviceRequest->job_type = $request->job_type;

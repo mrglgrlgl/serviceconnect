@@ -52,9 +52,9 @@
                                 <x-service-status :status="$serviceRequest->status" />
                             </div>
                             <div id="date" class="text-sm text-gray-600 md:mt-2">
-                                {{ $serviceRequest->start_date }} {{ $serviceRequest->start_time }} to {{ $serviceRequest->end_date }} {{ $serviceRequest->end_time }}
+                                {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('m/d/Y') }} {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} to {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('m/d/Y') }} {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
                             </div>
-                    </div>
+                        </div>
 
                             <div class="mt-4 text-center">
                                 <div class="font-semibold text-xl mb-2">
