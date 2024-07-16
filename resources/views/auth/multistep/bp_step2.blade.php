@@ -69,11 +69,17 @@
                     <x-input-label for="description" class="text-base md:text-base text-custom-dark-blue">Description</x-input-label>
                     <textarea class="form-control rounded border border-gray-300 shadow-sm resize-none focus:ring-custom-light-blue w-full md:h-48 p-2" id="description" name="description" rows="4" required></textarea>
                 </div>
+                @error('description')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
 
                 <div class="form-group flex flex-col items-start">
                     <x-input-label for="years_of_experience" class="text-base md:text-base text-custom-dark-blue">Years of Experience</x-input-label>
                     <x-text-input type="number" class="form-control w-full" id="years_of_experience" name="years_of_experience" required />
                 </div>
+                @error('years_of_experience')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
 
                 <div class="form-group flex flex-col items-start">
                     <x-input-label for="have_tools" class="text-base md:text-base text-custom-dark-blue">Do you have tools/equipment?</x-input-label>
@@ -84,6 +90,7 @@
                         <label class="form-check-label" for="have_tools_no">No</label>
                     </div>
                 </div>
+                
 
                 <div class="flex justify-center pt-6">
                     <x-primary-button type="submit" class="rounded-md px-8 text-lg font-medium text-white">Next</x-primary-button>

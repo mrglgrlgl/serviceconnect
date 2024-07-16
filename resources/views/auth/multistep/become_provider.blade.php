@@ -91,6 +91,9 @@
                             <x-provider-edit-input id="work_email" name="work_email" />
                         </div>
                     </div>
+                    @error('work_email')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
                 </div>
 
                 <div class="flex flex-col items-start">
@@ -105,6 +108,9 @@
                             <x-provider-edit-input id="contact_number" name="contact_number" />
                         </div>
                     </div>
+                    @error('contact_number')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
                 </div>
 
                 <div class="flex justify-center pt-6">

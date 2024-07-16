@@ -48,7 +48,7 @@
 
                           @if (Auth::user()->role == '2')
                             <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
-                                {{ __('Dashboard') }}
+                                {{ __('Service Request') }}
                             </x-nav-link>
                         @elseif (Auth::user()->role == '1')
                             <x-nav-link :href="route('authorizer.dashboard')" :active="request()->routeIs('authorizer.dashboard')">
@@ -56,7 +56,7 @@
                             </x-nav-link>
                         @else
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                {{ __('Dashboard') }}
+                                {{ __('Service Requests') }}
                             </x-nav-link>
                         @endif
                         <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">

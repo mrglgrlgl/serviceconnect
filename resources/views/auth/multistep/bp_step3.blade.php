@@ -59,12 +59,18 @@
                 <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_front" name="government_id_front" required onchange="previewImage(event, 'government_id_front_preview')">
                 <img id="government_id_front_preview" class="img-preview" src="#" alt="Government ID Front Preview" style="display: none;">
             </div>
+            @error('government_id_front')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
 
             <div class="form-group mb-4">
                 <label for="government_id_back" class="block text-gray-700">Government ID (Back)</label>
                 <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_back" name="government_id_back" required onchange="previewImage(event, 'government_id_back_preview')">
                 <img id="government_id_back_preview" class="img-preview" src="#" alt="Government ID Back Preview" style="display: none;">
             </div>
+            @error('government_id_back')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
 
             <div class="form-group mb-4">
                 <label for="nbi_clearance" class="block text-gray-700">NBI Clearance (optional)</label>
