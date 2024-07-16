@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'cell_no'=>['required','integer'],
+            'cell_no' => ['required', 'integer'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => ['required', 'string', 'max:255'],
             'birth_date_month' => ['integer', 'max:12'],
@@ -46,15 +46,26 @@ class RegisteredUserController extends Controller
         ]);
 
         $birth_date = $request->input('birth_date_year') . '-' . str_pad($request->input('birth_date_month'), 2, '0', STR_PAD_LEFT) . '-' . str_pad($request->input('birth_date_day'), 2, '0', STR_PAD_LEFT);
-        
-        $user = User::create([
+
+        $userData = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'cell_no' => $request->cell_no,
             'password' => Hash::make($request->password),
             'gender' => $request->input('gender'),
             'birth_date' => $birth_date,
-        ]);
+        ];
+
+        // Check if the user's role is set in the session
+        if ($request->session()->has('user_role')) {
+            $userData['role'] = $request->session()->get('user_role');
+            $request->session()->forget('user_role');
+        } else {
+            $userData['role'] = 3; // Default role if not set
+        }
+
+        // Create the user
+        $user = User::create($userData);
 
         event(new Registered($user));
 
@@ -62,6 +73,14 @@ class RegisteredUserController extends Controller
 
         // Redirect to the address form after successful registration
         return redirect()->route('address.create', ['userId' => $user->id]);
-        
+    }
+
+    public function registerAs(Request $request)
+    {
+        if ($request->has('role') && $request->input('role') === 'provider') {
+            $request->session()->put('user_role', 2); // Role 2 for providers
+            return redirect()->route('register');
+        }
+        return view('auth.registerAs');
     }
 }
