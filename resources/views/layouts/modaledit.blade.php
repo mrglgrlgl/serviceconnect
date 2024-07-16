@@ -52,15 +52,15 @@
                         <div>
                             <label for="start_time" class="form-label">Start Time</label>
                             <x-text-input type="time" id="start_time" name="start_time" :value="$serviceRequest->start_time" class="mt-1 block w-full sm:text-sm rounded-md" />
-                                                            @error('start_time')
+                            @error('start_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
+                    
                         <div>
                             <label for="end_time" class="form-label">End Time</label>
                             <x-text-input type="time" id="end_time" name="end_time" :value="$serviceRequest->end_time" class="mt-1 block w-full sm:text-sm rounded-md" />
-                                @error('end_time')
+                            @error('end_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
