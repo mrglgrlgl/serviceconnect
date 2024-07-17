@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ServiceRequest extends Model
 {
@@ -40,4 +41,15 @@ class ServiceRequest extends Model
     return $this->hasMany(Bid::class);
 }
 
+// FIX try for time update
+public function getStartTimeAttribute($value)
+{
+    return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+}
+
+// Accessor for end_time
+public function getEndTimeAttribute($value)
+{
+    return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+}
 }

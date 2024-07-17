@@ -11,12 +11,33 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\ServiceRequestController;
 use App\Http\Controllers\Auth\ProviderSRController;
 use App\Http\Controllers\Auth\BidController;
-
-
+use Illuminate\Http\Request;
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::get('/', function (){
     return view('welcome');
 });
 
+Route::get('/register', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->name('register');
+
+Route::get('/register/provider', function (Request $request) {
+    $request->session()->put('user_role', 2); // Set role 2 for providers in session
+    return redirect()->route('register');
+})->name('register.provider');
+
+Route::get('/register-as', [App\Http\Controllers\Auth\RegisteredUserController::class, 'registerAs'])->name('registerAs');
+
+Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->name('register');
+
+Route::post('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'store']);
+
+
+Route::get('/register-as', function () {
+    return view('auth.registerAs');
+})->name('registerAs');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified','normal'])->name('dashboard');
@@ -75,7 +96,6 @@ Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept
 Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
 
 
-
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  
@@ -117,7 +137,6 @@ Route::delete('/service-requests/{id}', [ServiceRequestController::class, 'destr
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
 // routes/web.php
-
 Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
 
 

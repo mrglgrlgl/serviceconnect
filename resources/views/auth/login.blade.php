@@ -55,12 +55,19 @@
         <!-- Sign Up Section on the Right -->
         <div class="md:col-span-1 order-2 md:order-2 p-6 rounded-b-lg md:rounded-none flex flex-col justify-center items-center">
             <div class="text-center justify-center">
-                <div class="border-t my-4 relative text-center"></div>
+
                 <div class="pb-2">
                     <span class="justify-center px-2 text-custom-header text-xl">Don't have an account?</span>
                 </div>
-                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white">
-                    {{ __('Sign up') }}
+                <div class="pb-8">
+                    <span class="justify-center px-2 text-custom-header text-xl">Register as a</span>
+                </div>
+                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white hover:bg-custom-lightest-blue">
+                    {{ __('Seeker') }}
+                </x-primary-button>
+                <div class="border-t my-4 relative text-center"></div>
+                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white hover:bg-custom-light-blue">
+                    {{ __('Provider') }}
                 </x-primary-button>
             </div>
         </div>
