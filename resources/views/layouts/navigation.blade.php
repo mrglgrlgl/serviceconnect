@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body>
-    <nav x-data="{ open: false, dropdownOpen: false }" class="bg-custom-light-blue border-b border-gray-100">
+    <nav x-data="{ open: false, dropdownOpen: false }" class="border-b border-gray-300 bg-gray-100 border">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -22,15 +22,15 @@
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
                 <div class="flex">
-                    @if (Auth::user()->role == '3')
-                        {{-- Create Service Request button for seekers --}}
+                    {{-- @if (Auth::user()->role == '3')
+
                         <div class="justify-center pt-2 px-8 md:pr-16">
                             <a href="{{ route('service-requests.create') }}"
                                class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center">
                                 {{ __('Create Service Request') }}
                             </a>
                         </div>
-                    @endif
+                    @endif --}}
                 
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">

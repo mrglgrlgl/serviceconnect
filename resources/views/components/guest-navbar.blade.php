@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-custom-light-blue border-b border-gray-100">
+<nav x-data="{ open: false }" class=" border-b-gray-300 bg-gray-100 border">
     <!-- Primary Navigation Menu -->
     <div class=" mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -27,12 +27,12 @@
             </x-nav-link> -->
 
             <!-- Sign up link -->
-            <x-nav-link :href="route('register')" class="text-white" :active="request()->routeIs('register')">
+            <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
                 {{ __('Sign Up') }}
             </x-nav-link>
 
             <!-- Login link -->
-            <x-nav-link :href="route('login')" class="text-white" :active="request()->routeIs('login')">
+            <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
                 {{ __('Login') }}
             </x-nav-link>
             <!-- Add more right-aligned navigation links here -->

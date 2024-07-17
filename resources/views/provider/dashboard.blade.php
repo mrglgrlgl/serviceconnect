@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="w-full md:w-11/12 lg:w-9/12 xl:w-9/12 2xl:w-9/12 mx-auto">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
 
             @if ($serviceRequests->isEmpty())
                 <div class="bg-blue-100 text-blue-800 p-4 rounded mb-6">
@@ -8,58 +8,64 @@
                 </div>
             @else
                 @foreach ($serviceRequests as $serviceRequest)
-                    <div class="p-4 bg-white shadow-sm rounded-lg md:mb-4">
+                    <div class="p-4 border border-gray-300 shadow-sm rounded-lg md:mb-4">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-center space-x-2">
-                                <x-category :category="$serviceRequest->category" class="mr-2" />
-                                <span class="text-gray-700 font-semibold">{{ $serviceRequest->title }}</span>
-                                <span class="text-gray-700">- {{ $serviceRequest->user->name }}</span>
+                                <x-category :category="$serviceRequest->category" class="mr-2 text-gray-900" />
+                                <span class="text-gray-900 font-semibold">{{ $serviceRequest->title }}</span>
+                                <span class="text-gray-900">- {{ $serviceRequest->user->name }}</span>
                             </div>
+
                             <div class="text-sm text-gray-600 md:mt-2">
                                 {{ $serviceRequest->start_date }} {{ $serviceRequest->start_time }} to {{ $serviceRequest->end_date }} {{ $serviceRequest->end_time }}
                             </div>
+
                         </div>
 
-                        <div class="flex items-start">
+
+                        <div class="flex items-start px-8">
                             <div class="flex-1">
-                                <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined mr-1">
-                                        location_on
-                                    </span>
-                                    <strong>Location:</strong> {{ $serviceRequest->location }}
-                                </div>
-                                <div class="p-2"><strong>Description:</strong> {{ $serviceRequest->description }}</div>
-                            </div>
-                            <div class="ml-4">
-                                <div class="flex items-center p-2">
+                                <div class ="flex text-gray-700">
+                                <div class="flex items-center p-2 pr-4">
                                     <span class="material-symbols-outlined mr-1">
                                         work
                                     </span>
-                                    <strong>Job Type:</strong> {{ $serviceRequest->job_type }}
+                                    {{ $serviceRequest->job_type }}
                                 </div>
                                 @if ($serviceRequest->job_type == 'hourly_rate')
-                                    <div class="flex items-center p-2">
-                                        <span class="material-symbols-outlined mr-1">
-                                            request_quote
-                                        </span>
-                                        <strong>Hourly Rate:</strong> {{ $serviceRequest->hourly_rate }}
-                                    </div>
-                                @elseif ($serviceRequest->job_type == 'project_based')
-                                    <div class="flex items-center p-2">
-                                        <span class="material-symbols-outlined mr-1">
-                                            request_quote
-                                        </span>
-                                        <strong>Expected Price:</strong> {{ $serviceRequest->expected_price }}
-                                    </div>
-                                @endif
-                                <div class="flex items-center p-2">
+                                <div class="pr-4">
                                     <span class="material-symbols-outlined mr-1">
-                                        hourglass_bottom
+                                        request_quote
                                     </span>
-                                    <strong>Estimated Duration:</strong> {{ $serviceRequest->estimated_duration }}
+                                    Hourly Rate: {{ $serviceRequest->hourly_rate }}
                                 </div>
+                            @elseif ($serviceRequest->job_type == 'project_based')
+                                    <span class="material-symbols-outlined mr-1">
+                                        request_quote
+                                    </span>
+                                    Expected Price: {{ $serviceRequest->expected_price }}
+                            @endif
+                            <div class="flex items-center p-2">
+                                {{-- <span class="material-symbols-outlined mr-1">
+                                    hourglass_bottom
+                                </span> --}}
+                                Estimated Duration: {{ $serviceRequest->estimated_duration }}
                             </div>
-                        </div>
+
+                            
+                            </div>
+                                <div class="flex items-center p-2">
+                                    <span class="material-symbols-outlined mr-1 text-red-500">
+                                        location_on
+                                    </span>
+                                    {{ $serviceRequest->location }}
+                                </div>
+                                <div class="p-2"><strong>Description:</strong> {{ $serviceRequest->description }}</div>
+                            </div>
+
+
+                            </div>
+
 
                         <div class="flex justify-center space-x-2 mt-4">
                             <button type="button" class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700" data-toggle="modal" data-target="#bidModal-{{ $serviceRequest->id }}">

@@ -19,11 +19,21 @@
 
 <body class="font-sans text-gray-900 antialiased">
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-        <div>
-            <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
+    @if(Route::currentRouteName() == 'login')
+                <div class="w-full max-w-4xl">
+                    <div class="mt-3 px-6 py-6 bg-gray-100 border border-gray-300 overflow-hidden sm:rounded-lg">
+                        {{ $slot }}
+                    </div>
+                </div>
+    @elseif(Route::currentRouteName() == 'register')
+    <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
+        {{ $slot }}
+    </div>
+    @else
+                <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
+                    {{ $slot }}
+                </div>
+    @endif
 </body>
 
 </html>

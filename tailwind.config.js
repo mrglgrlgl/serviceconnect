@@ -59,7 +59,7 @@ export default {
                     'default-text': '#2F3033',
                     'light-blue': '#204860',
                     'dark-blue': '#1A202C',
-                    'lightest-blue': '#75E2FF',
+                    'lightest-blue': '#43a0b7',
                     'lightestblue-accent': '#31A6C5',
                     'header': '#333333',
                     'dark-text': '#111111',

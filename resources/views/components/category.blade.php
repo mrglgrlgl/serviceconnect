@@ -36,6 +36,6 @@
 @endphp
 
 <div class="category-icon flex items-center space-x-2">
-    <span class="material-icons text-custom-light-blue text-5xl">{{ $icon }}</span>
+    <span class="material-icons text-custom-light-blue text-4xl">{{ $icon }}</span>
     <span class="font-semibold text-xl text-custom-header">{{ ucfirst($category) }}</span>
 </div>
