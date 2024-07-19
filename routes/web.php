@@ -138,6 +138,12 @@ Route::delete('/service-requests/{service_request}', [ServiceRequestController::
 
 // routes/web.php
 Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
+Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
+
+Route::patch('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
+Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 
 
 }); 

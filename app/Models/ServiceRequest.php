@@ -38,7 +38,7 @@ class ServiceRequest extends Model
     }
     public function bids()
 {
-    return $this->hasMany(Bid::class);
+    return $this->hasMany(Bid::class, 'service_request_id');
 }
 
 // FIX try for time update
