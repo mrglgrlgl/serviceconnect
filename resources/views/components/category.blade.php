@@ -4,13 +4,13 @@
     $icon = '';
     switch (strtolower($category)) {
         case 'carpentry':
-            $icon = 'carpenter';
+            $icon = 'handyman'; // Correct icon name for carpentry
             break;
         case 'plumbing':
             $icon = 'plumbing';
             break;
         case 'welding':
-            $icon = 'head_mounted_device';
+            $icon = 'hardware'; // Adjusted icon name
             break;
         case 'building_related':
             $icon = 'construction';
@@ -22,10 +22,10 @@
             $icon = 'restaurant';
             break;
         case 'stone_cutting_masonry':
-            $icon = 'masonry';
+            $icon = 'foundation'; // Adjusted icon name
             break;
         case 'hairdressing':
-            $icon = 'self_care';
+            $icon = 'content_cut'; // Adjusted icon name
             break;
         case 'beauty_therapy':
             $icon = 'spa';

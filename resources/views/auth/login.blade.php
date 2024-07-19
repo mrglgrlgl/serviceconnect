@@ -1,10 +1,11 @@
 <x-guest-layout>
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    {{-- <x-auth-session-status class="mb-4" :status="session('status')" /> --}}
 
+    {{-- <div class="mt-3 px-6 py-6 bg-gray-100 border border-gray-300 overflow-hidden sm:rounded-lg"> --}}
     <div class="grid grid-cols-1 md:grid-cols-2 w-full mx-auto pb-6">
         <!-- Login Form on the Left -->
-        <div class="md:col-span-1 order-1 md:order-1 rounded-t-lg md:rounded-none p-6">
+        <div class="md:col-span-1 order-1 md:order-1 p-16 border border-r-0 bg-white border-l-lg border-r-none border-gray-300">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
@@ -28,7 +29,7 @@
                     <!-- Remember Me -->
                     <div class="block">
                         <label for="remember_me" class="inline-flex items-center">
-                            <input id="remember_me" type="checkbox" class="rounded border-gray-300 shadow-sm" name="remember">
+                            <input id="remember_me" type="checkbox" class="rounded border-gray-300 shadow-sm " name="remember">
                             <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                         </label>
                     </div>
@@ -45,7 +46,7 @@
 
                 <!-- Login button -->
                 <div class="mt-4">
-                    <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent hover:bg-blue-700">
+                    <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent bg-gradient-to-r from-sky-900 to-cyan-600">
                         {{ __('Log in') }}
                     </x-primary-button>
                 </div>
@@ -53,20 +54,20 @@
         </div>
 
         <!-- Sign Up Section on the Right -->
-        <div class="md:col-span-1 order-2 md:order-2 p-6 rounded-b-lg md:rounded-none flex flex-col justify-center items-center">
+        <div class="md:col-span-1 order-2 md:order-2 p-6 flex flex-col justify-center items-center bg-cover bg-center bg-no-repeat rounded-r-lg bg-gradient-to-b from-sky-900 to-cyan-600">
             <div class="text-center justify-center">
 
                 <div class="pb-2">
-                    <span class="justify-center px-2 text-custom-header text-xl">Don't have an account?</span>
+                    <span class="justify-center px-2 text-white text-xl">Don't have an account yet?</span>
                 </div>
                 <div class="pb-8">
-                    <span class="justify-center px-2 text-custom-header text-xl">Register as a</span>
+                    <span class="justify-center px-2 text-white font-semibold text-xl">Register as a</span>
                 </div>
-                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white hover:bg-custom-lightest-blue">
+                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-white bg-transparent border-2 border-white hover:border-transparent hover:text-white hover:bg-custom-lightest-blue hover:shadow-xl">
                     {{ __('Seeker') }}
                 </x-primary-button>
                 <div class="border-t my-4 relative text-center"></div>
-                <x-primary-button :href="route('register')" class="h-12 w-full justify-center text-xl text-custom-dark-blue bg-transparent border-2 border-custom-dark-blue hover:border-transparent hover:text-white hover:bg-custom-light-blue">
+                <x-primary-button :href="route('register.provider')" class="h-12 w-full justify-center text-xl text-white bg-transparent border-2 border-hwhite hover:border-transparent hover:text-white hover:bg-custom-light-blue hover:shadow-xl hover-shadow-inner">
                     {{ __('Provider') }}
                 </x-primary-button>
             </div>

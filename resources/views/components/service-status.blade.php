@@ -1,7 +1,7 @@
 <!-- resources/views/components/service-request.blade.php -->
 @props(['status' => ''])
 
-<div id="status" class="text-sm mt-1 md:ml-14">
+<div id="status" class="text-sm mt-1 md:ml-12">
     @php
         $statusColorClasses = [
             'open' => 'text-green-600',      // Green color for 'open'
