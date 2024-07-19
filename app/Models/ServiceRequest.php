@@ -37,7 +37,10 @@ class ServiceRequest extends Model
     }
     public function bids()
 {
-    return $this->hasMany(Bid::class);
+    return $this->hasMany(Bid::class, 'service_request_id');
 }
-
+public function hasAcceptedBid()
+{
+    return $this->bids()->where('status', 'accepted')->exists();
+}
 }

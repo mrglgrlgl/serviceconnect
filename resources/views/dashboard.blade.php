@@ -52,11 +52,11 @@
                             </div>
                         </div>
                         <div class="flex justify-end font-semibold text-custom-light-blue">
-                            @if ($serviceRequest->bid_confirmed)
+                            @if ($serviceRequest->hasAcceptedBid())
                                 Bid Confirmed
-                                <a href="{{ route('provider-profile', $serviceRequest->bidder_id) }}" class="text-blue-500 underline ml-4">View Provider Profile</a>
+                                <a href="" class="text-blue-500 underline ml-4">Service Request Details</a>
                             @else
-                                {{ $serviceRequest->number_of_bids }} bids
+                                {{ $serviceRequest->bids->count() }} bids
                                 <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids</button>
                             @endif
                         </div>
@@ -72,19 +72,15 @@
             </div>
             <ul>
                 <template x-for="bid in bids" :key="bid.id">
-                    <li x-show="bid.confirmed || bid.status !== 'rejected'" class="mb-2 border-b pb-2">
+                    <li x-show="!bid.rejected" class="mb-2 border-b pb-2">
                         <div class="font-semibold" x-text="bid.bidder.name"></div>
                         <div class="text-gray-600" x-text="bid.bid_amount"></div>
                         <div class="text-gray-600" x-text="bid.bid_description"></div>
                         <div class="text-gray-600" x-text="new Date(bid.created_at).toLocaleString()"></div>
                         <!-- Confirm Button -->
                         <div class="mt-2">
-                            <button x-show="!bid.confirmed" @click="confirmBid(bid.id)" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
+                            <button x-show="!bid.confirmed" @click="confirmBid(bid.id, {{ $serviceRequest->id }})" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
                             <span x-show="bid.confirmed">Bid Confirmed</span>
-                        </div>
-                        <!-- View Profile Link -->
-                        <div class="mt-2" x-show="bid.confirmed">
-                            <a :href="'/profile/' + bid.bidder.id" class="text-blue-500 underline">View Provider Profile</a>
                         </div>
                     </li>
                 </template>
@@ -114,14 +110,15 @@
                     }
                 },
 
-                async confirmBid(bidId) {
+                async confirmBid(bidId, requestId) {
                     try {
                         const response = await fetch(`/bids/${bidId}/confirm`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
+                            },
+                            body: JSON.stringify({ request_id: requestId })
                         });
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -133,10 +130,13 @@
                             this.bids.forEach(bid => {
                                 if (bid.id === bidId) {
                                     bid.confirmed = true;
+                                } else {
+                                    bid.rejected = true;
                                 }
                             });
-                            // Filter out the rejected bids
-                            this.bids = this.bids.filter(bid => bid.id === bidId || bid.status !== 'rejected');
+                            // Update the service request to show the link
+                            const serviceRequest = @json($serviceRequests).find(req => req.id === requestId);
+                            serviceRequest.bid_confirmed = true;
                         }
                     } catch (error) {
                         console.error('There was a problem with the fetch operation:', error);
