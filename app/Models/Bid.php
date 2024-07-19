@@ -27,4 +27,5 @@ class Bid extends Model
     {
         return $this->belongsTo(User::class, 'bidder_id');
     }
+    
 }
