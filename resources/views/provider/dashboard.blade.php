@@ -48,9 +48,6 @@
                                     @endif
 
                                     <div class="flex items-center p-2">
-                                        {{-- <span class="material-symbols-outlined mr-1">
-                                            hourglass_bottom
-                                        </span> --}}
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }}
                                     </div>
                                 </div>
@@ -65,37 +62,70 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-center space-x-2 mt-4">
-                            <button type="button" class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700" data-toggle="modal" data-target="#bidModal-{{ $serviceRequest->id }}">
-                                Place Bid
-                            </button>
-                        </div>
-                    </div>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <!-- Bid Indicator -->
+                            @php
+                                $userBid = $serviceRequest->bids->where('bidder_id', auth()->user()->id)->first();
+                            @endphp
 
-                    <!-- Bid Modal -->
-                    <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="bidModal-{{ $serviceRequest->id }}" role="dialog" aria-labelledby="bidModalLabel-{{ $serviceRequest->id }}" aria-hidden="true">
-                        <div class="flex items-center justify-center min-h-screen">
-                            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                                <div class="bg-white p-4">
-                                    <div class="flex justify-between items-center pb-2">
-                                        <h5 class="text-lg font-semibold" id="bidModalLabel-{{ $serviceRequest->id }}">Place Bid</h5>
-                                        <button type="button" class="text-gray-400 hover:text-gray-600" data-dismiss="modal" aria-label="Close" onclick="closeModal('bidModal-{{ $serviceRequest->id }}')">
-                                            <span aria-hidden="true">&times;</span>
+                            @if ($userBid)
+                                <span class="bid-indicator">
+                                    @if ($userBid->status == 'accepted')
+                                        Bid Accepted <i class="fas fa-check"></i>
+                                    @else
+                                        Bid Sent <i class="fas fa-check"></i>
+                                    @endif
+                                </span>
+                            @endif
+
+                            <div>
+                                <!-- Conditionally show bid controls -->
+                                @if ($userBid)
+                                    @if ($userBid->status == 'accepted')
+                                        <span class="text-success"><i class="fas fa-check"></i> Bid Accepted</span>
+                                        <a href="#" class="btn btn-info ml-3">
+                                            View Service Request
+                                        </a>
+                                    @else
+                                        <!-- Edit Bid Button -->
+                                        <button type="button" class="btn btn-warning" x-data="{ showModal: false }" @click="showModal = true">
+                                            Edit Bid
                                         </button>
+                                    @endif
+                                @else
+                                    <!-- Place Bid Button -->
+                                    <button type="button" class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700" x-data="{ showModal: false }" @click="showModal = true">
+                                        Place Bid
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Bid Modal -->
+                        <div class="fixed z-10 inset-0 overflow-y-auto hidden" x-show="showModal" role="dialog" aria-labelledby="bidModalLabel-{{ $serviceRequest->id }}" aria-hidden="true" x-data="{ showModal: false }">
+                            <div class="flex items-center justify-center min-h-screen">
+                                <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                                    <div class="bg-white p-4">
+                                        <div class="flex justify-between items-center pb-2">
+                                            <h5 class="text-lg font-semibold" id="bidModalLabel-{{ $serviceRequest->id }}">Place Bid</h5>
+                                            <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showModal = false">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="{{ route('bids.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="service_request_id" value="{{ $serviceRequest->id }}">
+                                            <div class="mb-4">
+                                                <label for="bid_amount" class="block text-sm font-medium text-gray-700">Bid Amount</label>
+                                                <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_amount" name="bid_amount" required>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="bid_description" class="block text-sm font-medium text-gray-700">Bid Description</label>
+                                                <textarea class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_description" name="bid_description" required></textarea>
+                                            </div>
+                                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit Bid</button>
+                                        </form>
                                     </div>
-                                    <form action="{{ route('bids.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="service_request_id" value="{{ $serviceRequest->id }}">
-                                        <div class="mb-4">
-                                            <label for="bid_amount" class="block text-sm font-medium text-gray-700">Bid Amount</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_amount" name="bid_amount" required>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="bid_description" class="block text-sm font-medium text-gray-700">Bid Description</label>
-                                            <textarea class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_description" name="bid_description" required></textarea>
-                                        </div>
-                                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit Bid</button>
-                                    </form>
                                 </div>
                             </div>
                         </div>

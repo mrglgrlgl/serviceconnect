@@ -1,6 +1,5 @@
 <x-dashboard>
     <x-slot name="dashboardbar">
-<<<<<<< HEAD
         <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden">
             <div class="font-semibold text-3xl md:pb-4">{{ __('Service Requests') }}</div>
             <div class="flex justify-center text-center w-full">
@@ -26,22 +25,14 @@
 
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
- asfasfaf
- 
-                    </div>
-
-        </div>
-
-</x-dashboard>
-=======
-        <!-- Your existing dashboardbar code -->
-    </x-slot>
-
-    <div class="py-12" x-data="dashboard()">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto relative">
             @if ($serviceRequests->isEmpty())
-                <div class="alert-info">
-                    No service requests found.
+                <div class="flex flex-col items-center">
+                    <div class="alert-info mb-4">
+                        No service requests found. Create one now!
+                    </div>
+                    <a href="{{ route('service-requests.create') }}" class="h-11 w-auto px-6 justify-center text-sm rounded-lg border text-custom-dark-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center">
+                        {{ __('Create Service Request') }}
+                    </a>
                 </div>
             @else
                 @foreach ($serviceRequests as $serviceRequest)
@@ -59,7 +50,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 text-center">
+                        <div class="mt-4 mx-12">
                             <div class="font-semibold text-xl mb-2">
                                 {{ $serviceRequest->title }}
                             </div>
@@ -72,33 +63,39 @@
                                 {{-- Request image here --}}
                             </div>
 
-                            <div class="flex flex-col md:flex-row justify-center items-center md:space-x-2 space-y-2 md:space-y-0">
-                                <x-outline-button href="{{ route('service-requests.edit', $serviceRequest) }}" class="flex-1 md:flex-none w-full md:w-auto">
-                                    Edit
-                                </x-outline-button>
-                                <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-danger-button class="flex-1 md:flex-none w-full md:w-auto" onclick="return confirm('Are you sure you want to delete this service request?')">
-                                        Delete
-                                    </x-danger-button>
-                                </form>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <x-outline-button href="{{ route('service-requests.edit', $serviceRequest) }}" class="flex-1 md:flex-none w-full md:w-auto">
+                                        <span class="material-symbols-outlined">
+                                            edit
+                                            </span>
+                                    </x-outline-button>
+                                    <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-danger-button class="flex-1 md:flex-none w-full md:w-auto" onclick="return confirm('Are you sure you want to delete this service request?')">
+                                            <span class="material-symbols-outlined">
+                                                delete
+                                            </span>
+                                        </x-danger-button>
+                                    </form>
+                                </div>
+                                <div class="flex justify-end font-semibold text-custom-light-blue">
+                                    @if ($serviceRequest->hasAcceptedBid())
+                                    Bid Confirmed
+                                    <a href="" class="text-blue-500 underline ml-4">Service Request Details</a>
+                                @else
+                                    {{ $serviceRequest->bids->count() }} bids
+                                    <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids</button>
+                                @endif
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex justify-end font-semibold text-custom-light-blue">
-                            @if ($serviceRequest->hasAcceptedBid())
-                                Bid Confirmed
-                                <a href="" class="text-blue-500 underline ml-4">Service Request Details</a>
-                            @else
-                                {{ $serviceRequest->bids->count() }} bids
-                                <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids</button>
-                            @endif
                         </div>
                     </div>
                 @endforeach
             @endif
         </div>
-
+ 
         <div x-show.transition="showBidsPanel" class="w-1/3 bg-gray-100 p-4 shadow-lg absolute right-0 top-0 h-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold">Bids</h2>
@@ -184,4 +181,3 @@
         });
     </script>
 </x-dashboard>
->>>>>>> 019d89769a37bc4295b9f2f4b4218b4bf040b272

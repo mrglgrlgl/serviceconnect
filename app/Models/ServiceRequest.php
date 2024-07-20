@@ -41,15 +41,22 @@ class ServiceRequest extends Model
     return $this->hasMany(Bid::class, 'service_request_id');
 }
 
-// FIX try for time update
-public function getStartTimeAttribute($value)
+public function hasAcceptedBid()
 {
-    return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+    return $this->bids()->where('status', 'accepted')->exists();
+}
 }
 
-// Accessor for end_time
-public function getEndTimeAttribute($value)
-{
-    return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-}
-}
+
+// FIX try for time update
+// public function getStartTimeAttribute($value)
+// {
+//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+// }
+
+// // Accessor for end_time
+// public function getEndTimeAttribute($value)
+// {
+//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+// }
+// }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ServiceRequestController extends Controller
 {
@@ -118,7 +119,7 @@ public function update(Request $request, $id)
             'end_time' => $request->input('end_time', $serviceRequest->end_time),
         ]);
 
-    $request->validate([
+    $validatedData = $request->validate([
         'category' => 'required|string|max:255',
         'title' => 'required|string|max:255',
         'description' => 'required|string|max:255',
@@ -147,11 +148,16 @@ public function update(Request $request, $id)
     $serviceRequest->start_date = $request->start_date;
     $serviceRequest->end_date = $request->end_date;
     
+    Log::info('Original start time: ' . $serviceRequest->start_time);
+    Log::info('Original end time: ' . $serviceRequest->end_time);
 
-    // Convert start_time and end_time to 24-hour format before saving
-    $serviceRequest->start_time = \Carbon\Carbon::createFromFormat('H:i', $request->start_time)->format('H:i:s');
-    $serviceRequest->end_time = \Carbon\Carbon::createFromFormat('H:i', $request->end_time)->format('H:i:s');
+    // Convert the time inputs to the correct format
+    $serviceRequest->start_time = \Carbon\Carbon::createFromFormat('H:i', $validatedData['start_time'])->format('H:i:s');
+    $serviceRequest->end_time = \Carbon\Carbon::createFromFormat('H:i', $validatedData['end_time'])->format('H:i:s');
 
+        // Log the converted times
+        Log::info('Converted start time: ' . $serviceRequest->start_time);
+        Log::info('Converted end time: ' . $serviceRequest->end_time);
 
     // $serviceRequest->start_time = $request->start_time;
     // $serviceRequest->end_time = $request->end_time;
