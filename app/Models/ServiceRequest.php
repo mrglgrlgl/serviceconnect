@@ -60,3 +60,4 @@ public function hasAcceptedBid()
 //     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
 // }
 // }
+

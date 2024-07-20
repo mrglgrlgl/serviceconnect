@@ -145,7 +145,8 @@ Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bid
 Route::patch('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 
-
+// Chat route
+Route::get('/chat', function () {return view('chat');})->name('chat');
 }); 
 
 

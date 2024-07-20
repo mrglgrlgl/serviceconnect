@@ -21,7 +21,7 @@
             </div>
 
             <div class="flex justify-end items-center mt-2">
-                <x-primary-button class="text-base h-8 w-38 rounded-md bg-transparent border-2 border-custom-dark-blue text-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
+                <x-primary-button class="text-base h-8 w-38 rounded-md bg-white text-custom-dark-blue border-2 border-custom-dark-blue hover:border-transparent hover:text-white" :href="route('register')">
                     {{ __('View Profile') }}
                 </x-primary-button>
             </div>

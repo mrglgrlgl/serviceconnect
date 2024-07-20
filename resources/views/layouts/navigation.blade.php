@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body>
-    <nav x-data="{ open: false, dropdownOpen: false }" class="border-b border-gray-300 bg-gray-100 border">
+    <nav x-data="{ open: false, dropdownOpen: false, serviceDropdownOpen: false }" class="border-b border-gray-300 bg-gray-100 border">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -21,40 +21,41 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-                <div class="flex">
-                    {{-- @if (Auth::user()->role == '3')
-
-                        <div class="justify-center pt-2 px-8 md:pr-16">
-                            <a href="{{ route('service-requests.create') }}"
-                               class="h-11 mx-4 w-full justify-center text-sm rounded-lg border text-custom-light-blue font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent hover:border-3xl bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center">
-                                {{ __('Create Service Request') }}
-                            </a>
-                        </div>
-                    @endif --}}
-                
+                <div class="flex ">
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
                         <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                             {{ __('Home') }}
                         </x-nav-link>
 
-                        {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
-                         --}}
-                          {{-- <x-nav-link :href="Auth::user()->role == '2' ? route('provider.dashboard') : route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link> --}}
-
-                          @if (Auth::user()->role == '2')
+                        @if (Auth::user()->role == '2')
+                            <!-- Provider View -->
                             <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
                                 {{ __('Service Request') }}
                             </x-nav-link>
-                        @elseif (Auth::user()->role == '1')
-                            <x-nav-link :href="route('authorizer.dashboard')" :active="request()->routeIs('authorizer.dashboard')">
-                                {{ __('Dashboard') }}
-                            </x-nav-link>
+                        @elseif (Auth::user()->role == '3')
+                            <!-- Seeker View -->
+                            <div class="relative flex">
+                                <x-nav-link @click="serviceDropdownOpen = !serviceDropdownOpen" 
+                                :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')"
+                                class="relative flex items-center">
+                                    {{ __('Service Requests') }}
+                                    <svg class="ml-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </x-nav-link>
+                                <div x-show="serviceDropdownOpen" @click.away="serviceDropdownOpen = false"
+                                     class="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                                    <x-dropdown-link :href="route('dashboard')">
+                                        {{ __('View Service Requests') }}
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('service-requests.create')">
+                                        {{ __('Create Service Request') }}
+                                    </x-dropdown-link>
+                                </div>
+                            </div>
                         @else
+                            <!-- Default for other users -->
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Service Requests') }}
                             </x-nav-link>
@@ -67,7 +68,7 @@
                     <!-- Settings Dropdown -->
                     <div class="hidden sm:flex sm:items-center sm:ml-6">
                         @if (Auth::check())
-                            <div @click.away="dropdownOpen = false" class="relative">
+                            <div @click.away="dropdownOpen = false" class="relative flex items-center">
                                 <button @click="dropdownOpen = !dropdownOpen"
                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                     <div>{{ Auth::user()->name }}</div>
