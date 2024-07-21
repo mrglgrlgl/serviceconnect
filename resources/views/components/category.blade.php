@@ -12,22 +12,25 @@
         case 'welding':
             $icon = 'hardware'; // Adjusted icon name
             break;
-        case 'building_related':
+        case 'building and related':
             $icon = 'construction';
             break;
         case 'electrical':
             $icon = 'bolt';
             break;
-        case 'food_service':
+        case 'food service':
             $icon = 'restaurant';
             break;
-        case 'stone_cutting_masonry':
-            $icon = 'foundation'; // Adjusted icon name
+        case 'bus driving':
+            $icon = 'airport_shuttle'; // Adjusted icon name
             break;
-        case 'hairdressing':
+        case 'stone cutting and masonry':
             $icon = 'content_cut'; // Adjusted icon name
             break;
-        case 'beauty_therapy':
+        case 'hairdressing':
+            $icon = 'spa';
+            break;
+        case 'beauty therapy':
             $icon = 'spa';
             break;
         default:

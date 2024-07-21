@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        /* Ensure all nav links have the same base styling */
+        .nav-link {
+            padding: 0.5rem 1rem; /* Adjust as needed */
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <nav x-data="{ open: false, dropdownOpen: false, serviceDropdownOpen: false }" class="border-b border-gray-300 bg-gray-100 border">
@@ -21,31 +29,34 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-                <div class="flex ">
+                <div class="flex space-x-4">
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
-                        <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                        <x-nav-link class="nav-link" :href="route('home')" :active="request()->routeIs('home')">
                             {{ __('Home') }}
                         </x-nav-link>
 
                         @if (Auth::user()->role == '2')
                             <!-- Provider View -->
-                            <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
+                            <x-nav-link class="nav-link" :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
                                 {{ __('Service Request') }}
                             </x-nav-link>
                         @elseif (Auth::user()->role == '3')
                             <!-- Seeker View -->
-                            <div class="relative flex">
+                            
+                            
+                            <div x-data="{ serviceDropdownOpen: false }" class="relative inline-block">
                                 <x-nav-link @click="serviceDropdownOpen = !serviceDropdownOpen" 
-                                :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')"
-                                class="relative flex items-center">
+                                    :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')"
+                                    class="nav-link flex items-center relative">
                                     {{ __('Service Requests') }}
                                     <svg class="ml-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </x-nav-link>
+                            
                                 <div x-show="serviceDropdownOpen" @click.away="serviceDropdownOpen = false"
-                                     class="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                                    class="absolute left-0 top-full mt-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <x-dropdown-link :href="route('dashboard')">
                                         {{ __('View Service Requests') }}
                                     </x-dropdown-link>
@@ -56,11 +67,11 @@
                             </div>
                         @else
                             <!-- Default for other users -->
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            <x-nav-link class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Service Requests') }}
                             </x-nav-link>
                         @endif
-                        <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                        <x-nav-link class="nav-link" :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
                         </x-nav-link>
                     </div>
@@ -68,7 +79,7 @@
                     <!-- Settings Dropdown -->
                     <div class="hidden sm:flex sm:items-center sm:ml-6">
                         @if (Auth::check())
-                            <div @click.away="dropdownOpen = false" class="relative flex items-center">
+                            <div @click.away="dropdownOpen = false" class="relative">
                                 <button @click="dropdownOpen = !dropdownOpen"
                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                     <div>{{ Auth::user()->name }}</div>
@@ -76,13 +87,13 @@
                                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 20 20">
                                             <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 111.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z"
+                                                d="M5.293 7.293a1 1 011.414 0L10 10.586l3.293-3.293a1 1 111.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z"
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </div>
                                 </button>
 
-                                <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                                <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <x-dropdown-link :href="route('profile.show')">
                                      {{ __('Profile') }}
                                     </x-dropdown-link>

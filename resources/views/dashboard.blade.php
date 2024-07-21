@@ -41,7 +41,6 @@
                             <div id="category" class="flex flex-col items-start">
                                 <div class="flex items-center">
                                     <x-category :category="$serviceRequest->category" class="mr-2" />
-                                    <span class="text-gray-700"> - {{ $serviceRequest->subcategory }}</span>
                                 </div>
                                 <x-service-status :status="$serviceRequest->status" />
                             </div>
@@ -86,7 +85,7 @@
                                         <button @click="showRequestDetails({{ $serviceRequest->id }})" class="text-blue-500 underline ml-4">Service Request Details</button>
                                     @else
                                         {{ $serviceRequest->bids->count() }} bids
-                                        <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids</button>
+                                        <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                                     @endif
                                 </div>
                             </div>

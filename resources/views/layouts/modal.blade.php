@@ -13,18 +13,13 @@
                             <div class="border-t my-4 w-full pb-6"></div>
 
                             <div class="mb-4">
-                            <label for="category" class="block text-base text-custom-default-text">Category</label>
-                            <x-selection class="form-select" id="category" name="category">
-                                <option value="carpentry">Carpentry</option>
-                                <option value="plumbing">Plumbing</option>
-                                <option value="welding">Welding</option>
-                                <option value="building_related">Building and Related</option>
-                                <option value="electrical">Electrical</option>
-                                <option value="food_service">Bus Driving</option>
-                                <option value="stone_cutting_masonry">Stone Cutting and Masonry</option>
-                                <option value="hairdressing">Hairdressing</option>
-                                <option value="beauty_therapy">Beauty Therapy</option>
-                            </x-selection>
+                                <label for="category" class="block text-base text-custom-default-text">Category</label>
+                                <x-selection class="form-select" id="category" name="category">
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->Job_Title }}">{{ $category->Job_Title }}</option>
+                                    @endforeach
+                                </x-selection>
+                            </div>
 
                             <div class="mb-4">
                                 <label for="title" class="block text-base text-custom-default-text">Title</label>

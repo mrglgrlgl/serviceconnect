@@ -6,6 +6,7 @@ use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Category;
 
 class ServiceRequestController extends Controller
 {
@@ -30,7 +31,8 @@ class ServiceRequestController extends Controller
 
     public function create()
     {
-        return view('layouts.modal'); // Ensure this view file exists
+            $categories = Category::all(); // Fetch all categories
+            return view('layouts.modal', compact('categories')); // Pass categories to the view
     }
     public function index()
     {

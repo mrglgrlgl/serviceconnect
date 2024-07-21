@@ -147,7 +147,12 @@ Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.up
 
 // Chat route
 Route::get('/chat', function () {return view('chat');})->name('chat');
-}); 
 
+// category controller
+Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
+
+//getAverageWagePerHour route
+Route::get('/bids/average-wage/{id}', [BidController::class, 'getAverageWage']);
+});
 
 require __DIR__.'/auth.php';
