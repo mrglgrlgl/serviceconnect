@@ -17,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
         'authorizer'=>Authorizer::class,
         'provider'=>Provider::class,
-        'normal'=>Normal::class
+        'normal'=>Normal::class,
+        'role.redirect' => RoleRedirect::class, // Register the new middleware here
 
         ]);
     })

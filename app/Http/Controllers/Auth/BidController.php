@@ -8,7 +8,9 @@ use App\Models\Bid;
 use App\Models\User;
 use App\Models\ProviderDetail;
 use App\Models\ServiceRequest;
-
+use App\Notifications\BidConfirmed;
+use Illuminate\Support\Facades\Notification;
+use App\Models\Channel;
 
 class BidController extends Controller
 {
@@ -44,32 +46,43 @@ class BidController extends Controller
     }
 
     public function confirm(Request $request, $bidId)
-    {
-        try {
-            // Fetch the bid
-            $bid = Bid::findOrFail($bidId);
+{
+    try {
+        $bid = Bid::findOrFail($bidId);
 
-            // Check if the bid is already accepted
-            if ($bid->status == 'accepted') {
-                return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
-            }
-
-            // Update the bid status to accepted
-            $bid->status = 'accepted';
-            $bid->save();
-
-            // Reject all other bids for the same service request
-            Bid::where('service_request_id', $bid->service_request_id)
-                ->where('id', '!=', $bidId)
-                ->update(['status' => 'rejected']);
-
-            return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
-        } catch (\Exception $e) {
-            // Log the exception message
-            \Log::error('Error confirming bid: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+        if ($bid->status == 'accepted') {
+            return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
         }
+
+        $bid->status = 'accepted';
+        $bid->save();
+
+        // Retrieve the service request associated with the bid
+        $serviceRequest = ServiceRequest::findOrFail($bid->service_request_id);
+
+        // Update the provider_id with the ID of the bidder (provider)
+        $serviceRequest->provider_id = $bid->bidder_id;
+        $serviceRequest->status ="in_progress";
+
+        $serviceRequest->save();
+        $provider = $bid->bidder;
+        Notification::send($provider, new BidConfirmed($bid, $serviceRequest));
+        // Reject other bids for the same service request
+        Bid::where('service_request_id', $bid->service_request_id)
+            ->where('id', '!=', $bidId)
+            ->update(['status' => 'rejected']);
+
+        return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
+    } catch (\Exception $e) {
+        \Log::error('Error confirming bid: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
     }
+}
+
+// 
+
+    
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -91,4 +104,23 @@ class BidController extends Controller
 
         return redirect()->back()->with('success', 'Bid updated successfully.');
     }
+
+
+public function getProviderProfile($bidderId)
+{
+    // Fetch the user along with their provider details
+    $user = User::with('providerDetails')->findOrFail($bidderId);
+
+    // Prepare the response data
+    $profileData = [
+        'name' => $user->name,
+        'providerDetails' => $user->providerDetails
+    ];
+
+    // Return the response as JSON
+    return response()->json($profileData);
+}
+
+
+
 }

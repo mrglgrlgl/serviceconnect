@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class ServiceRequest extends Model
 {
@@ -36,15 +34,21 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function bids()
-{
-    return $this->hasMany(Bid::class, 'service_request_id');
-}
 
-public function hasAcceptedBid()
-{
-    return $this->bids()->where('status', 'accepted')->exists();
-}
+    public function provider()
+    {
+        return $this->belongsTo(User::class, 'provider_id');
+    }
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class, 'service_request_id');
+    }
+
+    public function hasAcceptedBid()
+    {
+        return $this->bids()->where('status', 'accepted')->exists();
+    }
 }
 
 

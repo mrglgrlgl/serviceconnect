@@ -14,24 +14,41 @@ class Provider
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+    // public function handle(Request $request, Closure $next): Response
+    // {
+    //     return $next($request);
+
+    //     if(!Auth::check()){
+    //         return redirect()->route('login');
+    //     }
+    //     $userRole=Auth::user()->role;
+    //     if($userRole==2){
+    //         return $next($request);
+    //     }
+    //    elseif($userRole==1){
+    //         return redirect()->route('authorizer.dashboard');
+
+    //     }
+    //    elseif($userRole==3){
+    //         return redirect()->route('dashboard');
+
+    //     }
+    // }
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
-
-        if(!Auth::check()){
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
-        $userRole=Auth::user()->role;
-        if($userRole==2){
+
+        $userRole = Auth::user()->role;
+        if ($userRole == 2) {
             return $next($request);
-        }
-       elseif($userRole==1){
-            return redirect()->route('authorizer.dashboard');
-
-        }
-       elseif($userRole==3){
+        } elseif ($userRole == 3) {
             return redirect()->route('dashboard');
-
+        } elseif ($userRole == 1) {
+            return redirect()->route('authorizer.dashboard');
         }
+
+        abort(403, 'Unauthorized action.');
     }
 }

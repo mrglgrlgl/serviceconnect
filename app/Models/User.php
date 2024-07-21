@@ -59,4 +59,10 @@ class User extends Authenticatable
     {
         return static::where('role', $roleNumber)->get();
     }
+    // User.php (User model)
+    public function providerDetails()
+    {
+        return $this->hasOne(ProviderDetail::class, 'provider_id', 'id');
+    }
+    
 }
