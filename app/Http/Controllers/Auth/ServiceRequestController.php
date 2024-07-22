@@ -111,16 +111,37 @@ public function showDashboard()
 
 
 public function update(Request $request, $id)
-{       
-        // Find the existing service request
-        $serviceRequest = ServiceRequest::findOrFail($id);
+{
+    // Find the existing service request
+    $serviceRequest = ServiceRequest::findOrFail($id);
 
-        // Set default values for start_time and end_time to existing ones if not present in the request
-        $request->merge([
-            'start_time' => $request->input('start_time', $serviceRequest->start_time),
-            'end_time' => $request->input('end_time', $serviceRequest->end_time),
-        ]);
+    // Format the existing times to H:i before merging
+    $existingStartTime = \Carbon\Carbon::parse($serviceRequest->start_time)->format('H:i');
+    $existingEndTime = \Carbon\Carbon::parse($serviceRequest->end_time)->format('H:i');
 
+    // Log original times
+    Log::info('Original start time: ' . $existingStartTime);
+    Log::info('Original end time: ' . $existingEndTime);
+
+    // Merge existing times if not present in the request
+    $startTime = $request->input('start_time', $existingStartTime);
+    $endTime = $request->input('end_time', $existingEndTime);
+
+    // Ensure the merged times are correctly formatted
+    try {
+        $startTime = \Carbon\Carbon::createFromFormat('H:i', $startTime)->format('H:i');
+        $endTime = \Carbon\Carbon::createFromFormat('H:i', $endTime)->format('H:i');
+    } catch (\Exception $e) {
+        Log::error('Time format error: ' . $e->getMessage());
+        return redirect()->back()->withErrors(['start_time' => 'Invalid start time format', 'end_time' => 'Invalid end time format']);
+    }
+
+    // Log merged times for debugging
+    Log::info('Merged start time: ' . $startTime);
+    Log::info('Merged end time: ' . $endTime);
+    
+
+    // Validate the request data
     $validatedData = $request->validate([
         'category' => 'required|string|max:255',
         'title' => 'required|string|max:255',
@@ -136,39 +157,32 @@ public function update(Request $request, $id)
         'hourly_rate' => 'required|numeric|min:0',
         'expected_price' => 'required|numeric|min:0',
         'estimated_duration' => 'required|integer|min:0',
-        'attach_media' => 'nullable|file|mimes:jpg,jpeg,png', // Adjust mime types as needed
+        'attach_media' => 'nullable|file|mimes:jpg,jpeg,png',
         'attach_media2' => 'nullable|file|mimes:jpg,jpeg,png',
         'attach_media3' => 'nullable|file|mimes:jpg,jpeg,png',
         'attach_media4' => 'nullable|file|mimes:jpg,jpeg,png',
     ]);
 
+   // Log final times before saving
+   Log::info('Final start time before save: ' . $serviceRequest->start_time);
+   Log::info('Final end time before save: ' . $serviceRequest->end_time);
 
-    $serviceRequest->category = $request->category;
-    $serviceRequest->title = $request->title;
-    $serviceRequest->description = $request->description;
-    $serviceRequest->location = $request->location;
-    $serviceRequest->start_date = $request->start_date;
-    $serviceRequest->end_date = $request->end_date;
-    
-    Log::info('Original start time: ' . $serviceRequest->start_time);
-    Log::info('Original end time: ' . $serviceRequest->end_time);
-
-    // Convert the time inputs to the correct format
-    $serviceRequest->start_time = \Carbon\Carbon::createFromFormat('H:i', $validatedData['start_time'])->format('H:i:s');
-    $serviceRequest->end_time = \Carbon\Carbon::createFromFormat('H:i', $validatedData['end_time'])->format('H:i:s');
-
-        // Log the converted times
-        Log::info('Converted start time: ' . $serviceRequest->start_time);
-        Log::info('Converted end time: ' . $serviceRequest->end_time);
+    // Update the service request with validated data
+    $serviceRequest->category = $validatedData['category'];
+    $serviceRequest->title = $validatedData['title'];
+    $serviceRequest->description = $validatedData['description'];
+    $serviceRequest->location = $validatedData['location'];
+    $serviceRequest->start_date = $validatedData['start_date'];
+    $serviceRequest->end_date = $validatedData['end_date'];
 
     // $serviceRequest->start_time = $request->start_time;
     // $serviceRequest->end_time = $request->end_time;
-    $serviceRequest->skill_tags = $request->skill_tags;
-    $serviceRequest->provider_gender = $request->provider_gender;
-    $serviceRequest->job_type = $request->job_type;
-    $serviceRequest->hourly_rate = $request->hourly_rate;
-    $serviceRequest->expected_price = $request->expected_price;
-    $serviceRequest->estimated_duration = $request->estimated_duration;
+    $serviceRequest->skill_tags = $validatedData['skill_tags'];
+    $serviceRequest->provider_gender = $validatedData['provider_gender'];
+    $serviceRequest->job_type = $validatedData['job_type'];
+    $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
+    $serviceRequest->expected_price = $validatedData['expected_price'];
+    $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
 
     
     // Handle file uploads
@@ -185,7 +199,13 @@ public function update(Request $request, $id)
 
     // // Repeat similar logic for attach_media2, attach_media3, attach_media4...
 
+    // Save the updated service request
     $serviceRequest->save();
+
+        // Log the saved times
+        Log::info('Saved start time: ' . $serviceRequest->start_time);
+        Log::info('Saved end time: ' . $serviceRequest->end_time);
+    
 
     return redirect()->route('dashboard')->with('success', 'Service Request updated successfully!');
     

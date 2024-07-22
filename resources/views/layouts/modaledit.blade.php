@@ -2,7 +2,7 @@
     <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full md:w-5/12 mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue">
-                {{ __('Create Service Request') }}
+                {{ __('Edit Service Request') }}
             </div>
 
             <div class="w-full md:w-7/12 space-y-6 mx-auto mt-4">
@@ -51,15 +51,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label for="start_time" class="form-label">Start Time</label>
-                            <x-text-input type="time" id="start_time" name="start_time" :value="$serviceRequest->start_time" class="mt-1 block w-full sm:text-sm rounded-md" />
+                            <x-text-input type="time" id="start_time" name="start_time" :value="old('start_time', \Carbon\Carbon::parse($serviceRequest->start_time)->format('H:i'))" class="mt-1 block w-full sm:text-sm rounded-md" />
                             @error('start_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                    
+                        
                         <div>
                             <label for="end_time" class="form-label">End Time</label>
-                            <x-text-input type="time" id="end_time" name="end_time" :value="$serviceRequest->end_time" class="mt-1 block w-full sm:text-sm rounded-md" />
+                            <x-text-input type="time" id="end_time" name="end_time" :value="old('end_time', \Carbon\Carbon::parse($serviceRequest->end_time)->format('H:i'))" class="mt-1 block w-full sm:text-sm rounded-md" />
                             @error('end_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
