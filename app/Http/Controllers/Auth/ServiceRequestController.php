@@ -3,9 +3,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
+use App\Models\ProviderDetail;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 
 class ServiceRequestController extends Controller
 {
@@ -17,8 +20,23 @@ class ServiceRequestController extends Controller
     
         // Check if the user role is provider (assuming role 2 is for providers)
         if ($user->role == 2) {
-            // Retrieve all service requests for providers
-            $serviceRequests = ServiceRequest::all();
+            // Retrieve provider's category
+            $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+            $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
+    
+            // Log the retrieved category for debugging
+            Log::info('Provider Category:', ['category' => $providerCategory]);
+    
+            // Ensure category is retrieved and perform case-insensitive matching
+            if ($providerCategory) {
+                // Retrieve service requests based on provider's category (case-insensitive)
+                $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])->get();
+    
+                // Log the filtered service requests for debugging
+                Log::info('Filtered Service Requests:', ['requests' => $serviceRequests]);
+            } else {
+                $serviceRequests = collect(); // Empty collection if no category
+            }
         } else {
             // For other roles, handle accordingly (this is optional, depending on your application logic)
             $serviceRequests = ServiceRequest::all(); // or any fallback logic you may have
@@ -27,6 +45,9 @@ class ServiceRequestController extends Controller
         // Return the view with the retrieved service requests
         return view('provider.dashboard', compact('serviceRequests'));
     }
+    
+    
+    
 
     public function create()
     {
