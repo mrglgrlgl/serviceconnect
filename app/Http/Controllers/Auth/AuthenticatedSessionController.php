@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +6,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -24,22 +24,42 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $this->validate($request, [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
-        $request->session()->regenerate();
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
 
-        $loggedInUserRole = $request->user()->role;
-
-        //Authorizer
-        if($loggedInUserRole==1){
-            return redirect()->intended(route('authorizer.dashboard', absolute: false));
-        }
-        //Provider
-        elseif($loggedInUserRole==2){
-            return redirect()->intended(route('provider.dashboard', absolute: false));
+            return $this->sendLockoutResponse($request);
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            $this->clearLoginAttempts($request);
+
+            $loggedInUserRole = $request->user()->role;
+
+            // Redirect based on role
+            if ($loggedInUserRole == 1) {
+                return redirect()->intended(route('authorizer.dashboard'));
+            } elseif ($loggedInUserRole == 2) {
+                return redirect()->intended(route('provider.dashboard'));
+            } elseif ($loggedInUserRole == 3) {
+                return redirect()->intended(route('dashboard'));
+            }
+
+            return redirect()->intended(route('home'));
+        }
+
+        $this->incrementLoginAttempts($request);
+
+        throw ValidationException::withMessages([
+            'email' => [trans('auth.failed')],
+        ]);
     }
 
     /**
@@ -54,5 +74,30 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    protected function hasTooManyLoginAttempts(Request $request)
+    {
+        // Implement your rate limiting logic here
+    }
+
+    protected function incrementLoginAttempts(Request $request)
+    {
+        // Implement your rate limiting logic here
+    }
+
+    protected function clearLoginAttempts(Request $request)
+    {
+        // Implement your rate limiting logic here
+    }
+
+    protected function sendLockoutResponse(Request $request)
+    {
+        // Implement your lockout response logic here
+    }
+
+    protected function fireLockoutEvent(Request $request)
+    {
+        // Implement your lockout event logic here
     }
 }

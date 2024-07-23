@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\View\Components\Seekerhome;
+use App\Models\ServiceRequest;
+use App\Observers\ServiceRequestObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Blade::component('seekerhome', Seekerhome::class);
+        ServiceRequest::observe(ServiceRequestObserver::class);
+
     }
 }

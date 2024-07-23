@@ -16,7 +16,10 @@
                             </div>
 
                             <div class="text-sm text-gray-600 md:mt-2">
-                                {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }} {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('F j, Y') }} {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }}
+                                {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
+                                {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('F j, Y') }}
+                                {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
                             </div>
                         </div>
 
@@ -61,7 +64,9 @@
                             @if ($userBid)
                                 <span class="bid-indicator text-slate-500 font-semibold">
                                     @if ($userBid->status == 'accepted')
-                                    <span class="text-green-500 font-semibold">Bid Accepted</span>
+                                        <span class="text-green-500 font-semibold">Bid Accepted</span>
+                                    @elseif ($userBid->status == 'rejected')
+                                        <span class="text-red-500 font-semibold">Bid Closed</span>
                                     @else
                                         Bid Sent <i class="fas fa-check"></i>
                                     @endif
@@ -71,11 +76,19 @@
                             <div x-data="{ showModal: false, showConfirmationModal: false, providerName: '', bidAmount: '' }">
                                 @if ($userBid)
                                     @if ($userBid->status == 'accepted')
-                                        <a href="#" class="text-blue-500 underline ml-3" @click.prevent="showConfirmationModal = true">
-                                            View Service Request
+                                        <a href="#" class="text-blue-500 underline ml-3"
+                                            @click.prevent="showConfirmationModal = true">
+                                            Go to chat
                                         </a>
+                                        <a href="{{ route('channel.provider') }}" class="text-blue-500 underline ml-3">
+                                            Go to channel
+                                        </a>
+                                    @elseif ($userBid->status == 'rejected')
+                                        <span class="text-red-500 font-semibold">Bid Closed</span>
                                     @else
-                                        <button type="button" class="border-2 border-custom-light-blue text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2" @click="showModal = true">
+                                        <button type="button"
+                                            class="border-2 border-custom-light-blue text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2"
+                                            @click="showModal = true">
                                             <span class="material-symbols-outlined">
                                                 edit
                                             </span>
@@ -83,34 +96,51 @@
                                         </button>
                                     @endif
                                 @else
-                                    <button type="button" class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700" @click="showModal = true">
+                                    <button type="button"
+                                        class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700"
+                                        @click="showModal = true">
                                         Place Bid
                                     </button>
                                 @endif
 
                                 <!-- Bid Modal -->
-                                <div x-show="showModal" x-cloak class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50" @click.away="showModal = false">
-                                    <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                                <div x-show="showModal" x-cloak
+                                    class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
+                                    @click.away="showModal = false">
+                                    <div
+                                        class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                                         <div class="bg-white p-4">
                                             <div class="flex justify-between items-center pb-2">
                                                 <h5 class="text-lg font-semibold text-custom-header">Place Bid</h5>
-                                                <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showModal = false">
+                                                <button type="button" class="text-gray-400 hover:text-gray-600"
+                                                    aria-label="Close" @click="showModal = false">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <form action="{{ route('bids.store') }}" method="POST">
                                                 @csrf
-                                                <input type="hidden" name="service_request_id" value="{{ $serviceRequest->id }}">
+                                                <input type="hidden" name="service_request_id"
+                                                    value="{{ $serviceRequest->id }}">
                                                 <div class="mb-4">
-                                                    <label for="bid_amount" class="block text-sm font-medium text-gray-700">Bid Amount</label>
-                                                    <x-text-input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_amount" name="bid_amount" required/>
+                                                    <label for="bid_amount"
+                                                        class="block text-sm font-medium text-gray-700">Bid
+                                                        Amount</label>
+                                                    <x-text-input type="number"
+                                                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                        id="bid_amount" name="bid_amount" required />
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label for="bid_description" class="block text-sm font-medium text-gray-700">Bid Description</label>
-                                                    <textarea class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="bid_description" name="bid_description" required></textarea>
+                                                    <label for="bid_description"
+                                                        class="block text-sm font-medium text-gray-700">Bid
+                                                        Description</label>
+                                                    <textarea
+                                                        class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                        id="bid_description" name="bid_description" required></textarea>
                                                 </div>
                                                 <div class="flex justify-center">
-                                                <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Bid</button>
+                                                    <button type="submit"
+                                                        class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit
+                                                        Bid</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -118,20 +148,30 @@
                                 </div>
 
                                 <!-- Confirmation Modal -->
-                                <div x-show="showConfirmationModal" x-cloak class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50" @click.away="showConfirmationModal = false">
-                                    <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                                <div x-show="showConfirmationModal" x-cloak
+                                    class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
+                                    @click.away="showConfirmationModal = false">
+                                    <div
+                                        class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                                         <div class="bg-white p-4">
                                             <div class="flex justify-between items-center pb-2">
                                                 <h5 class="text-lg font-semibold text-custom-header">Bid Accepted</h5>
-                                                <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showConfirmationModal = false">
+                                                <button type="button" class="text-gray-400 hover:text-gray-600"
+                                                    aria-label="Close" @click="showConfirmationModal = false">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="text-center">
-                                                <p class="mb-4" x-text="'Bid accepted from: ' + providerName + ', bid: ' + bidAmount"></p>
+                                                <p class="mb-4"
+                                                    x-text="'Bid accepted from: ' + providerName + ', bid: ' + bidAmount">
+                                                </p>
                                                 <div class="flex justify-center space-x-4">
-                                                    <a href="{{ route('chat') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Proceed to Chat</a>
-                                                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" @click="showConfirmationModal = false">Close</button>
+                                                    <a href="{{ route('chat') }}"
+                                                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Proceed
+                                                        to Chat</a>
+                                                    <button type="button"
+                                                        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                                                        @click="showConfirmationModal = false">Close</button>
                                                 </div>
                                             </div>
                                         </div>

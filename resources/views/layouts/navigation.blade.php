@@ -74,6 +74,10 @@
                         <x-nav-link class="nav-link" :href="route('chat')" :active="request()->routeIs('chat')">
                             {{ __('Chat') }}
                         </x-nav-link>
+
+                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+        {{ __('Notifications') }}
+    </x-nav-link>
                     </div>
 
                     <!-- Settings Dropdown -->

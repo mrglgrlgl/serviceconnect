@@ -24,13 +24,15 @@ class ProviderDetail extends Model
         'nbi_clearance', 
         'tesda_certification', 
         'other_credentials',
+        
     ];
     public function requestList()
     {
         return $this->belongsTo(RequestList::class, 'request_id', 'id');
     }
     public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+{
+    return $this->belongsTo(User::class, 'provider_id', 'id');
+}
+
 }

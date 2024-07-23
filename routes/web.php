@@ -12,6 +12,26 @@ use App\Http\Controllers\Auth\ServiceRequestController;
 use App\Http\Controllers\Auth\ProviderSRController;
 use App\Http\Controllers\Auth\BidController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\RedirectionController;
+use App\Http\Controllers\ChannelController;
+
+
+Route::group(['middleware' => ['auth', 'seeker']], function() {
+    Route::get('/seeker/dashboard', [SeekerController::class, 'dashboard'])->name('seeker.dashboard');
+    // Other seeker routes
+});
+
+Route::group(['middleware' => ['auth', 'provider']], function() {
+    Route::get('/provider/dashboard', [ProviderController::class, 'dashboard'])->name('provider.dashboard');
+    // Other provider routes
+});
+
+Route::group(['middleware' => ['auth', 'authorizer']], function() {
+    Route::get('/authorizer/dashboard', [AuthorizerController::class, 'dashboard'])->name('authorizer.dashboard');
+    // Other authorizer routes
+});
+
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::get('/', function (){
     return view('welcome');
@@ -35,6 +55,14 @@ Route::get('/register-as', function () {
     return view('auth.registerAs');
 })->name('registerAs');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
+});
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
@@ -139,20 +167,31 @@ Route::delete('/service-requests/{service_request}', [ServiceRequestController::
 // routes/web.php
 Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
 Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
-Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+// Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
 
 Route::patch('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 
-// Chat route
+
 Route::get('/chat', function () {return view('chat');})->name('chat');
 
-// category controller
-Route::get('/service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
+Route::get('/api/providers/{bidderId}', [BidController::class, 'getProviderProfile']);
+Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
 
-Route::patch('/service-requests/{id}', [ServiceRequestController::class, 'update'])->name('service-requests.update');
-});
+
+// Route for confirming a bid
+// Route for seekers
+Route::get('/seeker-channel/{serviceRequest}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+
+// Route for providers
+Route::get('/provider-channel', [ChannelController::class, 'providerChannel'])->name('channel.provider');
+
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+
+}); 
 
 
 require __DIR__.'/auth.php';
