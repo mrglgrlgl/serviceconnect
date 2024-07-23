@@ -4,13 +4,13 @@
     $icon = '';
     switch (strtolower($category)) {
         case 'carpentry':
-            $icon = 'handyman'; // Correct icon name for carpentry
+            $icon = 'handyman';
             break;
         case 'plumbing':
             $icon = 'plumbing';
             break;
         case 'welding':
-            $icon = 'hardware'; // Adjusted icon name
+            $icon = 'hardware';
             break;
         case 'building and related':
             $icon = 'construction';
@@ -22,10 +22,10 @@
             $icon = 'restaurant';
             break;
         case 'bus driving':
-            $icon = 'airport_shuttle'; // Adjusted icon name
+            $icon = 'airport_shuttle';
             break;
         case 'stone cutting and masonry':
-            $icon = 'content_cut'; // Adjusted icon name
+            $icon = 'content_cut';
             break;
         case 'hairdressing':
             $icon = 'spa';
@@ -34,11 +34,17 @@
             $icon = 'spa';
             break;
         default:
-            $icon = 'category'; // Default icon if the category does not match any case
+            $icon = 'category';
+    }
+
+    $user = Auth::user();
+    $textColor = 'text-custom-light-blue';
+    if ($user && $user->role == '3') {
+        $textColor = 'text-custom-lightest-blue';
     }
 @endphp
 
 <div class="category-icon flex items-center space-x-2">
-    <span class="material-icons text-custom-light-blue text-4xl">{{ $icon }}</span>
+    <span class="material-icons {{ $textColor }} text-4xl">{{ $icon }}</span>
     <span class="font-semibold text-xl text-custom-header">{{ ucfirst($category) }}</span>
 </div>

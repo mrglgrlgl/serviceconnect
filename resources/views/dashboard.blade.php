@@ -45,8 +45,8 @@
                         <x-service-status :status="$serviceRequest->status" />
                     </div>
                     <div class="text-sm text-gray-600 md:mt-2">
-                        {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y h:i A') }}
-                        - {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('F j, Y h:i A') }}
+                        {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                        - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
                     </div>
                 </div>
         
@@ -65,8 +65,8 @@
         
                     <div class="flex justify-between items-center">
                         <div>
-                            <x-outline-button href="{{ route('service-requests.edit', $serviceRequest) }}" class="flex-1 md:flex-none w-full md:w-auto">
-                                <span class="material-symbols-outlined">
+                            <x-outline-button href="{{ route('service-requests.edit', $serviceRequest) }}" class="flex-1 md:flex-none w-full md:w-auto border-gray-500 hover:bg-gray-500 hover:border-gray-500">
+                                <span class="material-symbols-outlined text-gray-500 hover:text-white">
                                     edit
                                 </span>
                             </x-outline-button>
@@ -86,7 +86,7 @@
                                 <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
                             @else
                                 <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
-                                <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids</button>
+                                <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                             @endif
                         </div>
                     </div>
@@ -99,27 +99,27 @@
         <!-- Bids Panel -->
         <div x-show="showBidsPanel" class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4">
             <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
+                <div class="pb-8">
                 <button @click="closeBidsPanel()" class="absolute top-4 right-4 text-red-500 text-xl">&times;</button>
-                <div class="text-xl font-semibold mb-4">
-                    <span x-text="`${serviceTitle} Bids`"></span>
                 </div>
                 <ul class="space-y-4">
                     <template x-for="bid in bids" :key="bid.id">
                         <li x-show="!bid.rejected" class="mb-4 border-b pb-4">
                             <div class="flex justify-between items-start">
                                 <div class="flex-grow">
-                                    <div class="flex items-center mb-2">
+                                    <div class="flex justify-between items-center mb-2">
                                         <div class="font-semibold text-lg" x-text="bid.bidder.name"></div>
                                         <div class="text-gray-600 ml-2" x-text="new Date(bid.created_at).toLocaleString()"></div>
                                     </div>
                                     <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
-                                </div>
-                                <div class="flex items-end">
-                                    <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Confirm</button>
-                                    <button @click="viewProfile(bid.bidder.id)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">View Profile</button>
+                                
+                                <div class="flex justify-end space-x-2">
+                                    <button @click="viewProfile(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">View Profile</button>
+                                    <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                                 </div>
                             </div>
+                        </div>
                         </li>
                     </template>
                 </ul>

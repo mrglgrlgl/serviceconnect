@@ -5,17 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar</title>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <style>
-        /* Ensure all nav links have the same base styling */
-        .nav-link {
-            padding: 0.5rem 1rem; /* Adjust as needed */
-            display: flex;
-            align-items: center;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <nav x-data="{ open: false, dropdownOpen: false, serviceDropdownOpen: false }" class="border-b border-gray-300 bg-gray-100 border">
+    <nav x-data="{ open: false, dropdownOpen: false, serviceDropdownOpen: false }" class="border-b border-gray-300 bg-gray-100">
         <!-- Primary Navigation Menu -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -29,26 +22,31 @@
                 </div>
 
                 <!-- Right Side: Navigation Links and Settings Dropdown -->
-                <div class="flex space-x-4">
+                <div class="flex">
                     <!-- Navigation Links -->
                     <div class="hidden sm:flex space-x-4 sm:-my-px">
-                        <x-nav-link class="nav-link" :href="route('home')" :active="request()->routeIs('home')">
-                            {{ __('Home') }}
-                        </x-nav-link>
+                        @if (Auth::user()->role != '2')
+                            <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                                {{ __('Home') }}
+                            </x-nav-link>
+                        @endif
 
                         @if (Auth::user()->role == '2')
                             <!-- Provider View -->
-                            <x-nav-link class="nav-link" :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
+                            <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
                                 {{ __('Service Request') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                                <span class="material-icons">chat</span>
+                            </x-nav-link>
+                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+                                <span class="material-icons">notifications</span>
                             </x-nav-link>
                         @elseif (Auth::user()->role == '3')
                             <!-- Seeker View -->
-                            
-                            
-                            <div x-data="{ serviceDropdownOpen: false }" class="relative inline-block">
+                            <div class="relative inline-block">
                                 <x-nav-link @click="serviceDropdownOpen = !serviceDropdownOpen" 
-                                    :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')"
-                                    class="nav-link flex items-center relative">
+                                    :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')">
                                     {{ __('Service Requests') }}
                                     <svg class="ml-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -65,19 +63,24 @@
                                     </x-dropdown-link>
                                 </div>
                             </div>
+                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                                {{ __('Chat') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+                                {{ __('Notifications') }}
+                            </x-nav-link>
                         @else
                             <!-- Default for other users -->
-                            <x-nav-link class="nav-link" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Service Requests') }}
                             </x-nav-link>
-                        @endif
-                        <x-nav-link class="nav-link" :href="route('chat')" :active="request()->routeIs('chat')">
-                            {{ __('Chat') }}
-                        </x-nav-link>
-
+                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                                {{ __('Chat') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-        {{ __('Notifications') }}
-    </x-nav-link>
+                                {{ __('Notifications') }}
+                            </x-nav-link>
+                        @endif
                     </div>
 
                     <!-- Settings Dropdown -->
@@ -99,7 +102,7 @@
 
                                 <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10">
                                     <x-dropdown-link :href="route('profile.show')">
-                                     {{ __('Profile') }}
+                                        {{ __('Profile') }}
                                     </x-dropdown-link>
 
                                     <x-dropdown-link :href="route('become-provider')">
@@ -160,31 +163,62 @@
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
+                @if (Auth::user()->role != '2')
+                    <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                        {{ __('Home') }}
+                    </x-responsive-nav-link>
+                @endif
+                <x-responsive-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                    {{ __('Chat') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+                    {{ __('Notifications') }}
+                </x-responsive-nav-link>
             </div>
 
             <!-- Responsive Settings Options -->
             <div class="pt-4 pb-1 border-t border-gray-200">
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
+                @if (Auth::check())
+                    <div class="px-4">
+                        <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                        <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                    </div>
 
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-
-                    <!-- Authentication -->
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-
-                        <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                            {{ __('Log Out') }}
+                    <div class="mt-3 space-y-1">
+                        <x-responsive-nav-link :href="route('profile.show')">
+                            {{ __('Profile') }}
                         </x-responsive-nav-link>
-                    </form>
-                </div>
+                        <x-responsive-nav-link :href="route('become-provider')">
+                            {{ __('Become a Provider!') }}
+                        </x-responsive-nav-link>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                                {{ __('Log Out') }}
+                            </x-responsive-nav-link>
+                        </form>
+                    </div>
+                @else
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button @click="open = !open"
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div>Guest</div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('login')">
+                                {{ __('Login') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('register')">
+                                {{ __('Register') }}
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                @endif
             </div>
         </div>
     </nav>

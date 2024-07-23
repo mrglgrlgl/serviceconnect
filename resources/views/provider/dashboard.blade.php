@@ -2,7 +2,7 @@
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             @if ($serviceRequests->isEmpty())
-                <div class="bg-blue-100 text-blue-800 p-4 rounded mb-6">
+                <div class="bg-blue-100 text-custom-light-blue p-4 rounded mb-6">
                     No service requests found.
                 </div>
             @else
