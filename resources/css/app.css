@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Ensure search input is visible */
+#search {
+    background-color: white;
+    color: black;
+}
+
+/* Adjust the layout to handle search results properly */
+@media (min-width: 768px) {
+    .provider-list {
+        flex: 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .provider-list {
+        width: 100%;
+    }
+}
+
+.search-results {
+    padding-top: 1rem;
+}
+
+.search-results ul {
+    padding-left: 1.25rem;
+}
+
+.search-results li {
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure the provider list items are consistent */
+.provider-list .provider-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0; /* Tailwind color for gray-200 */
+}

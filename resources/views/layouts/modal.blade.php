@@ -95,22 +95,22 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="attach_media" class="form-label">Attach Media <span class="text-red-500">*</span></label>
+                        <label for="attach_media" class="form-label">Attach Image <span class="text-red-500">*</span></label>
                         <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media" name="attach_media" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="attach_media2" class="form-label">Attach Media 2</label>
+                        <label for="attach_media2" class="form-label">Attach Image 2</label>
                         <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media2" name="attach_media2" />
                     </div>
 
                     <div class="mb-3">
-                        <label for="attach_media3" class="form-label">Attach Media 3</label>
+                        <label for="attach_media3" class="form-label">Attach Image 3</label>
                         <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media3" name="attach_media3" />
                     </div>
 
                     <div class="mb-3">
-                        <label for="attach_media4" class="form-label">Attach Media 4</label>
+                        <label for="attach_media4" class="form-label">Attach Image 4</label>
                         <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media4" name="attach_media4" />
                     </div>
 

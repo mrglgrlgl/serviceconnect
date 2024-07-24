@@ -1,11 +1,10 @@
 <x-seekerhome>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="{{ asset('js/map.js') }}"></script>
 
-    <form method="POST" action="{{ route('register') }}" class="grid items-center justify-center sm:pt-0 w-full">
+    <form method="GET" action="{{ route('provider.search') }}" class="grid items-center justify-center sm:pt-0 w-full">
         @csrf
 
 
@@ -85,7 +84,7 @@
                     <option value="rating_desc">Rating High to Low</option>
                 </x-seeker-home-filter>
             </div>
-
+            
             <div class="flex justify-center items-center w-full md:w-auto">
                 <button type="submit"
                     class="h-11 w-full md:w-auto justify-center text-sm rounded-lg border text-white font-bold border-custom-lightestblue-accent border-3xl bg-none bg-custom-lightestblue-accent md:px-8">
@@ -97,8 +96,7 @@
         {{-- Other components (Map and Provider List) --}}
         <div class="grid grid-cols-1 md:grid-cols-3 w-10/12 mx-auto pb-6">
             <!-- Map -->
-            <div id="map"
-                class="h-80 md:h-144 w-full md:shadow-md md:col-span-1 order-1 md:order-2 rounded-t-lg md:rounded-none">
+            <div id="map" class="h-80 md:h-144 w-full md:shadow-md md:col-span-1 order-1 md:order-2 rounded-t-lg md:rounded-none">
             </div>
 
             <!-- Provider List -->
@@ -119,8 +117,25 @@
 
                 {{-- Provider list component --}}
                 <div class="h-96">
-                    <x-provider-list></x-provider-list>
-                    <x-provider-list></x-provider-list>
+                    @if(isset($providers))
+                        <h3 class="text-xl font-bold mb-4">Search Results</h3>
+                        @if($providers->isEmpty())
+                            <div class="bg-red-100 text-red-800 p-4 rounded mb-6">
+                                No providers found.
+                            </div>
+                        @else
+                            <ul class="list-disc pl-5">
+                                @foreach($providers as $provider)
+                                    <li class="mb-2">
+                                        <span class="font-semibold">{{ $provider->user->name }}</span> - {{ $provider->serviceCategory }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    @else
+                        <x-provider-list></x-provider-list>
+                        <x-provider-list></x-provider-list>
+                    @endif
                 </div>
             </div>
         </div>

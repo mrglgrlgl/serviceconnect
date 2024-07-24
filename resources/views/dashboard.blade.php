@@ -96,35 +96,40 @@
             @endif
         </div>
 
-        <!-- Bids Panel -->
-        <div x-show="showBidsPanel" class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4">
-            <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
-                <div class="pb-8">
-                <button @click="closeBidsPanel()" class="absolute top-4 right-4 text-red-500 text-xl">&times;</button>
-                </div>
-                <ul class="space-y-4">
-                    <template x-for="bid in bids" :key="bid.id">
-                        <li x-show="!bid.rejected" class="mb-4 border-b pb-4">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-grow">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="font-semibold text-lg" x-text="bid.bidder.name"></div>
-                                        <div class="text-gray-600 ml-2" x-text="new Date(bid.created_at).toLocaleString()"></div>
-                                    </div>
-                                    <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
-                                    <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
-                                
-                                <div class="flex justify-end space-x-2">
-                                    <button @click="viewProfile(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">View Profile</button>
-                                    <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
-                                </div>
+<!-- Bids Panel -->
+<div x-show="showBidsPanel" class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4">
+    <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
+        <div class="pb-8">
+            <button @click="closeBidsPanel()" class="absolute top-4 right-4 text-red-500 text-xl">&times;</button>
+        </div>
+        <template x-if="bids.length === 0">
+            <div class="text-center text-gray-600 bg-gray-100 py-4">
+                No bids yet!
+            </div>
+        </template>
+        <ul x-show="bids.length > 0" class="space-y-4">
+            <template x-for="bid in bids" :key="bid.id">
+                <li x-show="!bid.rejected" class="mb-4 border-b pb-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="font-semibold text-lg" x-text="bid.bidder.name"></div>
+                                <div class="text-gray-600 ml-2" x-text="new Date(bid.created_at).toLocaleString()"></div>
+                            </div>
+                            <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
+                            <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
+
+                            <div class="flex justify-end space-x-2">
+                                <button @click="viewProfile(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">View Profile</button>
+                                <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                             </div>
                         </div>
-                        </li>
-                    </template>
-                </ul>
-            </div>
-        </div>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </div>
+</div>
         {{-- <div class="servicerequestindividual p-4 bg-white shadow-sm rounded-lg md:mb-4">
             <div class="flex justify-between items-start mb-4">
                 <div class="flex flex-col items-start">
@@ -143,9 +148,9 @@
             <div x-show="showProfileModal"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
                 @click.away="showProfileModal = false">
-                <div class="bg-white p-8 rounded-lg w-2/3 max-w-4xl mx-auto shadow-lg" @click.stop>
+                <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-800">Provider Profile</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
                         <button @click="showProfileModal = false" class="text-red-500 hover:text-red-700">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -154,47 +159,30 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4">
                         <div class="col-span-1">
-                            <div class="font-semibold text-gray-700 mb-2">Name:</div>
-                            <div class="text-gray-600 mb-4"><span x-text="profile.name"></span></div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Work Email:</div>
-                            <div class="text-gray-600 mb-4"><span x-text="profile.providerDetails.work_email"></span>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
+                                <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
                             </div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Contact Number:</div>
-                            <div class="text-gray-600 mb-4"><span
-                                    x-text="profile.providerDetails.contact_number"></span></div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Service Category:</div>
-                            <div class="text-gray-600 mb-4"><span
-                                    x-text="profile.providerDetails.serviceCategory"></span></div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Subcategory:</div>
-                            <div class="text-gray-600 mb-4"><span x-text="profile.providerDetails.subcategory"></span>
+                            <div class="flex justify-between">
+                                <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
+                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
                             </div>
-                        </div>
-                        <div class="col-span-1">
-                            <div class="font-semibold text-gray-700 mb-2">Have Tools:</div>
-                            <div class="text-gray-600 mb-4"><span x-text="profile.providerDetails.have_tools"></span>
+                            <div class="flex items-center mb-2">
+                                <!-- Email Icon and Text Alignment -->
+                                <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
+                                <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
                             </div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Years of Experience:</div>
-                            <div class="text-gray-600 mb-4"><span
-                                    x-text="profile.providerDetails.years_of_experience"></span></div>
-
-                            <div class="font-semibold text-gray-700 mb-2">Description:</div>
-                            <div class="text-gray-600 mb-4"><span x-text="profile.providerDetails.description"></span>
-                            </div>
+                            <div class="flex items-center mb-2">
+                                <!-- Phone Icon and Text Alignment -->
+                                <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
+                                <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
                         </div>
                     </div>
                     <div class="mt-6 flex justify-end space-x-4">
-                        <button @click="confirmBid(profile.providerDetails.bidId, profile.providerDetails.requestId)"
-                            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">Confirm
-                            Bid</button>
-                        <button @click="showProfileModal = false"
-                            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">Close</button>
+                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
+                        {{-- <button @click="showProfileModal = false" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Close</button> --}}
                     </div>
                 </div>
             </div>

@@ -19,6 +19,11 @@ class Channel extends Model
         'start_time', 
         'completion_time', 
         'amount_paid',
+        'is_arrived',
+        'is_on_the_way',
+        'is_task_started',
+        'is_task_completed',
+        'is_paid',
     ];
     public function serviceRequest()
     {

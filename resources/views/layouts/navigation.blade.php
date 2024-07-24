@@ -36,12 +36,6 @@
                             <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
                                 {{ __('Service Request') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                                <span class="material-icons">chat</span>
-                            </x-nav-link>
-                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                                <span class="material-icons">notifications</span>
-                            </x-nav-link>
                         @elseif (Auth::user()->role == '3')
                             <!-- Seeker View -->
                             <div class="relative inline-block">
@@ -63,24 +57,15 @@
                                     </x-dropdown-link>
                                 </div>
                             </div>
-                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                                {{ __('Chat') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                                {{ __('Notifications') }}
-                            </x-nav-link>
-                        @else
-                            <!-- Default for other users -->
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                {{ __('Service Requests') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                                {{ __('Chat') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                                {{ __('Notifications') }}
-                            </x-nav-link>
                         @endif
+                        
+                        <!-- Chat and Notifications Links for All Users -->
+                        <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+                            <span class="material-icons">chat</span>
+                        </x-nav-link>
+                        <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
+                            <span class="material-icons">notifications</span>
+                        </x-nav-link>
                     </div>
 
                     <!-- Settings Dropdown -->
@@ -169,10 +154,10 @@
                     </x-responsive-nav-link>
                 @endif
                 <x-responsive-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                    {{ __('Chat') }}
+                    <span class="material-icons">chat</span>
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                    {{ __('Notifications') }}
+                    <span class="material-icons">notifications</span>
                 </x-responsive-nav-link>
             </div>
 

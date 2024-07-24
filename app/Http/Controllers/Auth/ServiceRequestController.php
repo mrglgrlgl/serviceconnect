@@ -136,31 +136,6 @@ public function update(Request $request, $id)
     // Find the existing service request
     $serviceRequest = ServiceRequest::findOrFail($id);
 
-    // Format the existing times to H:i before merging
-    $existingStartTime = \Carbon\Carbon::parse($serviceRequest->start_time)->format('H:i');
-    $existingEndTime = \Carbon\Carbon::parse($serviceRequest->end_time)->format('H:i');
-
-    // Log original times
-    Log::info('Original start time: ' . $existingStartTime);
-    Log::info('Original end time: ' . $existingEndTime);
-
-    // Merge existing times if not present in the request
-    $startTime = $request->input('start_time', $existingStartTime);
-    $endTime = $request->input('end_time', $existingEndTime);
-
-    // Ensure the merged times are correctly formatted
-    try {
-        $startTime = \Carbon\Carbon::createFromFormat('H:i', $startTime)->format('H:i');
-        $endTime = \Carbon\Carbon::createFromFormat('H:i', $endTime)->format('H:i');
-    } catch (\Exception $e) {
-        Log::error('Time format error: ' . $e->getMessage());
-        return redirect()->back()->withErrors(['start_time' => 'Invalid start time format', 'end_time' => 'Invalid end time format']);
-    }
-
-    // Log merged times for debugging
-    Log::info('Merged start time: ' . $startTime);
-    Log::info('Merged end time: ' . $endTime);
-    
 
     // Validate the request data
     $validatedData = $request->validate([
@@ -184,9 +159,19 @@ public function update(Request $request, $id)
         'attach_media4' => 'nullable|file|mimes:jpg,jpeg,png',
     ]);
 
-   // Log final times before saving
-   Log::info('Final start time before save: ' . $serviceRequest->start_time);
-   Log::info('Final end time before save: ' . $serviceRequest->end_time);
+        // Convert the validated start_time and end_time to 24-hour format
+        try {
+            $startTime24 = \Carbon\Carbon::createFromFormat('h:i A', $validatedData['start_time'])->format('H:i');
+            $endTime24 = \Carbon\Carbon::createFromFormat('h:i A', $validatedData['end_time'])->format('H:i');
+        } catch (\Exception $e) {
+            Log::error('Time format error: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['start_time' => 'Invalid start time format', 'end_time' => 'Invalid end time format']);
+        }
+
+    // Log the converted times
+    Log::info('Converted start time: ' . $startTime24);
+    Log::info('Converted end time: ' . $endTime24);
+
 
     // Update the service request with validated data
     $serviceRequest->category = $validatedData['category'];
@@ -226,7 +211,7 @@ public function update(Request $request, $id)
         // Log the saved times
         Log::info('Saved start time: ' . $serviceRequest->start_time);
         Log::info('Saved end time: ' . $serviceRequest->end_time);
-    
+        Log::info('Form Data:', $request->all());
 
     return redirect()->route('dashboard')->with('success', 'Service Request updated successfully!');
     

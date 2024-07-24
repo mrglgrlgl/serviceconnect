@@ -15,8 +15,40 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RedirectionController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\SearchController;
+
+Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
+Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
+Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
+
+// web.php
+Route::middleware(['auth'])->group(function () {
+    Route::post('/channel/{channel}/set-arrived', [App\Http\Controllers\ChannelController::class, 'setArrived'])->name('channel.setArrived');
+    Route::post('/channel/{channel}/confirm-arrival', [App\Http\Controllers\ChannelController::class, 'confirmArrival'])->name('channel.confirmArrival');
+    
+    Route::post('/channel/{channel}/start-task', [App\Http\Controllers\ChannelController::class, 'startTask'])->name('channel.startTask');
+    Route::post('/channel/{channel}/complete-task', [App\Http\Controllers\ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
+    Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+    Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
+    Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
+    Route::post('/channel/{channel}/confirm-task-start', [App\Http\Controllers\ChannelController::class, 'confirmTaskStart'])->name('channel.confirmTaskStart');
+
+    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+    Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
+
+});
+// Route::post('/channel/{channel}/inform-seeker', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
 
 
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/providers/{id}', [SearchController::class, 'show']);
+
+    Route::get('/provider-search', [SearchController::class, 'search'])->name('provider.search');
+});
 Route::group(['middleware' => ['auth', 'seeker']], function() {
     Route::get('/seeker/dashboard', [SeekerController::class, 'dashboard'])->name('seeker.dashboard');
     // Other seeker routes
