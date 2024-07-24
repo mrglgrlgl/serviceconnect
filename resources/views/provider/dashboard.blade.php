@@ -80,9 +80,14 @@
                                             @click.prevent="showConfirmationModal = true">
                                             Go to chat
                                         </a>
-                                        <a href="{{ route('channel.provider') }}" class="text-blue-500 underline ml-3">
+                                        {{-- <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-3">
                                             Go to channel
-                                        </a>
+                                        </a> --}}
+
+<a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View Channel</a>
+
+
+
                                     @elseif ($userBid->status == 'rejected')
                                         <span class="text-red-500 font-semibold">Bid Closed</span>
                                     @else
