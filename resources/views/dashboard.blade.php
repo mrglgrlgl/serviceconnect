@@ -8,7 +8,7 @@
                             {{ __('Service Requests') }}
                         </div>
                     </x-category-link>
-                    <x-category-link class="inline-block">
+                    <x-category-link :href="route('analytics')" class="inline-block">
                         <div class="flex flex-col items-center text-base md:text-xl">
                             {{ __('Analytics') }}
                         </div>

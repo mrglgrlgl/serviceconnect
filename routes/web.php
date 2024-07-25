@@ -16,6 +16,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RedirectionController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\AnalyticsController;
 
 Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
 Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
@@ -224,6 +225,14 @@ Route::get('/notifications', [NotificationController::class, 'index'])->name('no
 Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 
 }); 
+
+
+
+// analytics
+Route::get('/analytics', function () {
+    return view('analytics');
+})->middleware(['auth', 'verified','normal'])->name('analytics');
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
 
 require __DIR__.'/auth.php';

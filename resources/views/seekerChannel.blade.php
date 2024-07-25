@@ -75,8 +75,7 @@
             </div>
         </div>
     
-
-    
+        
         <!-- Arrival Confirmation Modal -->
         <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="arrivalModal" style="display: none;">
             <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
