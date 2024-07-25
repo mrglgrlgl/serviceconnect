@@ -63,6 +63,11 @@
             @else
                 <p class="text-yellow-500">Waiting for the seeker to confirm arrival.</p>
             @endif
+            <div class="panel-body">
+            @if ($channel->status === 'completed')
+                <p>Task completed and payment confirmed.</p>
+            @endif
+        </div>
         </div>
     </div>
 </div>

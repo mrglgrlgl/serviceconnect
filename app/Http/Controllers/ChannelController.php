@@ -195,7 +195,9 @@ public function confirmTaskCompletion(Channel $channel)
         return response()->json(['message' => 'Error confirming task completion.'], 500);
     }
 
-}public function confirmPayment(Channel $channel)
+}
+
+public function confirmPayment(Channel $channel)
 {
     try {
         $user = Auth::user();
@@ -205,7 +207,14 @@ public function confirmTaskCompletion(Channel $channel)
         }
 
         $channel->is_paid = 'true';
+        $channel->status = 'completed'; // Set the status to completed
         $channel->save();
+
+         $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined
+        if ($serviceRequest) {
+            $serviceRequest->status = 'completed';
+            $serviceRequest->save();
+        }
 
         return response()->json(['message' => 'Payment confirmed.']);
     } catch (\Exception $e) {
