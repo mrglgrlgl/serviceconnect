@@ -17,9 +17,19 @@ use App\Http\Controllers\RedirectionController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\RatingController;
+
+Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating');
+Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
+
+Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
+
 
 Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
 Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+
+Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
+
 Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
 Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
 
@@ -51,7 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/provider-search', [SearchController::class, 'search'])->name('provider.search');
 });
 Route::group(['middleware' => ['auth', 'seeker']], function() {
-    Route::get('/seeker/dashboard', [SeekerController::class, 'dashboard'])->name('seeker.dashboard');
+    // Route::get('/seeker/dashboard', [SeekerController::class, 'dashboard'])->name('seeker.dashboard');
     // Other seeker routes
 });
 
