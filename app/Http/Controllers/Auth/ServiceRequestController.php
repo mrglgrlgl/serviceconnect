@@ -79,7 +79,9 @@ class ServiceRequestController extends Controller
         'provider_gender' => 'nullable|in:male,female',
         'job_type' => 'required|in:project_based,hourly_rate',
         'hourly_rate' => 'required|numeric|min:0',
+        'hourly_rate_max' => 'required|numeric|min:0',
         'expected_price' => 'required|numeric|min:0',
+        'expected_price_max' => 'required|numeric|min:0',
         'estimated_duration' => 'required|integer|min:0',
         'attach_media' => 'required|image|max:2048',
         'attach_media2' => 'nullable|image|max:2048',
@@ -109,7 +111,9 @@ class ServiceRequestController extends Controller
     $serviceRequest->provider_gender = $validatedData['provider_gender'];
     $serviceRequest->job_type = $validatedData['job_type'];
     $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
+    $serviceRequest->hourly_rate_max = $validatedData['hourly_rate_max'];
     $serviceRequest->expected_price = $validatedData['expected_price'];
+    $serviceRequest->expected_price_max = $validatedData['expected_price_max'];
     $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
     $serviceRequest->status = 'open'; // Default status
     $serviceRequest->user_id = auth()->id(); // Assuming the user is authenticated
@@ -123,6 +127,12 @@ class ServiceRequestController extends Controller
 
     return redirect()->route('dashboard')->with('success', 'Service request created successfully!');
 }
+
+
+
+
+
+
 public function showDashboard()
 {
     $serviceRequests = ServiceRequest::all(); // Replace with your actual query to fetch service requests
@@ -151,7 +161,9 @@ public function update(Request $request, $id)
         'provider_gender' => 'nullable|in:male,female',
         'job_type' => 'required|in:project_based,hourly_rate',
         'hourly_rate' => 'required|numeric|min:0',
+        'hourly_rate_max' => 'nullable|numeric|min:0',
         'expected_price' => 'required|numeric|min:0',
+        'expected_price_max' => 'nullable|numeric|min:0',
         'estimated_duration' => 'required|integer|min:0',
         'attach_media' => 'nullable|file|mimes:jpg,jpeg,png',
         'attach_media2' => 'nullable|file|mimes:jpg,jpeg,png',
@@ -187,23 +199,11 @@ public function update(Request $request, $id)
     $serviceRequest->provider_gender = $validatedData['provider_gender'];
     $serviceRequest->job_type = $validatedData['job_type'];
     $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
+    $serviceRequest->hourly_rate_max = $validatedData['hourly_rate_max'];
     $serviceRequest->expected_price = $validatedData['expected_price'];
+    $serviceRequest->expected_price_max = $validatedData['expected_price_max'];
     $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
 
-    
-    // Handle file uploads
-    // if ($request->hasFile('attach_media')) {
-    //     // Delete existing file if remove checkbox is checked
-    //     if ($request->has('remove_attach_media')) {
-    //         Storage::disk('public')->delete($serviceRequest->attach_media);
-    //         $serviceRequest->attach_media = null;
-    //     }
-
-    //     // Upload new file
-    //     $serviceRequest->attach_media = $request->file('attach_media')->store('service_requests/documents', 'public');
-    // }
-
-    // // Repeat similar logic for attach_media2, attach_media3, attach_media4...
 
     // Save the updated service request
     $serviceRequest->save();

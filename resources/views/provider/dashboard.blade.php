@@ -34,14 +34,17 @@
                                     @if ($serviceRequest->job_type == 'hourly_rate')
                                         <div class="flex items-center p-2">
                                             <span class="material-symbols-outlined mr-1">request_quote</span>
-                                            Hourly Rate: {{ $serviceRequest->hourly_rate }}
+                                            Hourly Rate: {{ $serviceRequest->hourly_rate }} -
+                                            {{ $serviceRequest->hourly_rate_max }}
                                         </div>
                                     @elseif ($serviceRequest->job_type == 'project_based')
                                         <div class="flex items-center p-2">
                                             <span class="material-symbols-outlined mr-1">request_quote</span>
-                                            Expected Price: {{ $serviceRequest->expected_price }}
+                                            Expected Price: {{ $serviceRequest->expected_price }} -
+                                            {{ $serviceRequest->expected_price_max }}
                                         </div>
                                     @endif
+
 
                                     <div class="flex items-center p-2">
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }}
@@ -54,7 +57,7 @@
                                 </div>
                                 <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                             </div>
-                            
+
                         </div>
 
                         <div class="flex justify-end items-center space-x-2 mt-4">
@@ -128,18 +131,24 @@
                                                 @csrf
                                                 <input type="hidden" name="service_request_id"
                                                     value="{{ $serviceRequest->id }}">
+
                                                 <div class="mb-4">
                                                     <label for="bid_amount"
                                                         class="block text-sm font-medium text-gray-700">Bid
                                                         Amount</label>
-                                                    <x-text-input type="number"
+                                                    <x-text-input type="number" step="0.01"
                                                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                         id="bid_amount" name="bid_amount" required />
+                                                    <p class="text-sm text-gray-600">Max Budget:
+                                                        {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }}
+                                                    </p>
+                                                    <p id="bid_warning" class="text-red-500 text-sm"
+                                                        style="display: none;">Your bid exceeds the maximum budget!</p>
                                                 </div>
                                                 <div class="mb-4">
                                                     <label for="bid_description"
-                                                        class="block text-sm font-medium text-gray-700">Bid
-                                                        Description</label>
+                                                        class="block text-sm font-medium text-gray-700">Work
+                                                        Plan</label>
                                                     <textarea
                                                         class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                         id="bid_description" name="bid_description" required></textarea>
@@ -192,4 +201,33 @@
             @endif
         </div>
     </div>
+    {{-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var bidAmountInput = document.getElementById('bid_amount');
+            var maxBudget =
+                {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }};
+            var warningMessage = document.createElement('div');
+            warningMessage.style.color = 'red';
+            warningMessage.style.display = 'none';
+            warningMessage.textContent = 'Your bid exceeds the maximum budget.';
+
+            // Insert warning message after the bid amount input field
+            bidAmountInput.parentNode.insertBefore(warningMessage, bidAmountInput.nextSibling);
+
+            bidAmountInput.addEventListener('input', function() {
+                var bidValue = parseFloat(bidAmountInput.value);
+
+                if (isNaN(bidValue)) {
+                    warningMessage.style.display = 'none';
+                    return;
+                }
+
+                if (bidValue > maxBudget) {
+                    warningMessage.style.display = 'block';
+                } else {
+                    warningMessage.style.display = 'none';
+                }
+            });
+        });
+    </script> --}}
 </x-app-layout>

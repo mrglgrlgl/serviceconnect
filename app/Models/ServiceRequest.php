@@ -26,7 +26,9 @@ class ServiceRequest extends Model
         'provider_gender',
         'job_type',
         'hourly_rate',
+        'hourly_rate_max',
         'expected_price',
+        'expected_price_max',
         'estimated_duration',
     ];
 
@@ -56,17 +58,4 @@ class ServiceRequest extends Model
     
 }
 
-
-// FIX try for time update
-// public function getStartTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
-
-// // Accessor for end_time
-// public function getEndTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
-// }
 
