@@ -49,6 +49,11 @@ class ServiceRequest extends Model
     {
         return $this->bids()->where('status', 'accepted')->exists();
     }
+    public function isCompleted() {
+        // You could have a more complex logic here based on other attributes like `reviewed` or `closed`
+        return $this->status === 'completed'; // Assuming 'completed' is a status indicating the request is done
+    }
+    
 }
 
 

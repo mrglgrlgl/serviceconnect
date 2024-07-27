@@ -236,9 +236,7 @@
             document.getElementById('ratingModal').style.display = 'flex';
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+    
 
         // Trigger the modal opening conditionally
         document.addEventListener('DOMContentLoaded', function() {
@@ -258,7 +256,7 @@
             }
 
             // Open rating modal if the task is completed
-            if (taskCompleted === 'true') {
+            if (paymentStatus === 'true') {
                 openRatingModal();
             }
         });

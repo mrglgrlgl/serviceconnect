@@ -54,6 +54,7 @@
                                 </div>
                                 <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                             </div>
+                            
                         </div>
 
                         <div class="flex justify-end items-center space-x-2 mt-4">
@@ -80,14 +81,15 @@
                                             @click.prevent="showConfirmationModal = true">
                                             Go to chat
                                         </a>
-                                        {{-- <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-3">
-                                            Go to channel
-                                        </a> --}}
 
-<a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View Channel</a>
-
-
-
+                                        @if (!$serviceRequest->isCompleted())
+                                            <a
+                                                href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
+                                                Channel</a>
+                                        @else
+                                            <span class="text-gray-500 ml-4">This service request is completed and no
+                                                longer available.</span>
+                                        @endif
                                     @elseif ($userBid->status == 'rejected')
                                         <span class="text-red-500 font-semibold">Bid Closed</span>
                                     @else
