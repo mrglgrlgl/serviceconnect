@@ -8,49 +8,24 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleRedirect
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect()->route('login'); // Handle unauthenticated users
+            return redirect()->route('login');
         }
 
         $userRole = Auth::user()->role;
 
-        // Check and redirect based on the user's role
         switch ($userRole) {
-            case 2:
-                // Redirect to provider dashboard if user is a provider
-                if (!$request->routeIs('provider.dashboard')) {
-                    return redirect()->route('provider.dashboard');
-                }
-                break;
-
             case 1:
-                // Redirect to authorizer dashboard if user is an authorizer
-                if (!$request->routeIs('authorizer.dashboard')) {
-                    return redirect()->route('authorizer.dashboard');
-                }
-                break;
-
+                return redirect()->route('authorizer.dashboard');
+            case 2:
+                return redirect()->route('provider.dashboard');
             case 3:
-                // Redirect to default dashboard if user is a normal user
-                if (!$request->routeIs('dashboard')) {
-                    return redirect()->route('dashboard');
-                }
-                break;
-
-            default:
-                // Redirect to default dashboard if role is not recognized
                 return redirect()->route('dashboard');
+            default:
+                abort(403, 'Unauthorized action.');
         }
-
-        // Proceed with the request if no redirection is needed
-        return $next($request);
     }
 }
 

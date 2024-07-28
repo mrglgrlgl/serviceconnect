@@ -1,9 +1,20 @@
 <x-app-layout>
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
-            @if ($serviceRequests->isEmpty())
+            @if (Auth::user()->role == 2 && !Auth::user()->providerDetails)
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                    Please complete your profile to view service requests.
+                    <a href="{{ route('become-provider') }}" class="text-blue-500">Complete Profile</a>
+                </div>
+
+                {{-- @if ($serviceRequests->isEmpty())
                 <div class="bg-blue-100 text-custom-light-blue p-4 rounded mb-6">
                     No service requests found.
+                </div> --}}
+            @elseif ($serviceRequests->isEmpty())
+                <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
+                    No service requests found. <a href="{{ route('service-requests.create') }}"
+                        class="text-blue-500">Create one now!</a>
                 </div>
             @else
                 @foreach ($serviceRequests as $serviceRequest)
@@ -143,7 +154,8 @@
                                                         {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }}
                                                     </p>
                                                     <p id="bid_warning" class="text-red-500 text-sm"
-                                                        style="display: none;">Your bid exceeds the maximum budget!</p>
+                                                        style="display: none;">
+                                                        Your bid exceeds the maximum budget!</p>
                                                 </div>
                                                 <div class="mb-4">
                                                     <label for="bid_description"
@@ -201,33 +213,5 @@
             @endif
         </div>
     </div>
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var bidAmountInput = document.getElementById('bid_amount');
-            var maxBudget =
-                {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }};
-            var warningMessage = document.createElement('div');
-            warningMessage.style.color = 'red';
-            warningMessage.style.display = 'none';
-            warningMessage.textContent = 'Your bid exceeds the maximum budget.';
 
-            // Insert warning message after the bid amount input field
-            bidAmountInput.parentNode.insertBefore(warningMessage, bidAmountInput.nextSibling);
-
-            bidAmountInput.addEventListener('input', function() {
-                var bidValue = parseFloat(bidAmountInput.value);
-
-                if (isNaN(bidValue)) {
-                    warningMessage.style.display = 'none';
-                    return;
-                }
-
-                if (bidValue > maxBudget) {
-                    warningMessage.style.display = 'block';
-                } else {
-                    warningMessage.style.display = 'none';
-                }
-            });
-        });
-    </script> --}}
 </x-app-layout>

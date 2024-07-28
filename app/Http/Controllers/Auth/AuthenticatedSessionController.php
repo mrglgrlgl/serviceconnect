@@ -22,46 +22,71 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    // public function store(LoginRequest $request): RedirectResponse
+    // {
+    //     $this->validate($request, [
+    //         'email' => 'required|string|email',
+    //         'password' => 'required|string',
+    //     ]);
+
+    //     if (method_exists($this, 'hasTooManyLoginAttempts') &&
+    //         $this->hasTooManyLoginAttempts($request)) {
+    //         $this->fireLockoutEvent($request);
+
+    //         return $this->sendLockoutResponse($request);
+    //     }
+
+    //     if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+    //         $request->session()->regenerate();
+
+    //         $this->clearLoginAttempts($request);
+
+    //         $loggedInUserRole = $request->user()->role;
+
+    //         // Redirect based on role
+    //         if ($loggedInUserRole == 1) {
+    //             return redirect()->intended(route('authorizer.dashboard'));
+    //         } elseif ($loggedInUserRole == 2) {
+    //             return redirect()->intended(route('provider.dashboard'));
+    //         } elseif ($loggedInUserRole == 3) {
+    //             return redirect()->intended(route('dashboard'));
+    //         }
+
+    //         return redirect()->intended(route('home'));
+    //     }
+
+    //     $this->incrementLoginAttempts($request);
+
+    //     throw ValidationException::withMessages([
+    //         'email' => [trans('auth.failed')],
+    //     ]);
+    // }
+    public function store(Request $request): RedirectResponse
     {
-        $this->validate($request, [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            $this->clearLoginAttempts($request);
+            $userRole = Auth::user()->role;
 
-            $loggedInUserRole = $request->user()->role;
-
-            // Redirect based on role
-            if ($loggedInUserRole == 1) {
-                return redirect()->intended(route('authorizer.dashboard'));
-            } elseif ($loggedInUserRole == 2) {
-                return redirect()->intended(route('provider.dashboard'));
-            } elseif ($loggedInUserRole == 3) {
-                return redirect()->intended(route('dashboard'));
+            switch ($userRole) {
+                case 1:
+                    return redirect()->intended(route('authorizer.dashboard'));
+                case 2:
+                    return redirect()->intended(route('provider.dashboard'));
+                case 3:
+                    return redirect()->intended(route('dashboard'));
+                default:
+                    Auth::logout();
+                    return redirect()->route('login')->withErrors(['email' => 'Role not recognized.']);
             }
-
-            return redirect()->intended(route('home'));
         }
 
-        $this->incrementLoginAttempts($request);
-
         throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')],
+            'email' => __('auth.failed'),
         ]);
     }
-
     /**
      * Destroy an authenticated session.
      */

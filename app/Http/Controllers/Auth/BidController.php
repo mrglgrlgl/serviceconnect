@@ -79,7 +79,10 @@ class BidController extends Controller
     }
 }
 
-// 
+public function complete()
+{
+    return view('profile.complete');
+}
 
     
 

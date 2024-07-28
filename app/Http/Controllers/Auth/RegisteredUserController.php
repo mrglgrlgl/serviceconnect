@@ -50,7 +50,7 @@ class RegisteredUserController extends Controller
         $userData = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
-            'cell_no' => $request->cell_no,
+            'cell_no' => '63' . ltrim($request->cell_no, '0'), // Add '63' prefix and remove leading zero if present
             'password' => Hash::make($request->password),
             'gender' => $request->input('gender'),
             'birth_date' => $birth_date,

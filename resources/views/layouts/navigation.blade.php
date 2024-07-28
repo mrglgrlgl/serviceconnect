@@ -91,7 +91,7 @@
                                     </x-dropdown-link>
 
                                     <x-dropdown-link :href="route('become-provider')">
-                                        {{ __('Become a Provider!') }}
+                                        {{ __('Verify Profile!') }}
                                     </x-dropdown-link>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
