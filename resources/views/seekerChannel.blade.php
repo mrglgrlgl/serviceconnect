@@ -45,7 +45,7 @@
         <div class="flex flex-wrap">
             <!-- Service Request Details -->
             <div class="w-full md:w-1/2 p-4">
-                <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="bg-white rounded-lg shadow-lg p-6 h-full">
                     <div class="border-b pb-4 mb-4">
                         <h3 class="text-xl font-semibold">Service Request Details</h3>
                     </div>

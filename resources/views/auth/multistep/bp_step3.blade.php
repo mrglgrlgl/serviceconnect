@@ -46,56 +46,66 @@
                 <a class="bg-custom-light-blue h-2 w-1/3 rounded-r-lg"></a>
             </div>
 
-            <div class="border-t my-4 w-full md:pb-6"></div> 
-
-            <div class="w-full md:w-8/12 space-y-6 mx-auto">
+            <div class="border-t my-4 w-full"></div> 
+            <div class="w-full md:w-10/12 space-y-6 mx-auto">
                 <form action="{{ route('save-step3') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
 
-                    <!-- Input fields for uploading documents -->
-                    <div class="form-group mb-4">
-                        <label for="government_id_front" class="block text-gray-700">Government ID (Front) <span class="text-red-500">*</span></label>
-                        <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_front" name="government_id_front" required onchange="previewImage(event, 'government_id_front_preview')">
-                        <img id="government_id_front_preview" class="img-preview" src="#" alt="Government ID Front Preview" style="display: none;">
+                    <!-- Government ID Section -->
+                    <div class="border border-gray-300 rounded-lg p-4">
+                        <div class="text-2xl font-semibold text-gray-700 mb-4">
+                            Government ID
+                        </div>
+                        <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
+                            <div>
+                                <label for="government_id_front" class="block text-gray-700">Front <span class="text-red-500">*</span></label>
+                                <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_front" name="government_id_front" required onchange="previewImage(event, 'government_id_front_preview')">
+                                <img id="government_id_front_preview" class="img-preview mt-2" src="#" alt="Government ID Front Preview" style="display: none;">
+                                @error('government_id_front')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="government_id_back" class="block text-gray-700">Back <span class="text-red-500">*</span></label>
+                                <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_back" name="government_id_back" required onchange="previewImage(event, 'government_id_back_preview')">
+                                <img id="government_id_back_preview" class="img-preview mt-2" src="#" alt="Government ID Back Preview" style="display: none;">
+                                @error('government_id_back')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
-                    @error('government_id_front')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
 
-                    <div class="form-group mb-4">
-                        <label for="government_id_back" class="block text-gray-700">Government ID (Back) <span class="text-red-500">*</span></label>
-                        <input type="file" class="form-control w-full px-3 py-2 border rounded" id="government_id_back" name="government_id_back" required onchange="previewImage(event, 'government_id_back_preview')">
-                        <img id="government_id_back_preview" class="img-preview" src="#" alt="Government ID Back Preview" style="display: none;">
-                    </div>
-                    @error('government_id_back')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-
-                    <div class="form-group mb-4">
-                        <label for="nbi_clearance" class="block text-gray-700">NBI Clearance <span class="text-red-500">*</span></label>
+                    <!-- NBI Clearance Section -->
+                    <div class="border border-gray-300 rounded-lg p-4">
+                        <div class="text-2xl font-semibold text-gray-700 mb-4">NBI Clearance</div>
                         <input type="file" class="form-control w-full px-3 py-2 border rounded" id="nbi_clearance" name="nbi_clearance" required onchange="previewImage(event, 'nbi_clearance_preview')">
-                        <img id="nbi_clearance_preview" class="img-preview" src="#" alt="NBI Clearance Preview" style="display: none;">
-                    </div>
-                    @error('nbi_clearance')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-
-                    <div class="form-group mb-4">
-                        <label for="tesda_certification" class="block text-gray-700">TESDA Certification (optional)</label>
-                        <input type="file" class="form-control w-full px-3 py-2 border rounded" id="tesda_certification" name="tesda_certification" onchange="previewImage(event, 'tesda_certification_preview')">
-                        <img id="tesda_certification_preview" class="img-preview" src="#" alt="TESDA Certification Preview" style="display: none;">
+                        <img id="nbi_clearance_preview" class="img-preview mt-2" src="#" alt="NBI Clearance Preview" style="display: none;">
+                        @error('nbi_clearance')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div class="form-group mb-4">
-                        <label for="other_credentials" class="block text-gray-700">Other Credentials (optional)</label>
-                        <input type="file" class="form-control w-full px-3 py-2 border rounded" id="other_credentials" name="other_credentials" onchange="previewImage(event, 'other_credentials_preview')">
-                        <img id="other_credentials_preview" class="img-preview" src="#" alt="Other Credentials Preview" style="display: none;">
+                    <!-- TESDA Certification and Other Credentials Section -->
+                    <div class="border border-gray-300 rounded-lg p-4">
+                        <div class="text-2xl font-semibold text-gray-700 mb-4">Certification & Other Credentials</div>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="tesda_certification" class="block text-gray-700">TESDA Certification</label>
+                                <input type="file" class="form-control w-full px-3 py-2 border rounded" id="tesda_certification" name="tesda_certification" onchange="previewImage(event, 'tesda_certification_preview')">
+                                <img id="tesda_certification_preview" class="img-preview mt-2" src="#" alt="TESDA Certification Preview" style="display: none;">
+                            </div>
+                            <div>
+                                <label for="other_credentials" class="block text-gray-700">Other Credentials (Optional)</label>
+                                <input type="file" class="form-control w-full px-3 py-2 border rounded" id="other_credentials" name="other_credentials" onchange="previewImage(event, 'other_credentials_preview')">
+                                <img id="other_credentials_preview" class="img-preview mt-2" src="#" alt="Other Credentials Preview" style="display: none;">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex justify-center pt-6">
-                        <x-primary-button type="submit" class="rounded-md px-8 text-lg font-medium text-white">Submit</x-primary-button>
+                        <button type="submit" class="px-6 py-2 bg-custom-light-blue text-white rounded-md hover:bg-opacity-75 focus:outline-none">Submit</button>
                     </div>
-
                 </form>
             </div>
         </div>
