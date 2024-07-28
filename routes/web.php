@@ -176,9 +176,9 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  
-    // Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
-// Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
-//become provider
+    Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified',])->name('authorizer.dashboard');
+Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
+
 Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');
 Route::post('/save-step1', [BecomeProviderController::class, 'saveStep1'])->name('save-step1');
 Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->name('bp_step2');
