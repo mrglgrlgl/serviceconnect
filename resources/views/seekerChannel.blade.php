@@ -154,8 +154,9 @@
     </x-app-layout>
     
 
+
 <!-- Rating Modal -->
-<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="seekerRatingModal" style="display: flex;">
+<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="seekerRatingModal" style="display: none;">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
         <div class="border-b pb-4 mb-4 flex justify-between items-center">
             <h5 class="text-xl font-semibold">Rate the Provider</h5>
@@ -194,7 +195,6 @@
         </form>
     </div>
 </div>
-
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -283,22 +283,27 @@
                 console.error(error);
             });
     }
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
-    console.log('is_paid:', '{{ $channel->is_paid }}');
 
-    if ('{{ $channel->is_task_completed }}' === 'true' && '{{ $channel->is_paid }}' === 'pending') {
-        console.log('Showing rating modal');
-        document.getElementById('seekerRatingModal').style.display = 'flex';
-    }
-});
 
-        function highlightSelected(label) {
-        // Remove selected class from all labels in the group
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
+        console.log('is_paid:', '{{ $channel->is_paid ?? "No Data" }}');
+
+        var taskCompleted = '{{ $channel->is_task_completed }}' === 'true';
+        var paymentStatus = '{{ $channel->is_paid }}' === 'true';
+
+        if (taskCompleted && paymentStatus) {
+            console.log('Conditions met, showing rating modal');
+            document.getElementById('seekerRatingModal').style.display = 'flex';
+        } else {
+            console.log('Conditions not met for showing rating modal');
+        }
+    });
+
+    function highlightSelected(label) {
         const group = label.parentElement.querySelectorAll('.rating-label');
         group.forEach(l => l.classList.remove('bg-blue-500', 'text-white'));
-
-        // Highlight the selected label
         label.classList.add('bg-blue-500', 'text-white');
     }
 

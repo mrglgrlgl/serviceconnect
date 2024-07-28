@@ -1,9 +1,20 @@
 <x-app-layout>
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
-            @if ($serviceRequests->isEmpty())
+            @if (Auth::user()->role == 2 && !Auth::user()->providerDetails)
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                    Please complete your profile to view service requests.
+                    <a href="{{ route('become-provider') }}" class="text-blue-500">Complete Profile</a>
+                </div>
+
+                {{-- @if ($serviceRequests->isEmpty())
                 <div class="bg-blue-100 text-custom-light-blue p-4 rounded mb-6">
                     No service requests found.
+                </div> --}}
+            @elseif ($serviceRequests->isEmpty())
+                <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
+                    No service requests found. <a href="{{ route('service-requests.create') }}"
+                        class="text-blue-500">Create one now!</a>
                 </div>
             @else
                 @foreach ($serviceRequests as $serviceRequest)
@@ -34,14 +45,17 @@
                                     @if ($serviceRequest->job_type == 'hourly_rate')
                                         <div class="flex items-center p-2">
                                             <span class="material-symbols-outlined mr-1">request_quote</span>
-                                            Hourly Rate: {{ $serviceRequest->hourly_rate }}
+                                            Hourly Rate: {{ $serviceRequest->hourly_rate }} -
+                                            {{ $serviceRequest->hourly_rate_max }}
                                         </div>
                                     @elseif ($serviceRequest->job_type == 'project_based')
                                         <div class="flex items-center p-2">
                                             <span class="material-symbols-outlined mr-1">request_quote</span>
-                                            Expected Price: {{ $serviceRequest->expected_price }}
+                                            Expected Price: {{ $serviceRequest->expected_price }} -
+                                            {{ $serviceRequest->expected_price_max }}
                                         </div>
                                     @endif
+
 
                                     <div class="flex items-center p-2">
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }}
@@ -54,6 +68,7 @@
                                 </div>
                                 <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                             </div>
+
                         </div>
 
                         <div class="flex justify-end items-center space-x-2 mt-4">
@@ -80,14 +95,15 @@
                                             @click.prevent="showConfirmationModal = true">
                                             Go to chat
                                         </a>
-                                        {{-- <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-3">
-                                            Go to channel
-                                        </a> --}}
 
-<a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View Channel</a>
-
-
-
+                                        @if (!$serviceRequest->isCompleted())
+                                            <a
+                                                href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
+                                                Channel</a>
+                                        @else
+                                            <span class="text-gray-500 ml-4">This service request is completed and no
+                                                longer available.</span>
+                                        @endif
                                     @elseif ($userBid->status == 'rejected')
                                         <span class="text-red-500 font-semibold">Bid Closed</span>
                                     @else
@@ -126,18 +142,25 @@
                                                 @csrf
                                                 <input type="hidden" name="service_request_id"
                                                     value="{{ $serviceRequest->id }}">
+
                                                 <div class="mb-4">
                                                     <label for="bid_amount"
                                                         class="block text-sm font-medium text-gray-700">Bid
                                                         Amount</label>
-                                                    <x-text-input type="number"
+                                                    <x-text-input type="number" step="0.01"
                                                         class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                         id="bid_amount" name="bid_amount" required />
+                                                    <p class="text-sm text-gray-600">Max Budget:
+                                                        {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }}
+                                                    </p>
+                                                    <p id="bid_warning" class="text-red-500 text-sm"
+                                                        style="display: none;">
+                                                        Your bid exceeds the maximum budget!</p>
                                                 </div>
                                                 <div class="mb-4">
                                                     <label for="bid_description"
-                                                        class="block text-sm font-medium text-gray-700">Bid
-                                                        Description</label>
+                                                        class="block text-sm font-medium text-gray-700">Work
+                                                        Plan</label>
                                                     <textarea
                                                         class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                         id="bid_description" name="bid_description" required></textarea>
@@ -190,4 +213,5 @@
             @endif
         </div>
     </div>
+
 </x-app-layout>

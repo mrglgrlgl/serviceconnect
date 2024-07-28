@@ -26,7 +26,9 @@ class ServiceRequest extends Model
         'provider_gender',
         'job_type',
         'hourly_rate',
+        'hourly_rate_max',
         'expected_price',
+        'expected_price_max',
         'estimated_duration',
     ];
 
@@ -49,19 +51,11 @@ class ServiceRequest extends Model
     {
         return $this->bids()->where('status', 'accepted')->exists();
     }
+    public function isCompleted() {
+        // You could have a more complex logic here based on other attributes like `reviewed` or `closed`
+        return $this->status === 'completed'; // Assuming 'completed' is a status indicating the request is done
+    }
+    
 }
 
-
-// FIX try for time update
-// public function getStartTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
-
-// // Accessor for end_time
-// public function getEndTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
-// }
 

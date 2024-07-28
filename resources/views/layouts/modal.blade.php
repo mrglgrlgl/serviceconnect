@@ -73,25 +73,37 @@
 
                     <div class="mb-3">
                         <label for="job_type" class="form-label">Job Type</label>
-                        <x-selection class="form-select" id="job_type" name="job_type" required>
+                        <x-selection class="form-select" id="job_type" name="job_type" required onchange="toggleJobTypeFields()">
                             <option value="project_based">Project Based</option>
                             <option value="hourly_rate">Hourly Rate</option>
                         </x-selection>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="hourly_rate" class="form-label">Hourly Rate</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate" name="hourly_rate" value="0.00" required />
+                    <!-- Hourly Rate Range -->
+                    <div class="mb-3" id="hourly_rate_container">
+                        <label for="hourly_rate" class="form-label">Hourly Rate Minimum</label>
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate" name="hourly_rate" value="" required />
                     </div>
 
-                    <div class="mb-3">
-                        <label for="expected_price" class="form-label">Expected Price</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price" name="expected_price" value="0.00" required />
+                    <div class="mb-3" id="hourly_rate_max_container">
+                        <label for="hourly_rate_max" class="form-label">Hourly Rate Maximum</label>
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate_max" name="hourly_rate_max" value="" required />
+                    </div>
+
+                    <!-- Expected Price Range -->
+                    <div class="mb-3" id="expected_price_container">
+                        <label for="expected_price" class="form-label">Expected Price Minimum</label>
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price" name="expected_price" value="" required />
+                    </div>
+
+                    <div class="mb-3" id="expected_price_max_container">
+                        <label for="expected_price_max" class="form-label">Expected Price Maximum </label>
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price_max" name="expected_price_max" value="" required />
                     </div>
 
                     <div class="mb-3">
                         <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
-                        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="estimated_duration" name="estimated_duration" value="0" required />
+                        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="estimated_duration" name="estimated_duration" value="" required />
                     </div>
 
                     <div class="mb-3">
@@ -121,4 +133,129 @@
             </div>
         </div>
     </div>
+
+   <script>
+    function toggleJobTypeFields() {
+        var jobType = document.getElementById('job_type').value;
+        var hourlyRateContainer = document.getElementById('hourly_rate_container');
+        var hourlyRateMaxContainer = document.getElementById('hourly_rate_max_container');
+        var expectedPriceContainer = document.getElementById('expected_price_container');
+        var expectedPriceMaxContainer = document.getElementById('expected_price_max_container');
+
+        if (jobType === 'hourly_rate') {
+            hourlyRateContainer.style.display = 'block';
+            hourlyRateMaxContainer.style.display = 'block';
+            expectedPriceContainer.style.display = 'none';
+            expectedPriceMaxContainer.style.display = 'none';
+
+            document.getElementById('hourly_rate').required = true;
+            document.getElementById('hourly_rate_max').required = true;
+            document.getElementById('expected_price').required = false;
+            document.getElementById('expected_price_max').required = false;
+
+        } else if (jobType === 'project_based') {
+            hourlyRateContainer.style.display = 'none';
+            hourlyRateMaxContainer.style.display = 'none';
+            expectedPriceContainer.style.display = 'block';
+            expectedPriceMaxContainer.style.display = 'block';
+
+            document.getElementById('hourly_rate').required = false;
+            document.getElementById('hourly_rate_max').required = false;
+            document.getElementById('expected_price').required = true;
+            document.getElementById('expected_price_max').required = true;
+
+        } else {
+            hourlyRateContainer.style.display = 'none';
+            hourlyRateMaxContainer.style.display = 'none';
+            expectedPriceContainer.style.display = 'none';
+            expectedPriceMaxContainer.style.display = 'none';
+
+            document.getElementById('hourly_rate').required = false;
+            document.getElementById('hourly_rate_max').required = false;
+            document.getElementById('expected_price').required = false;
+            document.getElementById('expected_price_max').required = false;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleJobTypeFields();
+        document.getElementById('job_type').addEventListener('change', toggleJobTypeFields);
+    });
+
+
+// Function to validate dates
+    function validateDates() {
+        var today = new Date().toISOString().split('T')[0];
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+        var sameDayOption = document.getElementById('same_day')?.checked;
+
+        if (startDate < today) {
+            alert("Start date cannot be in the past.");
+            document.getElementById('start_date').value = today;
+        }
+
+        if (endDate && endDate < startDate) {
+            alert("End date cannot be before the start date. The web app does not support time travel");
+            document.getElementById('end_date').value = startDate;
+        }
+
+        if (sameDayOption) {
+            document.getElementById('end_date').value = startDate;
+        }
+    }
+
+    // Function to validate times
+    function validateTimes() {
+        var startTime = document.getElementById('start_time').value;
+        var endTime = document.getElementById('end_time').value;
+
+        if (startTime && endTime && endTime <= startTime) {
+            alert("End time must be after start time.");
+            document.getElementById('end_time').value = '';
+        }
+    }
+
+    // Initialize event listeners after the document is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleJobTypeFields();
+        document.getElementById('job_type').addEventListener('change', toggleJobTypeFields);
+        document.getElementById('start_date').addEventListener('change', validateDates);
+        document.getElementById('end_date').addEventListener('change', validateDates);
+        document.getElementById('same_day')?.addEventListener('change', validateDates);
+        document.getElementById('start_time').addEventListener('change', validateTimes);
+        document.getElementById('end_time').addEventListener('change', validateTimes);
+    });
+
+function validateMinMax() {
+    var hourlyRate = parseFloat(document.getElementById('hourly_rate').value);
+    var hourlyRateMax = parseFloat(document.getElementById('hourly_rate_max').value);
+    var expectedPrice = parseFloat(document.getElementById('expected_price').value);
+    var expectedPriceMax = parseFloat(document.getElementById('expected_price_max').value);
+
+    if (!isNaN(hourlyRate) && !isNaN(hourlyRateMax)) {
+        if (hourlyRate > hourlyRateMax) {
+            alert("Hourly Rate Minimum cannot be greater than Hourly Rate Maximum.");
+            document.getElementById('hourly_rate_max').value = '';
+        }
+    }
+
+    if (!isNaN(expectedPrice) && !isNaN(expectedPriceMax)) {
+        if (expectedPrice > expectedPriceMax) {
+            alert("Expected Price Minimum cannot be greater than Expected Price Maximum.");
+            document.getElementById('expected_price_max').value = '';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('hourly_rate').addEventListener('blur', validateMinMax);
+    document.getElementById('hourly_rate_max').addEventListener('blur', validateMinMax);
+    document.getElementById('expected_price').addEventListener('blur', validateMinMax);
+    document.getElementById('expected_price_max').addEventListener('blur', validateMinMax);
+});
+
+
+</script>
+
 </x-dashboard>
