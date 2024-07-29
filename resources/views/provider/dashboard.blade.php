@@ -1,24 +1,34 @@
 <x-app-layout>
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
+            <!-- Navigation Links -->
+            <div class="flex justify-center text-center w-full mb-6 ">
+                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                    <a href class="inline-block text-custom-dark-text hover:text-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                            {{ __('Open Requests') }}
+                        </div>
+                    </a>
+                    <a href class="inline-block text-custom-dark-text hover:text-custom-lightest-blue">
+                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                            {{ __('My Requests') }}
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             @if (Auth::user()->role == 2 && !Auth::user()->providerDetails)
                 <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                     Please complete your profile to view service requests.
                     <a href="{{ route('become-provider') }}" class="text-blue-500">Complete Profile</a>
                 </div>
-
-                {{-- @if ($serviceRequests->isEmpty())
-                <div class="bg-blue-100 text-custom-light-blue p-4 rounded mb-6">
-                    No service requests found.
-                </div> --}}
             @elseif ($serviceRequests->isEmpty())
                 <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
-                    No service requests found. <a href="{{ route('service-requests.create') }}"
-                        class="text-blue-500">Create one now!</a>
+                    No service requests found.
                 </div>
             @else
                 @foreach ($serviceRequests as $serviceRequest)
-                    <div class="p-4 border border-gray-300 shadow-sm rounded-lg md:mb-4">
+                    <div class="p-4 border border-gray-300 bg-white shadow-sm rounded-lg md:mb-4">
                         <div class="flex justify-between items-center mb-4">
                             <div class="flex items-center space-x-2">
                                 <x-category :category="$serviceRequest->category" class="mr-2 text-gray-900" />
@@ -55,7 +65,6 @@
                                             {{ $serviceRequest->expected_price_max }}
                                         </div>
                                     @endif
-
 
                                     <div class="flex items-center p-2">
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }}
@@ -97,8 +106,7 @@
                                         </a>
 
                                         @if (!$serviceRequest->isCompleted())
-                                            <a
-                                                href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
+                                            <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
                                                 Channel</a>
                                         @else
                                             <span class="text-gray-500 ml-4">This service request is completed and no
@@ -213,5 +221,4 @@
             @endif
         </div>
     </div>
-
 </x-app-layout>

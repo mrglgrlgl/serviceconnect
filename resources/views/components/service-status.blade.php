@@ -7,7 +7,7 @@
             'open' => 'text-green-600',      // Green color for 'open'
             'pending' => 'text-blue-600',    // Blue color for 'pending'
             'archived' => 'text-gray-600',   // Gray color for 'archived'
-            'completed' => 'text-black'      // Black color for 'completed'
+            'completed' => 'text-blue-500'      // Black color for 'completed'
         ];
 
         $statusText = strtoupper($status);

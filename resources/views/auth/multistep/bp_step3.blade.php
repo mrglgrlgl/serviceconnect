@@ -79,6 +79,7 @@
                     <!-- NBI Clearance Section -->
                     <div class="border border-gray-300 rounded-lg p-4">
                         <div class="text-2xl font-semibold text-gray-700 mb-4">NBI Clearance</div>
+                        <label for="nbi_clearance" class="block text-gray-700">Clear photo of NBI clearance <span class="text-red-500">*</span></label>
                         <input type="file" class="form-control w-full px-3 py-2 border rounded" id="nbi_clearance" name="nbi_clearance" required onchange="previewImage(event, 'nbi_clearance_preview')">
                         <img id="nbi_clearance_preview" class="img-preview mt-2" src="#" alt="NBI Clearance Preview" style="display: none;">
                         @error('nbi_clearance')

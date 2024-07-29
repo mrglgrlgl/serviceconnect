@@ -4,206 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar</title>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        .nav-link, .nav-link-dropdown {
+            padding: 0.75rem 1rem; /* Adjusted padding to align borders */
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 4px solid transparent; /* Adjusted to 4px for clearer visibility */
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link-dropdown:hover {
+            color: #00aaff;
+            border-bottom: 4px solid #00aaff; /* Ensure hover effect matches active state */
+        }
+
+        .nav-link-active {
+            border-bottom: 4px solid #00aaff; /* Active state border */
+            color: #00aaff;
+        }
+
+        .nav-link-dropdown svg {
+            margin-left: 4px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0.25rem;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <nav x-data="{ open: false, dropdownOpen: false, serviceDropdownOpen: false }" class="border-b border-gray-300 bg-gray-100">
-        <!-- Primary Navigation Menu -->
-        <div class="mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+    <nav class="bg-gray-100 border-b border-gray-300 font-open-sans text-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between h-16 items-center">
                 <!-- Left Side: Logo -->
                 <div class="flex items-center">
-                    <div class="shrink-0">
-                        <a href="{{ route('dashboard') }}">
-                            <img class="h-8 w-auto" src="{{ asset('..\images\horizontal-logo.png') }}" alt="Your Company">
-                        </a>
-                    </div>
+                    <a href="{{ route('dashboard') }}">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8">
+                    </a>
                 </div>
-
-                <!-- Right Side: Navigation Links and Settings Dropdown -->
-                <div class="flex">
+                <!-- Right Side: Navigation Links and User Info -->
+                <div class="flex items-center space-x-4">
                     <!-- Navigation Links -->
-                    <div class="hidden sm:flex space-x-4 sm:-my-px">
-                        @if (Auth::user()->role != '2')
-                            <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                                {{ __('Home') }}
-                            </x-nav-link>
-                        @endif
-
-                        @if (Auth::user()->role == '2')
-                            <!-- Provider View -->
-                            <x-nav-link :href="route('provider.dashboard')" :active="request()->routeIs('provider.dashboard')">
-                                {{ __('Service Request') }}
-                            </x-nav-link>
-                        @elseif (Auth::user()->role == '3')
-                            <!-- Seeker View -->
-                            <div class="relative inline-block">
-                                <x-nav-link @click="serviceDropdownOpen = !serviceDropdownOpen" 
-                                    :active="request()->routeIs('dashboard') || request()->routeIs('service-requests.create')">
-                                    {{ __('Service Requests') }}
-                                    <svg class="ml-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </x-nav-link>
-                            
-                                <div x-show="serviceDropdownOpen" @click.away="serviceDropdownOpen = false"
-                                    class="absolute left-0 top-full mt-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                    <x-dropdown-link :href="route('dashboard')">
-                                        {{ __('View Service Requests') }}
-                                    </x-dropdown-link>
-                                    <x-dropdown-link :href="route('service-requests.create')">
-                                        {{ __('Create Service Request') }}
-                                    </x-dropdown-link>
-                                </div>
+                    @if (Auth::user()->role == '3')
+                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'nav-link-active' : '' }}">
+                            Home
+                        </a>
+                        <div x-data="{ serviceDropdownOpen: false }" class="relative">
+                            <a href="#" class="nav-link-dropdown {{ request()->routeIs('dashboard') || request()->routeIs('service-requests.create') ? 'nav-link-active' : '' }}" 
+                               @click.prevent="serviceDropdownOpen = !serviceDropdownOpen">
+                                Service Requests
+                                <span class="material-icons">expand_more</span>
+                            </a>
+                            <div class="dropdown-menu" :class="{ 'show': serviceDropdownOpen }" x-cloak>
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Service Requests</a>
+                                <a href="{{ route('service-requests.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Create Service Request</a>
                             </div>
-                        @endif
-                        
-                        <!-- Chat and Notifications Links for All Users -->
-                        <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                            <span class="material-icons">chat</span>
-                        </x-nav-link>
-                        <x-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                            <span class="material-icons">notifications</span>
-                        </x-nav-link>
-                    </div>
+                        </div>
+                    @elseif (Auth::user()->role == '2')
+                        <a href="{{ route('provider.dashboard') }}" class="nav-link {{ request()->routeIs('provider.dashboard') ? 'nav-link-active' : '' }}">
+                            Service Request
+                        </a>
+                    @endif
+                    
+                    <!-- Chat and Notifications Icons -->
+                    <a href="{{ route('chat') }}" class="nav-link flex items-center {{ request()->routeIs('chat') ? 'nav-link-active' : '' }}">
+                        <span class="material-icons">chat</span>
+                    </a>
+                    <a href="{{ route('notifications.index') }}" class="nav-link flex items-center {{ request()->routeIs('notifications.index') ? 'nav-link-active' : '' }}">
+                        <span class="material-icons">notifications</span>
+                    </a>
 
-                    <!-- Settings Dropdown -->
-                    <div class="hidden sm:flex sm:items-center sm:ml-6">
-                        @if (Auth::check())
-                            <div @click.away="dropdownOpen = false" class="relative">
-                                <button @click="dropdownOpen = !dropdownOpen"
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                    <div>{{ Auth::user()->name }}</div>
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 011.414 0L10 10.586l3.293-3.293a1 1 111.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-
-                                <div x-show="dropdownOpen" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                    <x-dropdown-link :href="route('profile.show')">
-                                        {{ __('Profile') }}
-                                    </x-dropdown-link>
-
-                                    <x-dropdown-link :href="route('become-provider')">
-                                        {{ __('Verify Profile!') }}
-                                    </x-dropdown-link>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <x-dropdown-link :href="route('logout')"
-                                            onclick="event.preventDefault();
-                                                        this.closest('form').submit();">
-                                            {{ __('Log Out') }}
-                                        </x-dropdown-link>
-                                    </form>
-                                </div>
-                            </div>
-                        @else
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    <button @click="open = !open"
-                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        <div>Guest</div>
-                                    </button>
-                                </x-slot>
-
-                                <x-slot name="content">
-                                    <x-dropdown-link :href="route('login')">
-                                        {{ __('Login') }}
-                                    </x-dropdown-link>
-                                    <x-dropdown-link :href="route('register')">
-                                        {{ __('Register') }}
-                                    </x-dropdown-link>
-                                </x-slot>
-                            </x-dropdown>
-                        @endif
-                    </div>
-
-                    <!-- Hamburger -->
-                    <div class="-mr-2 flex items-center sm:hidden">
-                        <button @click="open = !open"
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
-                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden"
-                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                    <!-- User Dropdown -->
+                    <div x-data="{ userDropdownOpen: false }" class="relative">
+                        <button @click="userDropdownOpen = !userDropdownOpen" @click.away="userDropdownOpen = false" type="button" 
+                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" 
+                                id="menu-button" aria-expanded="true" aria-haspopup="true">
+                            {{ Auth::user()->name }}
+                            <span class="material-icons ml-2">account_circle</span>
                         </button>
+                        <!-- Dropdown Menu -->
+                        <div x-show="userDropdownOpen" x-transition:enter="transition ease-out duration-100 transform"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75 transform"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="py-1" role="none">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-0">Profile</a>
+                                <a href="{{ route('become-provider') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-1">Become a Provider!</a>
+                                <form method="POST" action="{{ route('logout') }}" role="none">
+                                    @csrf
+                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="menu-item-3">Log Out</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
-            </div>
-        </div>
-
-        <!-- Responsive Navigation Menu -->
-        <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-            <div class="pt-2 pb-3 space-y-1">
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-responsive-nav-link>
-                @if (Auth::user()->role != '2')
-                    <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
-                    </x-responsive-nav-link>
-                @endif
-                <x-responsive-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
-                    <span class="material-icons">chat</span>
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('notifications.index')" :active="request()->routeIs('notifications.index')">
-                    <span class="material-icons">notifications</span>
-                </x-responsive-nav-link>
-            </div>
-
-            <!-- Responsive Settings Options -->
-            <div class="pt-4 pb-1 border-t border-gray-200">
-                @if (Auth::check())
-                    <div class="px-4">
-                        <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                        <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                    </div>
-
-                    <div class="mt-3 space-y-1">
-                        <x-responsive-nav-link :href="route('profile.show')">
-                            {{ __('Profile') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('become-provider')">
-                            {{ __('Become a Provider!') }}
-                        </x-responsive-nav-link>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <x-responsive-nav-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-responsive-nav-link>
-                        </form>
-                    </div>
-                @else
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button @click="open = !open"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>Guest</div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('login')">
-                                {{ __('Login') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('register')">
-                                {{ __('Register') }}
-                            </x-dropdown-link>
-                        </x-slot>
-                    </x-dropdown>
-                @endif
             </div>
         </div>
     </nav>

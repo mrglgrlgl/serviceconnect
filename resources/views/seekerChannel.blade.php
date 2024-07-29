@@ -1,5 +1,5 @@
 <x-app-layout>
-    @php
+    {{-- @php
     $bgColor = 'bg-gray-100'; // Default background color
     if ($channel->is_on_the_way) {
         $bgColor = 'bg-blue-100';
@@ -12,7 +12,7 @@
             $bgColor = 'bg-yellow-100';
         }
     }
-@endphp
+@endphp --}}
 
         @if ($channel->is_on_the_way)
         <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
@@ -41,39 +41,53 @@
         @endif
 
 
-    <div class="container mx-auto">
-        <div class="flex flex-wrap">
-            <!-- Service Request Details -->
-            <div class="w-full md:w-1/2 p-4">
-                <div class="bg-white rounded-lg shadow-lg p-6 h-full">
-                    <div class="border-b pb-4 mb-4">
-                        <h3 class="text-xl font-semibold">Service Request Details</h3>
-                    </div>
-                    <div>
-                        <p><strong>Category:</strong> {{ $channel->serviceRequest->category }}</p>
-                        <p><strong>Title:</strong> {{ $channel->serviceRequest->title }}</p>
-                        <p><strong>Description:</strong> {{ $channel->serviceRequest->description }}</p>
-                        <p><strong>Location:</strong> {{ $channel->serviceRequest->location }}</p>
-                        <p><strong>Start Time:</strong> {{ $channel->serviceRequest->start_time }}</p>
-                        <p><strong>End Time:</strong> {{ $channel->serviceRequest->end_time }}</p>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Provider Details -->
-            <div class="w-full md:w-1/2 p-4">
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <div class="border-b pb-4 mb-4">
-                        <h3 class="text-xl font-semibold">Provider Details</h3>
-                    </div>
-                    <div>
-                        <p><strong>Name:</strong> {{ $channel->provider->name }}</p>
-                        <p><strong>Email:</strong> {{ $channel->provider->email }}</p>
-                        <p><strong>Contact Number:</strong> {{ optional($channel->provider->providerDetails)->contact_number }}</p>
+        <div class="container mx-auto">
+            <div class="flex flex-wrap">
+                <!-- Service Request Details and Provider Details -->
+                <div class="w-full md:w-3/5">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="border-b pb-4">
+
+                            <h1 class="text-2xl font-semibold text-custom-header">Service Request Details</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="pt-4">
+                                <div class="flex items-center text-xl">
+                                    <x-category :category="$channel->serviceRequest->category" class="mr-2 text-gray-900" />
+                                    <span class="text-gray-900"> - {{ $channel->serviceRequest->title }}</span>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined mr-1 text-red-500">location_on</span>
+                                        <span>{{ $channel->serviceRequest->location }}</span>
+                                    </div>
+                                    <p class="mt-2"><strong>Description:</strong> {{ $channel->serviceRequest->description }}</p>
+                                    <p><strong>Start Time:</strong> {{ $channel->serviceRequest->start_time }}</p>
+                                    <p><strong>End Time:</strong> {{ $channel->serviceRequest->end_time }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="border rounded-md p-4">
+                                <div class="border-b ">
+                                    
+                                    <h3 class="text-xl font-semibold">Provider Details</h3>
+                                </div>
+                                <div class="mt-2">
+                                    <p><strong>Name:</strong> {{ $channel->provider->name }}</p>
+                                    <span class="material-symbols-outlined">
+                                        mail
+                                        </span> {{ $channel->provider->email }}</p>
+                                    <p><strong>Contact Number:</strong> {{ optional($channel->provider->providerDetails)->contact_number }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        
     
         
         <!-- Arrival Confirmation Modal -->
@@ -154,9 +168,8 @@
     </x-app-layout>
     
 
-
 <!-- Rating Modal -->
-<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="seekerRatingModal" style="display: none;">
+<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="seekerRatingModal" style="display: flex;">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
         <div class="border-b pb-4 mb-4 flex justify-between items-center">
             <h5 class="text-xl font-semibold">Rate the Provider</h5>
@@ -195,6 +208,7 @@
         </form>
     </div>
 </div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -283,27 +297,22 @@
                 console.error(error);
             });
     }
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
+    console.log('is_paid:', '{{ $channel->is_paid }}');
 
+    if ('{{ $channel->is_task_completed }}' === 'true' && '{{ $channel->is_paid }}' === 'pending') {
+        console.log('Showing rating modal');
+        document.getElementById('seekerRatingModal').style.display = 'flex';
+    }
+});
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
-        console.log('is_paid:', '{{ $channel->is_paid ?? "No Data" }}');
-
-        var taskCompleted = '{{ $channel->is_task_completed }}' === 'true';
-        var paymentStatus = '{{ $channel->is_paid }}' === 'true';
-
-        if (taskCompleted && paymentStatus) {
-            console.log('Conditions met, showing rating modal');
-            document.getElementById('seekerRatingModal').style.display = 'flex';
-        } else {
-            console.log('Conditions not met for showing rating modal');
-        }
-    });
-
-    function highlightSelected(label) {
+        function highlightSelected(label) {
+        // Remove selected class from all labels in the group
         const group = label.parentElement.querySelectorAll('.rating-label');
         group.forEach(l => l.classList.remove('bg-blue-500', 'text-white'));
+
+        // Highlight the selected label
         label.classList.add('bg-blue-500', 'text-white');
     }
 

@@ -94,4 +94,15 @@ class RequestController extends Controller
         // Redirect or return a response
         return redirect()->route('authorizer.dashboard')->with('success', 'Request declined successfully.');
     }
+
+    public function dashboard()
+    {
+        $pendingRequests = RequestList::with(['user', 'providerDetail'])->where('status', 'pending')->get();
+        $approvedRequests = RequestList::with(['user', 'providerDetail'])->where('status', 'approved')->get();
+
+        Log::info('Pending Requests: ', $pendingRequests->toArray());
+        Log::info('Approved Requests: ', $approvedRequests->toArray());
+
+        return view('authorizer.dashboard', compact('pendingRequests', 'approvedRequests'));
+    }
 }

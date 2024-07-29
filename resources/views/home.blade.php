@@ -10,7 +10,7 @@
         {{-- Filter Section --}}
         <div class="border-2 rounded-t-lg w-full md:w-10/12 mx-auto flex flex-wrap items-center justify-center p-4 space-y-4 md:space-y-0 md:space-x-4 mt-8">
             <div class="flex justify-center items-center w-full md:py-4 md:pt-6">
-                <div class="text-3xl text-custom-header font-semibold">Browse Providers</div>
+                <div class="text-3xl md:text-2xl text-custom-header font-semibold">Browse Providers</div>
             </div>
 
             {{-- Category Filter --}}
@@ -86,7 +86,7 @@
         {{-- Map and Provider List --}}
         <div class="grid grid-cols-1 md:grid-cols-3 w-10/12 mx-auto pb-6" style="min-height: 60vh;">
             <!-- Map -->
-            <div id="map" class="w-full h-75 md:h-full md:shadow-md md:col-span-1 order-1 md:order-2 rounded-t-lg md:rounded-none"></div>
+            <div id="map" class="w-full h-72 md:h-full md:shadow-md md:col-span-1 order-1 md:order-2 rounded-t-lg md:rounded-none"></div>
 
             <!-- Provider List -->
             <div class="p-4 bg-white shadow-md md:col-span-2 order-2 md:order-1 rounded-b-lg md:rounded-none overflow-y-hidden" style="height: 60vh;">
@@ -101,20 +101,20 @@
                 </div>
 
                 {{-- Provider list --}}
-                <div class="h-full overflow-y-auto p-8">
+                <div class="h-full overflow-y-auto p-4">
                     @if(isset($providers))
                         <h3 class="text-xl font-bold mb-4">Search Results</h3>
                         @if($providers->isEmpty())
                             <div class="bg-red-100 text-red-800 p-4 rounded mb-6">No providers found.</div>
                         @else
-                            <ul class="list-none">
+                            <ul class="list-none space-y-4">
                                 @foreach($providers as $provider)
                                     <li class="mb-4">
-                                        <div class="flex items-start">
+                                        <div class="flex flex-col md:flex-row md:items-start">
                                             <x-category :category="$provider->serviceCategory" />
-                                            <div class="ml-4 flex-1">
-                                                <div class="flex justify-between items-center">
-                                                    <div class="flex items-center">
+                                            <div class="ml-0 md:ml-4 flex-1">
+                                                <div class="flex flex-col md:flex-row justify-between md:items-center">
+                                                    <div class="flex items-center mb-2 md:mb-0">
                                                         <div class="font-medium text-lg">{{ $provider->user->name }}</div>
                                                         <div class="ml-2 font-normal text-custom-default-text">Ratings: {{ $provider->ratings }}</div>
                                                     </div>
@@ -124,7 +124,7 @@
                                                     {{ strlen($provider->description) > 225 ? substr($provider->description, 0, 225) . '...' : $provider->description }}
                                                 </div>
                                                 <div class="flex justify-end items-center mt-2">
-                                                    <a href class="text-base h-8 w-38 rounded-md bg-white hover:text-custom-light-blue text-custom-lightest-blue">
+                                                    <a href="#" class="text-base h-8 w-38 rounded-md bg-white hover:text-custom-light-blue text-custom-lightest-blue">
                                                         {{ __('View Profile >>') }}
                                                     </a>
                                                 </div>
