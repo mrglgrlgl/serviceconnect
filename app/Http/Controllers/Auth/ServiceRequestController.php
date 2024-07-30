@@ -141,6 +141,7 @@ public function showDashboard()
 }
 
 
+
 public function update(Request $request, $id)
 {
     // Find the existing service request
@@ -239,5 +240,12 @@ public function destroy($service_request = null)
     return view('layouts.modaledit', compact('serviceRequest'));
 }
 
+public function myRequests()
+{
+    $serviceRequests = ServiceRequest::whereHas('bids', function ($query) {
+        $query->where('bidder_id', auth()->user()->id);
+    })->get();
 
+    return view('provider.myrequests', compact('serviceRequests'));
+}
 }

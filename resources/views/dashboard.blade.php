@@ -1,6 +1,6 @@
 <x-dashboard>
-    <x-slot name="dashboardbar">
-        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-4 overflow-hidden bg-gray-100">
+
+        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
             <div class="flex justify-center text-center w-full">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                     <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -20,7 +20,6 @@
         <div class="flex justify-center">
             <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
         </div>
-    </x-slot>
 
     <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all' }">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">

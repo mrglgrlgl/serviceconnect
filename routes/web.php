@@ -207,6 +207,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/provider/dashboard', [ServiceRequestController::class, 'retrieveByUserRole'])->name('provider.dashboard');
 });
+Route::get('/provider/myrequests', [ServiceRequestController::class, 'myRequests'])->name('provider.myrequests');
+
+
 Route::get('/service-requests', [ServiceRequestController::class, 'index'])->name('service-requests.index');
 Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
 Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('service-requests.edit');

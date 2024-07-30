@@ -1,7 +1,26 @@
 <x-dashboard>
-    <x-slot name="dashboardbar">
-        <!-- Dashboard navigation setup (unchanged) -->
-    </x-slot>
+    <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 pt-8 mx-auto overflow-hidden bg-gray-100">
+        <div class="flex justify-center text-center w-full ">
+            <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                        {{ __('My Service Requests') }}
+                    </div>
+                </x-category-link>
+                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('analytics')" :active="request()->routeIs('analytics')">
+                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                        {{ __('Analytics') }}
+                    </div>
+                </x-category-link>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center">
+        <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
+    </div>
+
+    
 <div class="flex justify-center">
     <div class="w-4/5">
     <div class="p-6 bg-background">

@@ -56,7 +56,7 @@
                 <!-- Left Side: Logo -->
                 <div class="flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8">
+                        <img class="h-8 w-auto" src="{{ asset('..\images\horizontal-logo.png') }}" alt="Your Company">
                     </a>
                 </div>
                 <!-- Right Side: Navigation Links and User Info -->
