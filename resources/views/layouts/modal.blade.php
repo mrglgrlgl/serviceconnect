@@ -6,7 +6,9 @@
             </div>
 
             <div class="w-full md:w-7/12 space-y-6 mx-auto mt-4">
-                <form action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data">
+                {{-- <form action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data"> --}}
+                <form id="serviceRequestForm" action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data">
+
                     @csrf
 
                     <div class="border-t my-4 w-full pb-6"></div>
@@ -82,23 +84,23 @@
                     <!-- Hourly Rate Range -->
                     <div class="mb-3" id="hourly_rate_container">
                         <label for="hourly_rate" class="form-label">Hourly Rate Minimum</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate" name="hourly_rate" value="" required />
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate" name="hourly_rate" value="" />
                     </div>
 
                     <div class="mb-3" id="hourly_rate_max_container">
                         <label for="hourly_rate_max" class="form-label">Hourly Rate Maximum</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate_max" name="hourly_rate_max" value="" required />
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate_max" name="hourly_rate_max" value="" />
                     </div>
 
                     <!-- Expected Price Range -->
                     <div class="mb-3" id="expected_price_container">
                         <label for="expected_price" class="form-label">Expected Price Minimum</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price" name="expected_price" value="" required />
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price" name="expected_price" value="" />
                     </div>
 
                     <div class="mb-3" id="expected_price_max_container">
                         <label for="expected_price_max" class="form-label">Expected Price Maximum </label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price_max" name="expected_price_max" value="" required />
+                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price_max" name="expected_price_max" value="" />
                     </div>
 
                     <div class="mb-3">
@@ -255,7 +257,34 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('expected_price_max').addEventListener('blur', validateMinMax);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('serviceRequestForm');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            // Log form data to ensure it's being collected correctly
+            var formData = new FormData(form);
+            console.log('Form data before submission:', Object.fromEntries(formData.entries()));
 
+            // Uncomment this line to prevent form submission for debugging purposes
+            // event.preventDefault(); 
+
+            // Example validation
+            var title = document.getElementById('title').value;
+            if (!title) {
+                console.error('Title is required');
+                alert('Title is required');
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+
+            // Additional validation logic can be added here
+        });
+    } else {
+        console.error('Form not found');
+    }
+});
 </script>
+{{-- </script> --}}
+
+
 
 </x-dashboard>

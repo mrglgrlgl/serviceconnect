@@ -9,19 +9,13 @@ class ServiceRequest extends Model
 
     protected $fillable = [
         'category',
-        'subcategory',
         'title',
         'description',
         'location',
+        'start_date',
+        'end_date',
         'start_time',
         'end_time',
-        'attach_media',
-        'attach_media2',
-        'attach_media3',
-        'attach_media4',
-        'provider_id',
-        'user_id',
-        'status',
         'skill_tags',
         'provider_gender',
         'job_type',
@@ -30,6 +24,13 @@ class ServiceRequest extends Model
         'expected_price',
         'expected_price_max',
         'estimated_duration',
+        'attach_media',
+        'attach_media2',
+        'attach_media3',
+        'attach_media4',
+        'status',
+        'user_id',
+        'provider_id',
     ];
 
     public function user()

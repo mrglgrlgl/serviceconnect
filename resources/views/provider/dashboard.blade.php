@@ -4,23 +4,31 @@
             <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full mb-6">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                    <a href="{{ route('provider.dashboard') }}" class="inline-block text-custom-dark-text hover:text-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('Open Requests') }}
-                        </div>
-                    </a>
-                    <a href="{{ route('provider.myrequests') }}" class="inline-block text-custom-dark-text hover:text-custom-lightest-blue">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('My Requests') }}
-                        </div>
-                    </a>
+                    <x-nav-link href="{{ route('provider.dashboard') }}" :active="request()->routeIs('provider.dashboard')">
+                        {{ __('Open Requests') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('provider.myrequests') }}" :active="request()->routeIs('provider.myrequests')">
+                        {{ __('My Requests') }}
+                    </x-nav-link>
                 </div>
             </div>
+
+    
 
             @if (Auth::user()->role == 2 && !Auth::user()->providerDetails)
                 <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                     Please complete your profile to view service requests.
-                    <a href="{{ route('become-provider') }}" class="text-blue-500">Complete Profile</a>
+                    <a href="{{ route('create-profile') }}" class="text-blue-500">Build Profile</a>
+                </div>
+
+                 <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                    Add your certifications if there are any
+                    <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
+                </div>
+
+              <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                   Upload Government ID for final verification
+                    <a href="{{ route('philid.index') }}" class="text-blue-500">Upload Government</a>
                 </div>
             @elseif ($serviceRequests->isEmpty())
                 <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">

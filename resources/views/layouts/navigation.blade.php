@@ -50,46 +50,63 @@
     </style>
 </head>
 <body>
-    <nav class="bg-gray-100 border-b border-gray-300 font-open-sans text-lg">
+    <nav class="bg-gray-100 border-b border-gray-300 font-open-sans text-md">
         <div class="container mx-auto px-4">
             <div class="flex justify-between h-16 items-center">
                 <!-- Left Side: Logo -->
                 <div class="flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img class="h-8 w-auto" src="{{ asset('..\images\horizontal-logo.png') }}" alt="Your Company">
+                        <img class="h-8 w-auto" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
                     </a>
                 </div>
-                <!-- Right Side: Navigation Links and User Info -->
-                <div class="flex items-center space-x-4">
-                    <!-- Navigation Links -->
-                    @if (Auth::user()->role == '3')
-                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'nav-link-active' : '' }}">
-                            Home
+            <!-- Right Side: Navigation Links and User Info -->
+            <div class="flex items-center space-x-4">
+                @php
+                    $user = Auth::user();
+                    if ($user) {
+                        $borderColor = $user->role == '3' ? 'border-custom-lightest-blue' : 'border-custom-light-blue';
+                        $hoverBorderColor = $user->role == '3' ? 'hover:border-custom-lightestblue-accent' : 'hover:border-custom-light-blue';
+                        $activeTextColor = $user->role == '3' ? 'text-custom-lightest-blue' : 'text-custom-light-blue';
+                        $hoverTextColor = $user->role == '3' ? 'hover:text-cyan-600' : 'hover:text-custom-light-blue';
+                    } else {
+                        // Default styles for guests
+                        $borderColor = 'border-gray-500';
+                        $hoverBorderColor = 'hover:border-gray-400';
+                        $activeTextColor = 'text-gray-900';
+                        $hoverTextColor = 'hover:text-gray-600';
+                    }
+                @endphp
+
+                <!-- Navigation Links -->
+                @if ($user->role == '3')
+                    <a href="{{ route('home') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('home') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
+                        Home
+                    </a>
+                    <div x-data="{ serviceDropdownOpen: false }" class="relative">
+                        <a href="#" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('dashboard') || request()->routeIs('service-requests.create') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}" 
+                           @click.prevent="serviceDropdownOpen = !serviceDropdownOpen">
+                            Service Requests
+                            <span class="material-icons">expand_more</span>
                         </a>
-                        <div x-data="{ serviceDropdownOpen: false }" class="relative">
-                            <a href="#" class="nav-link-dropdown {{ request()->routeIs('dashboard') || request()->routeIs('service-requests.create') ? 'nav-link-active' : '' }}" 
-                               @click.prevent="serviceDropdownOpen = !serviceDropdownOpen">
-                                Service Requests
-                                <span class="material-icons">expand_more</span>
-                            </a>
-                            <div class="dropdown-menu" :class="{ 'show': serviceDropdownOpen }" x-cloak>
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Service Requests</a>
-                                <a href="{{ route('service-requests.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Create Service Request</a>
-                            </div>
+                        <div class="dropdown-menu" :class="{ 'show': serviceDropdownOpen }" x-cloak>
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">View Service Requests</a>
+                            <a href="{{ route('service-requests.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Create Service Request</a>
                         </div>
-                    @elseif (Auth::user()->role == '2')
-                        <a href="{{ route('provider.dashboard') }}" class="nav-link {{ request()->routeIs('provider.dashboard') ? 'nav-link-active' : '' }}">
-                            Service Request
-                        </a>
-                    @endif
-                    
-                    <!-- Chat and Notifications Icons -->
-                    <a href="{{ route('chat') }}" class="nav-link flex items-center {{ request()->routeIs('chat') ? 'nav-link-active' : '' }}">
-                        <span class="material-icons">chat</span>
+                    </div>
+                @elseif ($user->role == '2')
+                    <a href="{{ route('provider.dashboard') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('provider.dashboard') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
+                        Service Request
                     </a>
-                    <a href="{{ route('notifications.index') }}" class="nav-link flex items-center {{ request()->routeIs('notifications.index') ? 'nav-link-active' : '' }}">
-                        <span class="material-icons">notifications</span>
-                    </a>
+                @endif
+                
+                <!-- Chat and Notifications Icons -->
+                <a href="{{ route('chat') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('chat') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
+                    <span class="material-icons">chat</span>
+                </a>
+                <a href="{{ route('notifications.index') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('notifications.index') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
+                    <span class="material-icons">notifications</span>
+                </a>
+
 
                     <!-- User Dropdown -->
                     <div x-data="{ userDropdownOpen: false }" class="relative">
