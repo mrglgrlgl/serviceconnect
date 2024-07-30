@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use App\Models\ProviderDetail;
-
+use App\Models\Certification;
+use App\Models\PhilID;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -15,38 +16,36 @@ class ServiceRequestController extends Controller
 {
 
     public function retrieveByUserRole()
-    {
-        // Fetch the authenticated user
-        $user = Auth::user();
-    
-        // Check if the user role is provider (assuming role 2 is for providers)
-        if ($user->role == 2) {
-            // Retrieve provider's category
-            $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
-            $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
-    
-            // Log the retrieved category for debugging
-            Log::info('Provider Category:', ['category' => $providerCategory]);
-    
-            // Ensure category is retrieved and perform case-insensitive matching
-            if ($providerCategory) {
-                // Retrieve service requests based on provider's category (case-insensitive)
-                $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])->get();
-    
-                // Log the filtered service requests for debugging
-                Log::info('Filtered Service Requests:', ['requests' => $serviceRequests]);
-            } else {
-                $serviceRequests = collect(); // Empty collection if no category
-            }
-        } else {
-            // For other roles, handle accordingly (this is optional, depending on your application logic)
-            $serviceRequests = ServiceRequest::all(); // or any fallback logic you may have
-        }
-    
-        // Return the view with the retrieved service requests
-        return view('provider.dashboard', compact('serviceRequests'));
+{
+    $user = Auth::user();
+
+    // Ensure the user is authenticated and has a role
+    if (!$user) {
+        return redirect()->route('login');
     }
-    
+
+    // Determine if the user is a provider
+    if ($user->role == 2) {
+        $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+        $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
+
+        if ($providerCategory) {
+            $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])->get();
+        } else {
+            $serviceRequests = collect(); // Empty collection if no category
+        }
+
+        // Get the count of certifications
+        $certificationsCount = $user->certifications()->count();
+    } else {
+        $serviceRequests = ServiceRequest::all();
+        $certificationsCount = 0; // Default value or handle accordingly
+    }
+
+    // Pass data to the view
+    return view('provider.dashboard', compact('serviceRequests', 'certificationsCount'));
+}
+
     
     
 

@@ -19,50 +19,48 @@ class ProviderProfileController extends Controller
     }
     public function saveProfileCreate(Request $request)
     {
-        Log::info('Entered saveProfileCreate method.');
-        Log::info('Request data: ', $request->all());
+        // Use dd here to see the data
+        // dd($request->all());
     
-        try {
-            $validatedData = $request->validate([
-                'work_email' => 'nullable|email',
-                'contact_number' => 'nullable|string',
-                'service_category' => 'required|string',
-                'description' => 'required|string',
-                'years_of_experience' => 'required|integer',
-                'have_tools' => 'required|string', // Change to string to match the schema
-                'availability_days' => 'required|array',
-                'availability_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-                'availability_start' => 'required|string',
-                'availability_end' => 'required|string|after:availability_start',
-            ]);
+        $validatedData = $request->validate([
+            
+            'work_email' => 'nullable|email',
+            'contact_number' => 'nullable|string',
+            'serviceCategory' => 'required|string',
+            'description' => 'required|string',
+            'years_of_experience' => 'required|integer',
+            'have_tools' => 'required|string',
+            'availability_days' => 'required|array',
+            'availability_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            // 'availability_start' => 'required|string',
+            // 'availability_end' => 'required|string',
+
+            
+        ]);
     
-            Log::info('Validation passed: ', $validatedData);
+        // dd('Validation passed', $validatedData);
     
-            $availabilityTime = $validatedData['availability_start'] . ' - ' . $validatedData['availability_end'];
+        // $availabilityTime = $validatedData['availability_start'] . ' - ' . $validatedData['availability_end'];
     
-            $providerDetail = ProviderDetail::updateOrCreate(
-                ['provider_id' => Auth::id()],
-                [
-                    'work_email' => $validatedData['work_email'],
-                    'contact_number' => $validatedData['contact_number'],
-                    'serviceCategory' => $validatedData['service_category'],  // Ensure correct spelling and case
-                    'description' => $validatedData['description'],
-                    'years_of_experience' => $validatedData['years_of_experience'],
-                    'have_tools' => $validatedData['have_tools'], // Ensure this matches expected type in schema
-                    'availability_days' => implode(',', $validatedData['availability_days']),
-                    'availability_time' => $availabilityTime,
-                ]
-            );
-    
-            Log::info('Provider detail saved', ['provider_id' => $providerDetail->id]);
-    
-            return redirect()->route('provider.dashboard')->with('success', 'Profile updated successfully!');
-    
-        } catch (\Exception $e) {
-            Log::error('Error saving provider detail: ', ['error' => $e->getMessage()]);
-            return redirect()->back()->withErrors('There was an error updating your profile.');
-        }
+        $providerDetail = ProviderDetail::updateOrCreate(
+            ['provider_id' => Auth::id()],
+            [
+                'work_email' => $validatedData['work_email'],
+                'contact_number' => $validatedData['contact_number'],
+                'serviceCategory' => $validatedData['serviceCategory'], // Ensure this matches the form and DB column
+                'description' => $validatedData['description'],
+                'years_of_experience' => $validatedData['years_of_experience'],
+                'have_tools' => $validatedData['have_tools'],
+                'availability_days' => implode(',', $validatedData['availability_days']),
+                // 'availability_time' => $availabilityTime,
+            ]
+        );
+        // dd('Provider detail saved successfully', ['provider_id' => $providerDetail->id]);
+
+        return redirect()->route('provider.dashboard')->with('success', 'Profile updated successfully!');
     }
+    
+    
     
     public function showCertificationsForm()
     {
