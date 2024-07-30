@@ -9,23 +9,19 @@ class ProviderDetail extends Model
 {
     protected $table = 'provider_details';
     protected $fillable = [
-        'request_id', 
-        'status', 
-        'profilePicture', 
-        'work_email', 
+        'profilePicture', // Ensure this is handled correctly if used
+        'work_email',
         'contact_number',
-        'serviceCategory', 
-        'subcategory', 
-        'have_tools', 
+        'serviceCategory', // In the database, but 'service_category' in the form
+        'subcategory', // Ensure this matches your form if used
+        'have_tools', // Expecting 'varchar', should check how data is sent
         'years_of_experience',
-        'description', 
-        'government_id_front', 
-        'government_id_back',
-        'nbi_clearance', 
-        'tesda_certification', 
-        'other_credentials',
-        
+        'description',
+        'availability_days',
+        'availability_time',
+        // Additional fields as necessary
     ];
+    
     public function requestList()
     {
         return $this->belongsTo(RequestList::class, 'request_id', 'id');

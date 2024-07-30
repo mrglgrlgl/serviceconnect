@@ -64,69 +64,80 @@ class ServiceRequestController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validate the incoming request data
-    $validatedData = $request->validate([
-        'category' => 'required|string|max:255',
-        'title' => 'required|string|max:255',
-        'description' => 'required|string|max:255',
-        'location' => 'required|string|max:255',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date',
-        'start_time' => 'required|date_format:H:i',
-        'end_time' => 'required|date_format:H:i',
-        'skill_tags' => 'required|string|max:255',
-        'provider_gender' => 'nullable|in:male,female',
-        'job_type' => 'required|in:project_based,hourly_rate',
-        'hourly_rate' => 'required|numeric|min:0',
-        'hourly_rate_max' => 'required|numeric|min:0',
-        'expected_price' => 'required|numeric|min:0',
-        'expected_price_max' => 'required|numeric|min:0',
-        'estimated_duration' => 'required|integer|min:0',
-        'attach_media' => 'required|image|max:2048',
-        'attach_media2' => 'nullable|image|max:2048',
-        'attach_media3' => 'nullable|image|max:2048',
-        'attach_media4' => 'nullable|image|max:2048',
-    ]);
-
+    {
+        Log::info('ServiceRequestController@store - Request received');
+        Log::info('Received request data:', $request->all());
     
-
-    // Store uploaded files in 'service_requests/documents' folder
-    $attachMediaPath = $request->file('attach_media')->store('service_requests/documents', 'public');
-    $attachMedia2Path = $request->file('attach_media2') ? $request->file('attach_media2')->store('service_requests/documents', 'public') : null;
-    $attachMedia3Path = $request->file('attach_media3') ? $request->file('attach_media3')->store('service_requests/documents', 'public') : null;
-    $attachMedia4Path = $request->file('attach_media4') ? $request->file('attach_media4')->store('service_requests/documents', 'public') : null;
-
-    // Create new service request
-    $serviceRequest = new ServiceRequest();
-    $serviceRequest->category = $validatedData['category'];
-    $serviceRequest->title = $validatedData['title'];
-    $serviceRequest->description = $validatedData['description'];
-    $serviceRequest->location = $validatedData['location'];
-    $serviceRequest->start_date = $validatedData['start_date'];
-    $serviceRequest->end_date = $validatedData['end_date'];
-    $serviceRequest->start_time = $validatedData['start_time'];
-    $serviceRequest->end_time = $validatedData['end_time'];
-    $serviceRequest->skill_tags = $validatedData['skill_tags'];
-    $serviceRequest->provider_gender = $validatedData['provider_gender'];
-    $serviceRequest->job_type = $validatedData['job_type'];
-    $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
-    $serviceRequest->hourly_rate_max = $validatedData['hourly_rate_max'];
-    $serviceRequest->expected_price = $validatedData['expected_price'];
-    $serviceRequest->expected_price_max = $validatedData['expected_price_max'];
-    $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
-    $serviceRequest->status = 'open'; // Default status
-    $serviceRequest->user_id = auth()->id(); // Assuming the user is authenticated
-    $serviceRequest->attach_media = $attachMediaPath;
-    $serviceRequest->attach_media2 = $attachMedia2Path;
-    $serviceRequest->attach_media3 = $attachMedia3Path;
-    $serviceRequest->attach_media4 = $attachMedia4Path;
-
-    // Save the service request
-    $serviceRequest->save();
-
-    return redirect()->route('dashboard')->with('success', 'Service request created successfully!');
-}
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'category' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'skill_tags' => 'required|string|max:255',
+            'provider_gender' => 'nullable|in:male,female',
+            'job_type' => 'required|in:project_based,hourly_rate',
+            'hourly_rate' => 'required|numeric|min:0',
+            'hourly_rate_max' => 'required|numeric|min:0',
+            'expected_price' => 'required|numeric|min:0',
+            'expected_price_max' => 'required|numeric|min:0',
+            'estimated_duration' => 'required|integer|min:0',
+            'attach_media' => 'required|image|max:2048',
+            'attach_media2' => 'nullable|image|max:2048',
+            'attach_media3' => 'nullable|image|max:2048',
+            'attach_media4' => 'nullable|image|max:2048',
+        ]);
+    
+        Log::info('Validated data:', $validatedData);
+        Log::info('Validation successful:', $validatedData);
+    
+        // Store uploaded files in 'service_requests/documents' folder
+        $attachMediaPath = $request->file('attach_media')->store('service_requests/documents', 'public');
+        $attachMedia2Path = $request->file('attach_media2') ? $request->file('attach_media2')->store('service_requests/documents', 'public') : null;
+        $attachMedia3Path = $request->file('attach_media3') ? $request->file('attach_media3')->store('service_requests/documents', 'public') : null;
+        $attachMedia4Path = $request->file('attach_media4') ? $request->file('attach_media4')->store('service_requests/documents', 'public') : null;
+    
+        // Create new service request
+        $serviceRequest = new ServiceRequest();
+        $serviceRequest->category = $validatedData['category'];
+        $serviceRequest->title = $validatedData['title'];
+        $serviceRequest->description = $validatedData['description'];
+        $serviceRequest->location = $validatedData['location'];
+        $serviceRequest->start_date = $validatedData['start_date'];
+        $serviceRequest->end_date = $validatedData['end_date'];
+        $serviceRequest->start_time = $validatedData['start_time'];
+        $serviceRequest->end_time = $validatedData['end_time'];
+        $serviceRequest->skill_tags = $validatedData['skill_tags'];
+        $serviceRequest->provider_gender = $validatedData['provider_gender'];
+        $serviceRequest->job_type = $validatedData['job_type'];
+        $serviceRequest->hourly_rate = $validatedData['hourly_rate'];
+        $serviceRequest->hourly_rate_max = $validatedData['hourly_rate_max'];
+        $serviceRequest->expected_price = $validatedData['expected_price'];
+        $serviceRequest->expected_price_max = $validatedData['expected_price_max'];
+        $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
+        $serviceRequest->status = 'open'; // Default status
+        $serviceRequest->user_id = auth()->id(); // Assuming the user is authenticated
+        $serviceRequest->attach_media = $attachMediaPath;
+        $serviceRequest->attach_media2 = $attachMedia2Path;
+        $serviceRequest->attach_media3 = $attachMedia3Path;
+        $serviceRequest->attach_media4 = $attachMedia4Path;
+    
+        // Save the service request
+        try {
+            $serviceRequest->save();
+            Log::info('Service request saved successfully.', ['service_request_id' => $serviceRequest->id]);
+        } catch (\Exception $e) {
+            Log::error('Error saving service request:', ['message' => $e->getMessage()]);
+            return back()->withErrors('An error occurred while saving the service request.');
+        }
+    
+        return redirect()->route('dashboard')->with('success', 'Service request created successfully!');
+    }
+    
 
 
 

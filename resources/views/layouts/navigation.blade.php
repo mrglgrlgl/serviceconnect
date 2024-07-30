@@ -90,7 +90,7 @@
                                         {{ __('Profile') }}
                                     </x-dropdown-link>
 
-                                    <x-dropdown-link :href="route('become-provider')">
+                                    <x-dropdown-link :href="route('create-profile')">
                                         {{ __('Verify Profile!') }}
                                     </x-dropdown-link>
                                     <form method="POST" action="{{ route('logout') }}">
@@ -173,7 +173,7 @@
                         <x-responsive-nav-link :href="route('profile.show')">
                             {{ __('Profile') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('become-provider')">
+                        <x-responsive-nav-link :href="route('create-profile')">
                             {{ __('Become a Provider!') }}
                         </x-responsive-nav-link>
                         <form method="POST" action="{{ route('logout') }}">
