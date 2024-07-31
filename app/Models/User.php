@@ -64,5 +64,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(ProviderDetail::class, 'provider_id', 'id');
     }
-    
+
+    public function philID()
+    {
+        return $this->hasOne(PhilId::class,'provider_id', 'id'); // Adjust based on your actual class and relationship
+    }
+    public function certifications()
+    {
+        return $this->hasOne(Certification::class,'provider_id', 'id'); // Adjust based on your actual class and relationship
+    }
 }

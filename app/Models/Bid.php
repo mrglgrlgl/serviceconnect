@@ -16,6 +16,7 @@ class Bid extends Model
         'bid_amount',
         'bid_description',
         'status',
+        'agreed_to_terms',
     ];
 
     public function serviceRequest()

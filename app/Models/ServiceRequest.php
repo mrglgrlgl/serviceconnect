@@ -19,10 +19,8 @@ class ServiceRequest extends Model
         'skill_tags',
         'provider_gender',
         'job_type',
-        'hourly_rate',
-        'hourly_rate_max',
-        'expected_price',
-        'expected_price_max',
+        'min_price',
+        'max_price',
         'estimated_duration',
         'attach_media',
         'attach_media2',
@@ -55,6 +53,10 @@ class ServiceRequest extends Model
     public function isCompleted() {
         // You could have a more complex logic here based on other attributes like `reviewed` or `closed`
         return $this->status === 'completed'; // Assuming 'completed' is a status indicating the request is done
+    }
+    public function images()
+    {
+        return $this->hasMany(ServiceRequestImages::class, 'service_request_id');
     }
     
 }

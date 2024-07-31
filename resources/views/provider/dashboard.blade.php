@@ -21,10 +21,17 @@
                     <a href="{{ route('create-profile') }}" class="text-blue-500">Build Profile</a>
                 </div>
 
-                 <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
-                    Add your certifications if there are any
-                    <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
-                </div>
+                    <!-- Certifications message -->
+                    @if ($certificationsCount === 0)
+                        <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                            Add your certifications if there are any.
+                            <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
+                        </div>
+                    @else
+                        <div class="bg-green-100 text-green-700 p-4 rounded mb-6">
+                            Certifications are added.
+                        </div>
+                    @endif
 
               <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                    Upload Government ID for final verification

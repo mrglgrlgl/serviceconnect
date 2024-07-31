@@ -1,11 +1,11 @@
 <x-app-layout>
-    <div class="py-12">
+    <div class="py-12 font-open-sans">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             <div class="container mx-auto">
                 <div class="flex flex-wrap">
                     <div class="w-full">
                         <div class="bg-white rounded-lg shadow-sm p-6">
-                            <h1 class="text-2xl font-semibold text-custom-header">Service Request Details</h1>
+                            <h1 class="text-2xl font-semibold text-gray-700">Service Request Details</h1>
                             <div class="border-b pb-4 mb-4"></div>
                             <!-- Status Indicator -->
                             @if ($channel->is_task_completed === 'true')
@@ -33,8 +33,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-4 pt-4">
                                 <div class="md:col-span-3">
                                     <div class="flex items-center text-xl pt-4">
-                                        <x-category :category="$channel->serviceRequest->category" class="mr-2 text-gray-900" />
-                                        <span class="text-gray-900"> - {{ $channel->serviceRequest->title }}</span>
+                                        <x-category :category="$channel->serviceRequest->category" class="mr-2" />
+                                        <span> - {{ $channel->serviceRequest->title }}</span>
                                     </div>
                                     <div class="mt-2">
                                         <div class="flex items-center pl-6">
@@ -43,8 +43,9 @@
                                         </div>
                                         <div class="mt-2 pl-6">
                                             <div class="flex items-center mt-2">
-                                            <span class="material-symbols-outlined text-custom-light-text mr-2">schedule</span>
+                                            <span class="material-symbols-outlined text-gray-500 mr-2">schedule</span>
                                             
+                                            <div class="font-light">
                                             @if (\Carbon\Carbon::parse($channel->serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($channel->serviceRequest->end_date)))
                                                 {{ \Carbon\Carbon::parse($channel->serviceRequest->start_date)->format('F j, Y') }},
                                                 {{ \Carbon\Carbon::parse($channel->serviceRequest->start_time)->format('h:i A') }} -
@@ -54,7 +55,8 @@
                                                 - {{ \Carbon\Carbon::parse($channel->serviceRequest->end_date . ' ' . $channel->serviceRequest->end_time)->format('F j, Y h:i A') }}
                                             @endif
                                         </div>
-                                        <p class="mt-2 pl-6 text-custom-header">
+                                    </div>
+                                        <p class="mt-4 pl-6 text-custom-header">
                                             <strong>Description:</strong> {{ $channel->serviceRequest->description }}
                                         </p>
                                     </div>
@@ -78,14 +80,35 @@
                                                 </span>
                                             </div>
                                             <div class="flex items-center mt-2">
-                                                <span class="material-symbols-outlined text-custom-light-text mr-2">mail</span>
+                                                <span class="material-symbols-outlined text-gray-500 mr-2">mail</span>
                                                 <span>{{ $channel->provider->email }}</span>
                                             </div>
                                             <div class="flex items-center mt-2">
-                                                <span class="material-symbols-outlined mr-2 text-custom-light-text">call</span>
+                                                <span class="material-symbols-outlined mr-2 text-gray-500">call</span>
                                                 <span>{{ optional($channel->provider->providerDetails)->contact_number }}</span>
                                             </div>
-
+                                            <div class="flex items-center mt-2">
+                                                <div>Availability:</div>
+                                                <div class="flex space-x-2 ml-2">
+                                                    @php
+                                                        $daysAbbreviations = ['M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday', 'Th' => 'Thursday', 'F' => 'Friday', 'S' => 'Saturday', 'Sn' => 'Sunday'];
+                                                        $availabilityDays = explode(',', optional($channel->provider->providerDetails)->availability_days);
+                                                    @endphp
+                                                    @if($availabilityDays)
+                                                        @foreach ($availabilityDays as $day)
+                                                            @php
+                                                                $abbr = array_search(trim($day), $daysAbbreviations);
+                                                            @endphp
+                                                            <div class="day-label flex items-center justify-center w-10 h-10 border border-gray-300 rounded-full bg-gray-300">
+                                                                {{ $abbr }}
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <span>No availability provided.</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            </div>
                                             <div class="flex items-center mt-2">
                                                 <span>{{ optional($channel->provider->providerDetails)->description }}</span>
                                             </div>

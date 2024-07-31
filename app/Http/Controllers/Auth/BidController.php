@@ -20,6 +20,8 @@ class BidController extends Controller
             'service_request_id' => 'required|exists:service_requests,id',
             'bid_amount' => 'required|numeric',
             'bid_description' => 'required|string',
+            'agreed_to_terms' => 'accepted',  // Validates the checkbox
+
         ]);
 
         Bid::create([
@@ -28,6 +30,8 @@ class BidController extends Controller
             'bid_amount' => $request->bid_amount,
             'bid_description' => $request->bid_description,
             'status' => 'pending', // Default status for new bids
+            'agreed_to_terms' => $request['agreed_to_terms'],  // Include this field
+
         ]);
 
         // Increment number_of_bids for the corresponding service request

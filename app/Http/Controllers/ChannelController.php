@@ -56,7 +56,7 @@ class ChannelController extends Controller
                 ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
                 ->firstOrFail();
         } catch (\Exception $e) {
-            \Log::error('Channel not found: ' . $e->getMessage());
+            Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
 

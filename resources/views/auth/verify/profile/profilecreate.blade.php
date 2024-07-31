@@ -31,9 +31,9 @@
                     </div>
                     <!-- Service Category -->
                     <div class="form-group">
-                        <x-input-label for="service_category"
+                        <x-input-label for="serviceCategory"
                             class="text-base md:text-base text-custom-dark-blue">Service Category</x-input-label>
-                        <select id="service_category" name="service_category"
+                        <select id="serviceCategory" name="serviceCategory"
                             class="form-control w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
                             required>
                             <option value="">Select Service Category</option>
@@ -49,7 +49,7 @@
                             <option value="Beauty Therapy">Beauty Therapy</option>
                             <option value="Landscaping">Landscaping</option>
                         </select>
-                        @error('service_category')
+                        @error('serviceCategory')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -129,29 +129,37 @@
 
 
 
-
-                    <div class="flex justify-center items-center space-x-4">
-                        <span class="text-sm">From:</span>
-                        <select name="availability_start" id="availability_start" required class="form-control">
-                            @for ($hour = 0; $hour < 24; $hour++)
-                                @foreach (['00', '30'] as $minute)
-                                    <option value="{{ $hour }}:{{ $minute }}">
-                                        {{ date('g:i A', strtotime("$hour:$minute")) }}</option>
-                                @endforeach
-                            @endfor
-                        </select>
-                        <span class="text-sm">To:</span>
-                        <select name="availability_end" id="availability_end" required class="form-control">
-                            @for ($hour = 0; $hour < 24; $hour++)
-                                @foreach (['00', '30'] as $minute)
-                                    <option value="{{ $hour }}:{{ $minute }}">
-                                        {{ date('g:i A', strtotime("$hour:$minute")) }}</option>
-                                @endforeach
-                            @endfor
-                        </select>
-                    </div>
-            </div>
-        </div>
+{{-- <div class="form-group">
+    <x-input-label for="availability_time" class="text-base md:text-base text-custom-dark-blue">Availability Time</x-input-label>
+    <div class="flex justify-center items-center space-x-4">
+        <span class="text-sm">From:</span>
+        <select name="availability_start" id="availability_start" required class="form-control">
+            @for ($hour = 0; $hour < 24; $hour++)
+                @foreach (['00', '30'] as $minute)
+                    <option value="{{ sprintf('%02d:%02d', $hour, $minute) }}">
+                        {{ date('g:i A', strtotime(sprintf('%02d:%02d', $hour, $minute))) }}
+                    </option>
+                @endforeach
+            @endfor
+        </select>
+        <span class="text-sm">To:</span>
+        <select name="availability_end" id="availability_end" required class="form-control">
+            @for ($hour = 0; $hour < 24; $hour++)
+                @foreach (['00', '30'] as $minute)
+                    <option value="{{ sprintf('%02d:%02d', $hour, $minute) }}">
+                        {{ date('g:i A', strtotime(sprintf('%02d:%02d', $hour, $minute))) }}
+                    </option>
+                @endforeach
+            @endfor
+        </select>
+    </div>
+    @error('availability_start')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+    @error('availability_end')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div> --}}
 
         <div class="flex justify-center pt-6">
             <x-primary-button type="submit"

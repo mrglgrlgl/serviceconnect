@@ -22,4 +22,8 @@ class Certification extends Model
     {
         return $this->belongsTo(User::class, 'id');
     }
+    public function certifications()
+{
+    return $this->hasMany(Certification::class);
+}
 }
