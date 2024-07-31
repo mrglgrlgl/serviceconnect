@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ServiceRequest;
 use App\Models\Channel;
+use App\Models\Rating;
 use App\Models\Bid;
 use App\Models\User;
 use App\Models\ProviderDetail;
@@ -12,7 +13,33 @@ use Illuminate\Support\Facades\Log;
 
 class ChannelController extends Controller
 {
+    // public function seekerChannel($serviceRequestId)
+    // {
+    //     $user = Auth::user();
 
+    //     if ($user->role != 3) {
+    //         abort(403, 'Unauthorized action.');
+    //     }
+
+    //     try {
+    //         $channel = Channel::where('service_request_id', $serviceRequestId)
+    //             ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
+    //             ->firstOrFail();
+
+    //         $ratings = Rating::where('provider_id', $channel->provider_id)->get();
+    //         $averageRating = $ratings->count() > 0
+    //             ? $ratings->avg(function ($rating) {
+    //                 return ($rating->quality_of_service + $rating->communication + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money) / 5;
+    //             })
+    //             : null;
+
+    //         return view('seekerChannel', compact('channel', 'averageRating'));
+
+    //     } catch (\Exception $e) {
+    //         Log::error('Error retrieving channel or calculating average rating: ' . $e->getMessage());
+    //         abort(404, 'Channel not found.');
+    //     }
+    // }
 
     public function seekerChannel($serviceRequestId)
     {
@@ -35,6 +62,7 @@ class ChannelController extends Controller
 
         return view('seekerChannel', compact('channel'));
     }
+
     public function providerChannel($serviceRequestId)
     {
         $user = Auth::user();
@@ -223,7 +251,6 @@ public function confirmPayment(Channel $channel)
     }
 }
 
-    
 }
 
 

@@ -83,6 +83,4 @@ class RatingController extends Controller
     
         return redirect()->route('dashboard')->with('success', 'Rating submitted successfully.');
     }
-    
-
 }

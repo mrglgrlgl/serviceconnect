@@ -184,8 +184,8 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
  
     Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
 
-    // // For approved and pending requests
-    // Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
+    // For approved and pending requests
+    Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
 // Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
 //become provider
 Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');

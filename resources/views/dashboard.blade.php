@@ -1,5 +1,4 @@
 <x-dashboard>
-
         <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
             <div class="flex justify-center text-center w-full">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -34,6 +33,7 @@
             </div>
         </div>
 
+        <div x-data="dashboard()" class="py-12">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
             @if ($serviceRequests->isEmpty())
                 <div class="flex flex-col items-center">
@@ -189,87 +189,92 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('dashboard', () => ({
-                showBidsPanel: false,
-                showProfileModal: false,
-                bids: [],
-                profile: {},
-                selectedRequestId: null,
+         <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('dashboard', () => ({
+                    showBidsPanel: false,
+                    showProfileModal: false,
+                    bids: [],
+                    profile: {},
+                    selectedRequestId: null,
 
-                async fetchBids(requestId) {
-                    this.selectedRequestId = requestId;
-                    try {
-                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                    async fetchBids(requestId) {
+                        this.selectedRequestId = requestId;
+                        try {
+                            const response = await fetch(`/api/service-requests/${requestId}/bids`);
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            const data = await response.json();
+                            this.bids = data;
+                            this.showBidsPanel = true;
+                        } catch (error) {
+                            console.error('There was a problem with the fetch operation:', error);
                         }
-                        const data = await response.json();
-                        this.bids = data;
-                        this.showBidsPanel = true;
-                    } catch (error) {
-                        console.error('There was a problem with the fetch operation:', error);
-                    }
-                },
+                    },
 
-                async viewProfile(bidderId) {
-                    try {
-                        const response = await fetch(`/api/providers/${bidderId}`);
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                    async viewProfile(bidderId) {
+                        try {
+                            const response = await fetch(`/api/providers/${bidderId}`);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            const data = await response.json();
+                            this.profile = data; // Update profile data
+                            this.showProfileModal = true;
+                        } catch (error) {
+                            console.error('Error fetching profile:', error);
                         }
-                        const data = await response.json();
-                        this.profile = data; // Update profile data
-                        this.showProfileModal = true;
-                    } catch (error) {
-                        console.error('Error fetching profile:', error);
-                    }
-                },
+                    },
 
-                async confirmBid(bidId, requestId) {
-                    try {
-                        const response = await fetch(`/bids/${bidId}/confirm`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({ request_id: requestId })
-                        });
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        const data = await response.json();
-                        alert(data.message);
-                        if (data.success) {
-                            // Mark the confirmed bid
-                            this.bids.forEach(bid => {
-                                if (bid.id === bidId) {
-                                    bid.confirmed = true;
-                                } else {
-                                    bid.rejected = true;
-                                }
+                    async confirmBid(bidId, requestId) {
+                        try {
+                            const response = await fetch(`/bids/${bidId}/confirm`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    request_id: requestId
+                                })
                             });
-                            // Remove rejected bids from the view
-                            this.bids = this.bids.filter(bid => !bid.rejected);
-                            // Update the service request to show the link
-                            const serviceRequest = @json($serviceRequests).find(req => req.id === requestId);
-                            serviceRequest.bid_confirmed = true;
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            const data = await response.json();
+                            alert(data.message);
+                            if (data.success) {
+                                // Mark the confirmed bid
+                                this.bids.forEach(bid => {
+                                    if (bid.id === bidId) {
+                                        bid.confirmed = true;
+                                    } else {
+                                        bid.rejected = true;
+                                    }
+                                });
+                                // Remove rejected bids from the view
+                                this.bids = this.bids.filter(bid => !bid.rejected);
+                                // Update the service request to show the link
+                                const serviceRequest = @json($serviceRequests).find(req => req
+                                    .id === requestId);
+                                serviceRequest.bid_confirmed = true;
+                            }
+                        } catch (error) {
+                            console.error('There was a problem with the fetch operation:', error);
                         }
-                    } catch (error) {
-                        console.error('There was a problem with the fetch operation:', error);
+                    },
+
+                    closeBidsPanel() {
+                        this.showBidsPanel = false;
+                    },
+
+                    closeProfileModal() {
+                        this.showProfileModal = false;
                     }
-                },
-
-                closeBidsPanel() {
-                    this.showBidsPanel = false;
-                },
-
-                closeProfileModal() {
-                    this.showProfileModal = false;
-                }
-            }));
-        });
-    </script>
+                }));
+            });
+            
+        </script>
 </x-dashboard>
