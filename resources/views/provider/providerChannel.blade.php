@@ -1,65 +1,104 @@
 <x-app-layout>
-    <div class="container mx-auto mt-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Service Request Details -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="border-b pb-4 mb-4">
-                    <h3 class="text-2xl font-semibold">Service Request Details</h3>
-                </div>
-                <div>
-                    <p><strong>Category:</strong> {{ $channel->serviceRequest->category }}</p>
-                    <p><strong>Title:</strong> {{ $channel->serviceRequest->title }}</p>
-                    <p><strong>Description:</strong> {{ $channel->serviceRequest->description }}</p>
-                    <p><strong>Location:</strong> {{ $channel->serviceRequest->location }}</p>
-                    <p><strong>Start Time:</strong> {{ $channel->serviceRequest->start_time }}</p>
-                    <p><strong>End Time:</strong> {{ $channel->serviceRequest->end_time }}</p>
-                </div>
-            </div>
+    <div class="py-12 font-open-sans">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
+            <div class="container mx-auto">
+                <div class="flex flex-wrap">
+                    <div class="w-full">
+                        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-300">
+                            <h1 class="text-2xl font-semibold text-gray-700">Service Request Details</h1>
+                            <div class="border-b pb-4 mb-4"></div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4">
+                                <div class="md:col-span-3">
+                                    <div class="flex items-center text-xl pt-4">
+                                        <x-category :category="$channel->serviceRequest->category" class="mr-2" />
+                                        <span> - {{ $channel->serviceRequest->title }}</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="flex items-center pl-6">
+                                            <span class="material-icons mr-1 text-gray-500">location_on</span>
+                                            <span>{{ $channel->serviceRequest->location }}</span>
+                                        </div>
+                                        <div class="mt-2 pl-6">
+                                            <div class="flex items-center mt-2">
+                                                <span class="material-icons text-gray-500 mr-2">schedule</span>
+                                                <div class="font-light">
+                                                    @if (\Carbon\Carbon::parse($channel->serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($channel->serviceRequest->end_date)))
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->start_date)->format('F j, Y') }},
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->start_time)->format('h:i A') }} -
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->end_time)->format('h:i A') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->start_date . ' ' . $channel->serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                                        - {{ \Carbon\Carbon::parse($channel->serviceRequest->end_date . ' ' . $channel->serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <p class="mt-4 pl-6 text-custom-header">
+                                                <strong>Description:</strong> {{ $channel->serviceRequest->description }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <!-- Seeker Details -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="border-b pb-4 mb-4">
-                    <h3 class="text-2xl font-semibold">Seeker Details</h3>
-                </div>
-                <div>
-                    <p><strong>Name:</strong> {{ $channel->seeker->name }}</p>
-                    <p class="flex items-center"><span class="material-symbols-outlined mr-1">mail</span>{{ $channel->seeker->email }}</p>
-                </div>
-            </div>
+                                <div class="md:col-span-2 md:ml-auto w-full">
+                                    <div class="border rounded-md p-4">
+                                        <div class="border-b pb-2 ">
+                                            <h3 class="text-xl text-custom-header">Seeker Details</h3>
+                                        </div>
+                                        <div class="mt-4">
+                                            <div class="flex items-center text-xl pb-4">
+                                                {{ $channel->seeker->name }}
+                                            </div>
+                                            <div class="flex items-center mt-2 pl-4">
+                                                <span class="material-icons text-gray-400 mr-2">mail</span>
+                                                <span>{{ $channel->seeker->email }}</span>
+                                            </div>
+                                            <div class="flex items-center mt-2 pl-4">
+                                                <span class="material-icons mr-2 text-gray-400">call</span>
+                                                <span>{{ $channel->seeker->phone_number ?? 'N/A' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-            <!-- Provider Details -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="border-b pb-4 mb-4">
-                    <h3 class="text-2xl font-semibold">Bid Details</h3>
-                </div>
-                <div>
-                    <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
-                </div>
-            </div>
-        </div>
+                            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                                <div class="border-b pb-4 mb-4">
+                                    <h3 class="text-2xl font-semibold">Bid Details</h3>
+                                </div>
+                                <div>
+                                    <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+                                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+                                </div>
+                            </div>
 
-        <!-- Task Actions -->
-        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-            <div class="border-b pb-4 mb-4">
-                <h3 class="text-2xl font-semibold">Task Actions</h3>
-            </div>
-            <div class="space-y-4">
-                <button onclick="informSeekerOnTheWay()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Inform Seeker Provider is on the way</button>
-                <button onclick="setArrived()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Notify Seeker Provider has Arrived</button>
-                @if ($channel->is_arrived === 'true')
-                    @if ($channel->is_task_started === 'true')
-                        @if ($channel->is_task_completed === 'true')
-                            <p class="text-green-500">Task is completed.</p>
-                        @else
-                            <button onclick="completeTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete Task</button>
-                        @endif
-                    @else
-                        <button onclick="startTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Start Task</button>
-                    @endif
-                @else
-                    <p class="text-yellow-500">Waiting for the seeker to confirm arrival.</p>
-                @endif
+                            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                                <div class="border-b pb-4 mb-4">
+                                    <h3 class="text-2xl font-semibold">Task Actions</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    @if ($channel->is_on_the_way === 'true')
+                                        <p class="text-yellow-500">Waiting for the seeker to confirm arrival.</p>
+                                        <button onclick="setArrived()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Notify Seeker Provider has Arrived</button>
+                                    @elseif ($channel->is_arrived === 'true')
+                                        @if ($channel->is_task_started === 'true')
+                                            @if ($channel->is_task_completed === 'true')
+                                                <p class="text-green-500">Task is completed.</p>
+                                            @else
+                                                <p class="text-yellow-500">Task is ongoing.</p>
+                                                <button onclick="completeTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete Task</button>
+                                            @endif
+                                        @else
+                                            <button onclick="startTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Start Task</button>
+                                        @endif
+                                    @else
+                                        <button onclick="informSeekerOnTheWay()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Inform Seeker Provider is on the way</button>
+                                    @endif
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -147,6 +186,7 @@
             axios.post('{{ route('channel.informSeekerOnTheWay', $channel->id) }}')
                 .then(response => {
                     alert(response.data.message);
+                    location.reload(); // Refresh the page to update the status
                 })
                 .catch(error => {
                     console.error(error);
