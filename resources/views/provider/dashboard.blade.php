@@ -63,7 +63,7 @@
                                     </div>
                                 </div>
 
-                                <div class="flex items-start px-8">
+                               <div class="flex items-start px-8">
                                     <div class="flex-1">
                                         <div class="flex text-gray-700 items-center space-x-4">
                                             <div class="flex items-center p-2">
@@ -71,19 +71,10 @@
                                                 {{ $serviceRequest->job_type }}
                                             </div>
 
-                                            @if ($serviceRequest->job_type == 'hourly_rate')
-                                                <div class="flex items-center p-2">
-                                                    <span class="material-symbols-outlined mr-1">request_quote</span>
-                                                    Hourly Rate: {{ $serviceRequest->hourly_rate }} -
-                                                    {{ $serviceRequest->hourly_rate_max }}
-                                                </div>
-                                            @elseif ($serviceRequest->job_type == 'project_based')
-                                                <div class="flex items-center p-2">
-                                                    <span class="material-symbols-outlined mr-1">request_quote</span>
-                                                    Expected Price: {{ $serviceRequest->expected_price }} -
-                                                    {{ $serviceRequest->expected_price_max }}
-                                                </div>
-                                            @endif
+                                            <div class="flex items-center p-2">
+                                                <span class="material-symbols-outlined mr-1">request_quote</span>
+                                                Price Range: {{ $serviceRequest->min_price }} - {{ $serviceRequest->max_price }}
+                                            </div>
 
                                             <div class="flex items-center p-2">
                                                 Estimated Duration: {{ $serviceRequest->estimated_duration }}
@@ -162,52 +153,6 @@
                                         @endif
 
                                         <!-- Bid Modal -->
-                                        {{-- <div x-show="showModal" x-cloak
-                                            class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
-                                            @click.away="showModal = false">
-                                            <div
-                                                class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                                                <div class="bg-white p-4">
-                                                    <div class="flex justify-between items-center pb-2">
-                                                        <h5 class="text-lg font-semibold text-custom-header">Place Bid</h5>
-                                                        <button type="button" class="text-gray-400 hover:text-gray-600"
-                                                            aria-label="Close" @click="showModal = false">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <form action="{{ route('bids.store') }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="service_request_id"
-                                                            value="{{ $serviceRequest->id }}">
-                                                        <div class="mb-4">
-                                                            <label for="bid_amount"
-                                                                class="block text-sm font-medium text-gray-700">Bid Amount</label>
-                                                            <x-text-input type="number" step="0.01"
-                                                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                id="bid_amount" name="bid_amount" required />
-                                                            <p class="text-sm text-gray-600">Max Budget:
-                                                                {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }}
-                                                            </p>
-                                                            <p id="bid_warning" class="text-red-500 text-sm" style="display: none;">
-                                                                Your bid exceeds the maximum budget!</p>
-                                                        </div>
-                                                        <div class="mb-4">
-                                                            <label for="bid_description"
-                                                                class="block text-sm font-medium text-gray-700">Work Plan</label>
-                                                            <textarea
-                                                                class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                id="bid_description" name="bid_description" required></textarea>
-                                                        </div>
-                                                        <div class="flex justify-center">
-                                                            <button type="submit"
-                                                                class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit
-                                                                Bid</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-                                        <!-- Bid Modal -->
                                         <div x-show="showModal" x-cloak
                                             class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
                                             @click.away="showModal = false">
@@ -222,8 +167,7 @@
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <form action="{{ route('bids.store') }}" method="POST"
-                                                        x-data="{ agreeToTerms: false }">
+                                                    <form action="{{ route('bids.store') }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="service_request_id"
                                                             value="{{ $serviceRequest->id }}">
@@ -235,7 +179,7 @@
                                                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                                 id="bid_amount" name="bid_amount" required />
                                                             <p class="text-sm text-gray-600">Max Budget:
-                                                                {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->hourly_rate_max : $serviceRequest->expected_price_max }}
+                                                                {{ $serviceRequest->job_type === 'hourly_rate' ? $serviceRequest->max_price : $serviceRequest->expected_price_max }}
                                                             </p>
                                                             <p id="bid_warning" class="text-red-500 text-sm"
                                                                 style="display: none;">
@@ -253,8 +197,8 @@
                                                         <!-- Terms and Conditions Checkbox -->
                                                         <div class="mb-4">
                                                             <label class="flex items-center">
-                                                                <input type="checkbox" x-model="agreeToTerms"
-                                                                    class="mr-2">
+                                                                <input type="checkbox" name="agreed_to_terms"
+                                                                    value="1" required class="mr-2">
                                                                 <span class="text-sm text-gray-700">I agree to the <a
                                                                         href="/terms" target="_blank"
                                                                         class="text-blue-500 underline">terms and
@@ -262,11 +206,11 @@
                                                             </label>
                                                         </div>
 
+
                                                         <div class="flex justify-center">
-                                                            <button type="submit" :disabled="!agreeToTerms"
-                                                                class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed">
-                                                                Submit Bid
-                                                            </button>
+                                                            <button type="submit"
+                                                                class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit
+                                                                Bid</button>
                                                         </div>
                                                     </form>
                                                 </div>
