@@ -1,28 +1,26 @@
 <x-dashboard>
-        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
+    <div class="py-12">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+            <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                    <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('My Service Requests') }}
-                        </div>
-                    </x-category-link>
-                    <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('analytics')" :active="request()->routeIs('analytics')">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('Analytics') }}
-                        </div>
-                    </x-category-link>
+                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                        {{ __('My Requests') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('analytics') }}" :active="request()->routeIs('provider.analytics')">
+                        {{ __('Analytics') }}
+                    </x-nav-link>
                 </div>
             </div>
         </div>
 
         <div class="flex justify-center">
-            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
+            <div class="border-t w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12 mx-auto text-center border-custom-cat-border"></div>
         </div>
 
-    <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all' }">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
-            <div class="relative inline-block mb-4">
+    <div class="pt-6 pb-6 bg-gray-100 " x-data="{ filter: 'all' }">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
+            <div class="relative inline-block pb-4">
                 <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
                     <option value="all">All Requests</option>
                     <option value="open">Open</option>
@@ -33,8 +31,8 @@
             </div>
         </div>
 
-        <div x-data="dashboard()" class="py-12">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+        <div x-data="dashboard()">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12 mx-auto">
             @if ($serviceRequests->isEmpty())
                 <div class="flex flex-col items-center">
                     <div class="alert-info mb-4 text-custom-danger">
@@ -55,7 +53,9 @@
                                 <div class="flex items-center">
                                     <x-category :category="$serviceRequest->category" class="mr-2" />
                                 </div>
-                                <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''" />
+                                <div class="md:ml-8">
+                                <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''"/>
+                                </div>
                             </div>
                             <div class="text-sm text-custom-light-text md:mt-2">
                                 {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}

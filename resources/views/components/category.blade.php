@@ -46,5 +46,5 @@
 
 <div class="category-icon flex items-center space-x-1">
     <span class="material-icons {{ $textColor }} text-4xl">{{ $icon }}</span>
-    <span class="font-bold text-xl text-custom-lightest-blue">{{ ucfirst($category) }}</span>
+    <span class="font-bold text-xl {{ $textColor }}">{{ ucfirst($category) }}</span>
 </div>

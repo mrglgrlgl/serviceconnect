@@ -1,12 +1,12 @@
 <!-- resources/views/components/service-request.blade.php -->
 @props(['status' => ''])
 
-<div id="status" class="text-sm mt-1 md:ml-12">
+<div id="status" class="text-sm mt-1">
     @php
         $statusColorClasses = [
-            'open' => 'text-green-600',      // Green color for 'open'
-            'pending' => 'text-blue-600',    // Blue color for 'pending'
-            'archived' => 'text-gray-600',   // Gray color for 'archived'
+            'open' => 'text-green-500',      // Green color for 'open'
+            'pending' => 'text-blue-500',    // Blue color for 'pending'
+            'archived' => 'text-gray-500',   // Gray color for 'archived'
             'completed' => 'text-blue-500'      // Black color for 'completed'
         ];
 

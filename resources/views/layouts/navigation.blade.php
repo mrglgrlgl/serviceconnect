@@ -94,7 +94,7 @@
                         </div>
                     </div>
                 @elseif ($user->role == '2')
-                    <a href="{{ route('provider.dashboard') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('provider.dashboard') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
+                    <a href="{{ route('provider.dashboard') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('provider.dashboard') || request()->routeIs('provider.myrequests') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
                         Service Request
                     </a>
                 @endif
@@ -111,10 +111,12 @@
                     <!-- User Dropdown -->
                     <div x-data="{ userDropdownOpen: false }" class="relative">
                         <button @click="userDropdownOpen = !userDropdownOpen" @click.away="userDropdownOpen = false" type="button" 
-                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" 
+                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50
+                                {{ Auth::user()->role == 3 ? 'bg-custom-lightest-blue' : (Auth::user()->role == 2 ? 'bg-custom-light-blue' : 'bg-white') }}" 
                                 id="menu-button" aria-expanded="true" aria-haspopup="true">
                             {{ Auth::user()->name }}
                             <span class="material-icons ml-2">account_circle</span>
+                            <span class="material-symbols-outlined">arrow_drop_down</span>
                         </button>
                         <!-- Dropdown Menu -->
                         <div x-show="userDropdownOpen" x-transition:enter="transition ease-out duration-100 transform"

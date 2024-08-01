@@ -52,10 +52,11 @@ class RatingController extends Controller
     {
         $validated = $request->validate([
             'channel_id' => 'required|exists:channel,id',
+            'rating_communication' => 'nullable|integer|min:0|max:10',
             'rated_for_id' => 'required|exists:users,id',
             'rating_quality_of_service' => 'nullable|integer|min:0|max:10',
             'rating_professionalism' => 'nullable|integer|min:0|max:10',
-            'rating_cleanliness_and_tidiness' => 'nullable|integer|min:0|max:10', // Updated to match form input
+            'rating_cleanliness_tidiness' => 'nullable|integer|min:0|max:10', // Updated to match form input
             'rating_value_for_money' => 'nullable|integer|min:0|max:10',
             'feedback' => 'nullable|string|max:255',
         ]);
@@ -75,8 +76,9 @@ class RatingController extends Controller
             'rated_by_id' => Auth::id(),
             'rated_for_id' => $validated['rated_for_id'],
             'quality_of_service' => $validated['rating_quality_of_service'],
+            'communication' => $validated['rating_communication'],
             'professionalism' => $validated['rating_professionalism'],
-            'cleanliness_tidiness' => $validated['rating_cleanliness_and_tidiness'], // Ensure this matches form input
+            'cleanliness_tidiness' => $validated['rating_cleanliness_tidiness'], // Ensure consistency
             'value_for_money' => $validated['rating_value_for_money'],
             'additional_feedback' => $validated['feedback'],
         ]);

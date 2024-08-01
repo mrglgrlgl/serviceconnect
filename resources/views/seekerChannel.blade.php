@@ -18,7 +18,7 @@
                                 </div>
                             @elseif ($channel->is_arrived === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
-                                    <div>Awaiting for provider's task start confirmation.</div>
+                                    <div>Awaiting provider's task start confirmation.</div>
                                 </div>
                             @elseif ($channel->is_on_the_way)
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
@@ -123,7 +123,7 @@
                                     @if ($channel->is_on_the_way)
                                         <button onclick="confirmArrival()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Confirm Provider Arrival</button>
                                     @elseif ($channel->is_arrived === 'true')
-                                        <p class="text-yellow-500">Awaiting for provider's task start confirmation.</p>
+                                        <p class="text-yellow-500">Awaiting provider's task start confirmation.</p>
                                     @elseif ($channel->is_task_started === 'true')
                                         @if ($channel->is_task_completed === 'true')
                                             <p class="text-green-500">Task is completed.</p>
@@ -146,22 +146,22 @@
     <!-- Modals for Arrival, Task Start, Task Completion, Payment Confirmation, and Rating -->
     <!-- Modals similar to what you provided earlier -->
 
-    <!-- Arrival Confirmation Modal -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="arrivalModal" style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
-            <div class="border-b pb-4 mb-4">
-                <h5 class="text-xl font-semibold">Confirm Provider Arrival</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none float-right" onclick="closeModal('arrivalModal')">&times;</button>
-            </div>
-            <div class="mb-4">
-                <p>The provider has arrived. Please confirm their arrival.</p>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" class="btn btn-secondary mr-2" onclick="closeModal('arrivalModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="confirmArrival()">Confirm Arrival</button>
-            </div>
+<!-- Arrival Confirmation Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" id="arrivalModal" style="display: none;">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+            <h5 class="text-xl font-semibold">Confirm Provider Arrival</h5>
+            <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('arrivalModal')">&times;</button>
+        </div>
+        <div class="mb-4">
+            <p>The provider has arrived. Please confirm their arrival.</p>
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700" onclick="closeModal('arrivalModal')">Close</button>
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="confirmArrival()">Confirm Arrival</button>
         </div>
     </div>
+</div>
 
     <!-- Task Start Confirmation Modal -->
     <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="startTaskModal" style="display: none;">
@@ -223,31 +223,44 @@
 </x-app-layout>
 
 <!-- Rating Modal -->
-<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="seekerRatingModal" style="display: none;">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
+<!-- Rating Modal -->
+<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="seekerRatingModal" style="display: none;">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
         <div class="border-b pb-4 mb-4 flex justify-between items-center">
             <h5 class="text-xl font-semibold">Rate the Provider</h5>
             <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('seekerRatingModal')">&times;</button>
+        </div>
+        <div class="mb-4">
+            <p class="text-lg">On a scale of one to ten, rate the provider by the following criteria:</p>
         </div>
         <form action="{{ route('submit.seeker.rating') }}" method="POST" class="space-y-6">
             @csrf
             <input type="hidden" name="channel_id" value="{{ $channel->id }}">
             <input type="hidden" name="rated_for_id" value="{{ $channel->provider_id }}">
             @php
-                $criteria = ['Quality of Service', 'Professionalism', 'Cleanliness and Tidiness', 'Value for Money'];
-                $highlightClass = 'bg-blue-500 text-white';
+                $criteria = [
+                    'quality_of_service' => 'Quality of Service',
+                    'communication' => 'Communication',
+                    'professionalism' => 'Professionalism',
+                    'cleanliness_tidiness' => 'Cleanliness and Tidiness',
+                    'value_for_money' => 'Value for Money'
+                ];
             @endphp
-            <div class="flex flex-wrap">
-                @foreach ($criteria as $criterion)
-                    <div class="w-full md:w-1/2 p-2">
-                        <label class="block text-lg font-medium text-gray-700 text-center">{{ $criterion }}</label>
-                        <div class="flex flex-wrap justify-center space-x-2">
-                            @for ($i = 0; $i <= 10; $i++)
-                                <input type="radio" name="rating_{{ strtolower(str_replace([' ', '&'], '_', $criterion)) }}" value="{{ $i }}" id="{{ strtolower(str_replace([' ', '&'], '_', $criterion)) }}-{{ $i }}" class="hidden" />
-                                <label for="{{ strtolower(str_replace([' ', '&'], '_', $criterion)) }}-{{ $i }}" class="rating-label flex items-center justify-center w-10 h-10 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150" onclick="highlightSelected(this, '{{ $highlightClass }}')">
+            <div class="space-y-4">
+                @foreach ($criteria as $field => $label)
+                    <div>
+                        <label class="block text-lg font-medium text-gray-700 text-center">{{ $label }}</label>
+                        <div class="flex justify-center space-x-2">
+                            @for ($i = 1; $i <= 10; $i++)
+                                <input type="radio" name="rating_{{ $field }}" value="{{ $i }}" id="{{ $field }}-{{ $i }}" class="hidden" />
+                                <label for="{{ $field }}-{{ $i }}" class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150" onclick="highlightSelected(this)">
                                     {{ $i }}
                                 </label>
                             @endfor
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mt-1">
+                            <span>Poor</span>
+                            <span>Excellent</span>
                         </div>
                     </div>
                 @endforeach
@@ -260,6 +273,17 @@
                 <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
             </div>
         </form>
+        @if(session('success'))
+            <div class="alert alert-success mt-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger mt-4">
+                {{ session('error') }}
+            </div>
+        @endif
     </div>
 </div>
 

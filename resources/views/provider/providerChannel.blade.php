@@ -7,7 +7,26 @@
                         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-300">
                             <h1 class="text-2xl font-semibold text-gray-700">Service Request Details</h1>
                             <div class="border-b pb-4 mb-4"></div>
-                            
+
+                            <!-- Status Indicator -->
+                            @if ($channel->is_task_completed === 'true')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-green-100">
+                                    <div>The task has been completed.</div>
+                                </div>
+                            @elseif ($channel->is_task_started === 'true')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-yellow-100">
+                                    <div>The task is in progress.</div>
+                                </div>
+                            @elseif ($channel->is_arrived === 'true')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
+                                    <div>Awaiting provider's task start confirmation.</div>
+                                </div>
+                                @elseif ($channel->is_arrived === 'pending')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
+                                    <div>Awaiting seeker's arrival confirmation.</div>
+                                </div>
+                            @endif
+
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4">
                                 <div class="md:col-span-3">
                                     <div class="flex items-center text-xl pt-4">
@@ -16,25 +35,30 @@
                                     </div>
                                     <div class="mt-2">
                                         <div class="flex items-center pl-6">
-                                            <span class="material-icons mr-1 text-gray-500">location_on</span>
+                                            <span class="material-icons mr-1 text-red-500">location_on</span>
                                             <span>{{ $channel->serviceRequest->location }}</span>
                                         </div>
                                         <div class="mt-2 pl-6">
                                             <div class="flex items-center mt-2">
                                                 <span class="material-icons text-gray-500 mr-2">schedule</span>
                                                 <div class="font-light">
-                                                    @if (\Carbon\Carbon::parse($channel->serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($channel->serviceRequest->end_date)))
+                                                    @if (
+                                                        \Carbon\Carbon::parse($channel->serviceRequest->start_date)->isSameDay(
+                                                            \Carbon\Carbon::parse($channel->serviceRequest->end_date)))
                                                         {{ \Carbon\Carbon::parse($channel->serviceRequest->start_date)->format('F j, Y') }},
-                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->start_time)->format('h:i A') }} -
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->start_time)->format('h:i A') }}
+                                                        -
                                                         {{ \Carbon\Carbon::parse($channel->serviceRequest->end_time)->format('h:i A') }}
                                                     @else
                                                         {{ \Carbon\Carbon::parse($channel->serviceRequest->start_date . ' ' . $channel->serviceRequest->start_time)->format('F j, Y h:i A') }}
-                                                        - {{ \Carbon\Carbon::parse($channel->serviceRequest->end_date . ' ' . $channel->serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($channel->serviceRequest->end_date . ' ' . $channel->serviceRequest->end_time)->format('F j, Y h:i A') }}
                                                     @endif
                                                 </div>
                                             </div>
                                             <p class="mt-4 pl-6 text-custom-header">
-                                                <strong>Description:</strong> {{ $channel->serviceRequest->description }}
+                                                <strong>Description:</strong>
+                                                {{ $channel->serviceRequest->description }}
                                             </p>
                                         </div>
                                     </div>
@@ -48,6 +72,13 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->seeker->name }}
+                                                <span class="ml-2 text-yellow-500">
+                                                    @if (isset($averageRating))
+                                                        {{ number_format($averageRating, 2) }} / 5
+                                                    @else
+                                                        No ratings yet
+                                                    @endif
+                                                </span>
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -62,7 +93,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                            <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">
                                     <h3 class="text-2xl font-semibold">Bid Details</h3>
                                 </div>
@@ -72,29 +103,39 @@
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                            <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">
                                     <h3 class="text-2xl font-semibold">Task Actions</h3>
                                 </div>
                                 <div class="space-y-4">
-                                    @if ($channel->is_on_the_way === 'true')
-                                        <p class="text-yellow-500">Waiting for the seeker to confirm arrival.</p>
-                                        <button onclick="setArrived()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Notify Seeker Provider has Arrived</button>
+                                    @if ($channel->is_on_the_way == '1' && is_null($channel->is_arrived))
+                                        <!-- Only show the "Notify Seeker Provider has Arrived" button -->
+                                        <button onclick="setArrived()"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Notify
+                                            Seeker Provider has Arrived</button>
                                     @elseif ($channel->is_arrived === 'true')
                                         @if ($channel->is_task_started === 'true')
                                             @if ($channel->is_task_completed === 'true')
                                                 <p class="text-green-500">Task is completed.</p>
                                             @else
                                                 <p class="text-yellow-500">Task is ongoing.</p>
-                                                <button onclick="completeTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete Task</button>
+                                                <button onclick="completeTask()"
+                                                    class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete
+                                                    Task</button>
                                             @endif
                                         @else
-                                            <button onclick="startTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Start Task</button>
+                                            <button onclick="startTask()"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Start
+                                                Task</button>
                                         @endif
-                                    @else
-                                        <button onclick="informSeekerOnTheWay()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Inform Seeker Provider is on the way</button>
+                                    @elseif (is_null($channel->is_on_the_way))
+                                        <button onclick="informSeekerOnTheWay()"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Inform
+                                            Seeker Provider is on the way</button>
                                     @endif
                                 </div>
+                            </div>
+
 
                         </div>
                     </div>
@@ -104,32 +145,38 @@
     </div>
 
     <!-- Payment Confirmation Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="providerPaymentModal" style="display: none;">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="providerPaymentModal"
+        style="display: none;">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
             <div class="border-b pb-4 mb-4 flex justify-between items-center">
                 <h5 class="text-xl font-semibold">Confirm Payment Received</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('providerPaymentModal')">&times;</button>
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onclick="closeModal('providerPaymentModal')">&times;</button>
             </div>
             <div>
                 <p>Amount: {{ $channel->bid->bid_amount }}</p>
                 <p>Confirm you have received the payment.</p>
             </div>
             <div class="flex justify-end">
-                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2" onclick="closeModal('providerPaymentModal')">Close</button>
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" onclick="confirmProviderPayment()">Confirm Payment</button>
+                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2"
+                    onclick="closeModal('providerPaymentModal')">Close</button>
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                    onclick="confirmProviderPayment()">Confirm Payment</button>
             </div>
         </div>
     </div>
 
     <!-- Rating Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal" style="display: none;">
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
+        style="display: none;">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
             <div class="border-b pb-4 mb-4 flex justify-between items-center">
                 <h5 class="text-xl font-semibold">Rate Your Experience</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('ratingModal')">&times;</button>
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onclick="closeModal('ratingModal')">&times;</button>
             </div>
             <div class="mb-4">
-                <p class="text-lg">On a scale of one to ten, rate your client by the following criteria:</p>
+                <p class="text-lg">On a scale of one to ten, rate your seeker by the following criteria:</p>
             </div>
             <form action="{{ route('submit.rating') }}" method="POST" class="space-y-6">
                 @csrf
@@ -141,11 +188,19 @@
                 <div class="space-y-4">
                     @foreach ($criteria as $criterion)
                         <div>
-                            <label class="block text-lg font-medium text-gray-700 text-center">{{ $criterion }}</label>
+                            <label
+                                class="block text-lg font-medium text-gray-700 text-center">{{ $criterion }}</label>
                             <div class="flex justify-center space-x-2">
                                 @for ($i = 1; $i <= 10; $i++)
-                                    <input type="radio" name="rating_{{ strtolower(str_replace(' ', '_', $criterion)) }}" value="{{ $i }}" id="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}" class="hidden" />
-                                    <label for="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}" class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150" onclick="highlightSelected(this)">
+                                    <input type="radio"
+                                        name="rating_{{ strtolower(str_replace(' ', '_', $criterion)) }}"
+                                        value="{{ $i }}"
+                                        id="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
+                                        class="hidden" />
+                                    <label
+                                        for="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
+                                        class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150"
+                                        onclick="highlightSelected(this)">
                                         {{ $i }}
                                     </label>
                                 @endfor
@@ -158,20 +213,24 @@
                     @endforeach
                 </div>
                 <div class="space-y-2 pt-4">
-                    <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback (Optional)</label>
-                    <textarea name="feedback" id="feedback" rows="4" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
+                    <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback
+                        (Optional)</label>
+                    <textarea name="feedback" id="feedback" rows="4"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
                 </div>
                 <div class="flex justify-center pt-4">
-                    <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
+                    <button type="submit"
+                        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
                 </div>
             </form>
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
 
-            @if(session('error'))
+            @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
                 </div>
