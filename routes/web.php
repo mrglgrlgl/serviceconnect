@@ -22,8 +22,12 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ProviderProfileController;
 use App\Http\Controllers\Auth\PhilIDController;
+use App\Http\Controllers\ViewProfileController;
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+Route::get('/profile/{providerId}', [ViewProfileController::class, 'show'])->name('profile.show');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/philid', [PhilIDController::class, 'index'])->name('philid.index');

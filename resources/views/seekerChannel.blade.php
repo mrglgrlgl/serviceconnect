@@ -59,6 +59,18 @@
                                                 <strong>Description:</strong> {{ $channel->serviceRequest->description }}
                                             </p>
                                         </div>
+                                        <!-- Image Display -->
+<div class="service-request-images mb-4">
+    <h2 class="text-xl font-semibold mb-2">Attached Images</h2>
+    <div class="flex flex-wrap -mx-2">
+        @foreach($serviceRequestImages as $image)
+            <div class="w-1/4 px-2 mb-4">
+                <img src="{{ Storage::url($image->file_path) }}" alt="Service Request Image" class="w-full h-auto rounded shadow-md">
+            </div>
+        @endforeach
+    </div>
+</div>
+
                                     </div>
                                 </div>
 

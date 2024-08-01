@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\ProviderDetail;
 use App\Models\RequestList;
+use App\Models\PhilId;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Log;
 
@@ -11,10 +12,10 @@ class RequestController extends Controller
 {
     public function index()
     {
-        $requests = RequestList::with(['user', 'providerDetail'])->get();
-
+        // Fetch users with their PhilId and associated requests
+        $users = User::with(['philId', 'serviceRequests.providerDetail'])->get();
     
-        return view('authorizer.dashboard', compact('requests'));
+        return view('authorizer.dashboard', compact('users'));
     }
     
 

@@ -17,6 +17,4 @@ class PsaJob extends Model
         'Average_Occupational_Wage_2024',
         'Average_Occupational_Wage_per_Hour',
     ];
-
-    // Define any relationships or additional methods here as needed
 }

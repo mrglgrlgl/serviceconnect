@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServiceRequest;
+use App\Models\ServiceRequestImages;
+
 use App\Models\Channel;
 use App\Models\Rating;
 use App\Models\Bid;
@@ -55,12 +57,17 @@ class ChannelController extends Controller
             $channel = Channel::where('service_request_id', $serviceRequestId)
                 ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
                 ->firstOrFail();
+
+
+                $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
+
+
         } catch (\Exception $e) {
             Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
 
-        return view('seekerChannel', compact('channel'));
+        return view('seekerChannel', compact('channel','serviceRequestImages'));
     }
 
     public function providerChannel($serviceRequestId)
