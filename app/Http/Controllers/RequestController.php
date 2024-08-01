@@ -15,7 +15,7 @@ class RequestController extends Controller
         // Fetch users with their PhilId and associated requests
         $users = User::with(['philId', 'serviceRequests.providerDetail'])->get();
     
-        return view('authorizer.dashboard', compact('users'));
+        return view('', compact('users'));
     }
     
 

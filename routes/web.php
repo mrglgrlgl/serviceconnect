@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\RequestController;
+// use App\Http\Controllers\RequestController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
@@ -23,10 +23,25 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ProviderProfileController;
 use App\Http\Controllers\Auth\PhilIDController;
 use App\Http\Controllers\ViewProfileController;
+use App\Http\Controllers\AdminController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
+    Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
+    Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
+});
+// Route::middleware(['auth', 'verified',])->group(function () {
+//     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
+// });
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+// Route to show the provider's profile
+Route::get('/provider/profile', [ViewProfileController::class, 'edit'])->name('provider.profile.edit');
 
+// Route to update the provider's profile
+Route::post('/provider/profile/update', [ViewProfileController::class, 'update'])->name('provider.profile.update');
 Route::get('/profile/{providerId}', [ViewProfileController::class, 'show'])->name('profile.show');
+Route::view('/terms', 'terms')->name('terms');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -86,10 +101,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //     // Other provider routes
 // });
 
-Route::group(['middleware' => ['auth', 'authorizer']], function() {
-    Route::get('/authorizer/dashboard', [AuthorizerController::class, 'dashboard'])->name('authorizer.dashboard');
-    // Other authorizer routes
-});
+// Route::group(['middleware' => ['auth', 'authorizer']], function() {
+//     Route::get('/authorizer/dashboard', [AuthorizerController::class, 'dashboard'])->name('authorizer.dashboard');
+//     // Other authorizer routes
+// });
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::get('/', function (){
@@ -133,9 +148,9 @@ Route::middleware(['auth'])->group(function () {
 //     return view('provider.dashboard');
 // })->middleware(['auth', 'verified','provider'])->name('provider.dashboard');
 
-Route::get('/authorizer/dashboard', function () {
-    return view('authorizer.dashboard');
-})->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
+// Route::get('/authorizer/dashboard', function () {
+//     return view('authorizer.dashboard');
+// })->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
 
 Route::get('/home', function () {
     return view('home');
@@ -150,7 +165,7 @@ Route::get('/chat', function () {
 // })->name('become-provider');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
+    // Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
 
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -186,10 +201,10 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  
-    Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
+    // Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
 
     // For approved and pending requests
-    Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
+    // Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
 // Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
 //become provider
 Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');

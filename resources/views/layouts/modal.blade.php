@@ -309,8 +309,8 @@
         function validateTimes() {
             var startTime = document.getElementById('start_time').value;
             var endTime = document.getElementById('end_time').value;
-            if (startTime && endTime && endTime <= startTime) {
-                alert("End time must be after start time.");
+            if (startTime == endTime) {
+                alert("Cannot be the same time");
                 document.getElementById('end_time').value = '';
             }
         }

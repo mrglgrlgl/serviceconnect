@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PhilID;
+use App\Notifications\PhilIDRejected;
+
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class PhilIDController extends Controller
 {
@@ -15,7 +18,7 @@ class PhilIDController extends Controller
         $philIDs = PhilID::where('provider_id', Auth::id())->get();
         return view('auth.verify.sensitiveinfo.idform', compact('philIDs'));
     }
-
+ 
     // Show the form to submit PhilID information
     public function create()
     {
@@ -65,5 +68,33 @@ class PhilIDController extends Controller
 
         return redirect()->route('provider.dashboard')->with('success', 'PhilID information submitted successfully!');
     }
-    // Optionally, you can add methods for editing, updating, and deleting PhilID records
+
+
+      public function showAll()
+    {
+        // Eager load the 'provider' relationship to fetch related user data
+        $philIDs = PhilID::with('provider')->get(); 
+        
+        return view('authorizer.dashboard', compact('philIDs'));
+    }
+
+    public function accept($id)
+    {
+        $philID = PhilID::findOrFail($id);
+        $philID->status = 'Accepted';
+        $philID->save();
+
+        return redirect()->back()->with('success', 'PhilID accepted.');
+    }
+
+    public function reject($id)
+    {
+        $philID = PhilID::findOrFail($id);
+        $philID->status = 'Rejected';
+        $philID->save();
+        $philID->provider->notify(new PhilIDRejected());
+
+        return redirect()->back()->with('success', 'PhilID rejected.');
+    }
 }
+
