@@ -50,7 +50,7 @@
     </style>
 </head>
 <body>
-    <nav class="bg-gray-100 border-b border-gray-300 font-open-sans text-md">
+    <nav class="bg-gray-100 border-b border-gray-300 font-open-sans text-md font-semibold">
         <div class="container mx-auto px-4">
             <div class="flex justify-between h-16 items-center">
                 <!-- Left Side: Logo -->
@@ -82,7 +82,7 @@
                     <a href="{{ route('home') }}" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('home') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}">
                         Home
                     </a>
-                    <div x-data="{ serviceDropdownOpen: false }" class="relative">
+                    <div x-data="{ serviceDropdownOpen: false }" class="relative font-normal">
                         <a href="#" class="inline-flex items-center px-2 pt-1 border-b-4 {{ request()->routeIs('dashboard') || request()->routeIs('service-requests.create') ? $borderColor . ' ' . $activeTextColor : 'border-transparent text-gray-800' }} focus:outline-none transition duration-150 ease-in-out {{ $hoverTextColor }} {{ $hoverBorderColor }}" 
                            @click.prevent="serviceDropdownOpen = !serviceDropdownOpen">
                             Service Requests
@@ -111,7 +111,7 @@
                     <!-- User Dropdown -->
                     <div x-data="{ userDropdownOpen: false }" class="relative">
                         <button @click="userDropdownOpen = !userDropdownOpen" @click.away="userDropdownOpen = false" type="button" 
-                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50
+                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-cyan-800
                                 {{ Auth::user()->role == 3 ? 'bg-custom-lightest-blue' : (Auth::user()->role == 2 ? 'bg-custom-light-blue' : 'bg-white') }}" 
                                 id="menu-button" aria-expanded="true" aria-haspopup="true">
                             {{ Auth::user()->name }}

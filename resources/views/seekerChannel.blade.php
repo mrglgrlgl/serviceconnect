@@ -12,13 +12,17 @@
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-green-100">
                                     <div>The task has been completed.</div>
                                 </div>
+                            @elseif ($channel->is_task_started === 'true' && $channel->is_task_completed === 'pending')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-yellow-100">
+                                    <div>Waiting for seeker to confirm task completion.</div>
+                                </div>
                             @elseif ($channel->is_task_started === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-yellow-100">
                                     <div>The task is in progress.</div>
                                 </div>
                             @elseif ($channel->is_arrived === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
-                                    <div>Awaiting provider's task start confirmation.</div>
+                                    <div>Waiting for provider to start the task.</div>
                                 </div>
                             @elseif ($channel->is_on_the_way)
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
@@ -26,7 +30,7 @@
                                 </div>
                             @else
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-gray-300">
-                                    <div>Status: Waiting for the provider to be on the way.</div>
+                                    <div>Waiting for the provider to be on the way.</div>
                                 </div>
                             @endif
 
@@ -86,9 +90,9 @@
                                                 <span class="material-icons mr-2 text-gray-400">call</span>
                                                 <span>{{ optional($channel->provider->providerDetails)->contact_number }}</span>
                                             </div>
-                                            <div class="flex items-center mt-2 pl-4">
-                                                <div>Availability:</div>
-                                                <div class="flex space-x-2 ml-2">
+                                            <div class="mt-4 pl-4">
+                                                <div class="font-semibold">Availability:</div>
+                                                <div class="flex flex-wrap space-x-2 mt-2">
                                                     @php
                                                         $daysAbbreviations = ['M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday', 'Th' => 'Thursday', 'F' => 'Friday', 'S' => 'Saturday', 'Sn' => 'Sunday'];
                                                         $availabilityDays = explode(',', optional($channel->provider->providerDetails)->availability_days);
@@ -98,15 +102,21 @@
                                                             @php
                                                                 $abbr = array_search(trim($day), $daysAbbreviations);
                                                             @endphp
-                                                            <div class="day-label flex items-center justify-center w-10 h-10 border border-gray-300 rounded-full bg-gray-300">
+                                                            <div class="day-label flex items-center justify-center w-7 h-7 border border-gray-300 rounded-full bg-gray-100 text-sm text-gray-700 mt-2">
                                                                 {{ $abbr }}
                                                             </div>
                                                         @endforeach
                                                     @else
-                                                        <span>No availability provided.</span>
+                                                        <span class="text-gray-500 mt-2">No availability provided.</span>
                                                     @endif
                                                 </div>
                                             </div>
+                                            <div class="mt-4 pl-4">
+                                                <span>{{ optional($channel->provider->providerDetails)->description }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                             <div class="flex items-center mt-2">
                                                 <span>{{ optional($channel->provider->providerDetails)->description }}</span>
                                             </div>
@@ -120,18 +130,23 @@
                                     <h3 class="text-2xl font-semibold">Task Actions</h3>
                                 </div>
                                 <div class="space-y-4">
-                                    @if ($channel->is_on_the_way)
-                                        <button onclick="confirmArrival()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Confirm Provider Arrival</button>
+                                    @if ($channel->is_on_the_way == 'pending')
+                                        <button onclick="confirmArrival()" class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Confirm Provider Arrival</button>
+                                        @elseif ($channel->is_task_started === 'true')
+                                        <p class="text-gray-500">Task is currently in progress. Wait for the provider to send a task completion notification.</p>
                                     @elseif ($channel->is_arrived === 'true')
-                                        <p class="text-yellow-500">Awaiting provider's task start confirmation.</p>
+                                        <p class="text-gray-500">Waiting for provider to start the task.</p>
                                     @elseif ($channel->is_task_started === 'true')
-                                        @if ($channel->is_task_completed === 'true')
+                                        @if ($channel->is_task_completed === 'pending')
+                                    <p class="text-green-500">Waiting for seeker to confirm task completion</p>
+                                        @elseif ($channel->is_task_completed === 'true')
                                             <p class="text-green-500">Task is completed.</p>
+
                                         @else
-                                            <button onclick="completeTask()" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete Task</button>
+                                            <button onclick="completeTask()" class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete Task</button>
                                         @endif
                                     @else
-                                        <p class="text-yellow-500">Waiting for the provider to be on the way.</p>
+                                        <p class="text-gray-500">Waiting for the provider to arrive.</p>
                                     @endif
                                 </div>
                             </div>
@@ -151,51 +166,52 @@
     <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
         <div class="flex justify-between items-center border-b pb-4 mb-4">
             <h5 class="text-xl font-semibold">Confirm Provider Arrival</h5>
-            <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('arrivalModal')">&times;</button>
+            <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none" onclick="closeModal('arrivalModal')">&times;</button>
         </div>
         <div class="mb-4">
             <p>The provider has arrived. Please confirm their arrival.</p>
         </div>
         <div class="flex justify-end">
-            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700" onclick="closeModal('arrivalModal')">Close</button>
-            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="confirmArrival()">Confirm Arrival</button>
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-cyan-800" onclick="closeModal('arrivalModal')">Close</button>
+            <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800" onclick="confirmArrival()">Confirm Arrival</button>
         </div>
     </div>
 </div>
 
-    <!-- Task Start Confirmation Modal -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="startTaskModal" style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
-            <div class="border-b pb-4 mb-4">
-                <h5 class="text-xl font-semibold">Confirm Task Start</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none float-right" onclick="closeModal('startTaskModal')">&times;</button>
-            </div>
-            <div class="mb-4">
-                <p>The provider has marked the task as started. Please confirm if the task is indeed started.</p>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" class="btn btn-secondary mr-2" onclick="closeModal('startTaskModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="confirmTaskStart()">Confirm Start</button>
-            </div>
+<!-- Task Start Confirmation Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" id="startTaskModal" style="display: none;">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+            <h5 class="text-xl font-semibold">Confirm Task Start</h5>
+            <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none" onclick="closeModal('startTaskModal')">&times;</button>
+        </div>
+        <div class="mb-4">
+            <p>The provider has marked the task as started. Please confirm if the task is indeed started.</p>
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-cyan-800" onclick="closeModal('startTaskModal')">Close</button>
+            <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800" onclick="confirmTaskStart()">Confirm Start</button>
         </div>
     </div>
+</div>
 
-    <!-- Task Completion Confirmation Modal -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="completeTaskModal" style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
-            <div class="border-b pb-4 mb-4">
-                <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none float-right" onclick="closeModal('completeTaskModal')">&times;</button>
-            </div>
-            <div class="mb-4">
-                <p>The provider has marked the task as completed. Please confirm if the task is indeed completed.</p>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" class="btn btn-secondary mr-2" onclick="closeModal('completeTaskModal')">Close</button>
-                <button type="button" class="btn btn-primary" onclick="confirmTaskCompletion()">Confirm Completion</button>
-            </div>
+
+<!-- Task Completion Confirmation Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" id="completeTaskModal" style="display: none;">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+            <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
+            <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('completeTaskModal')">&times;</button>
+        </div>
+        <div class="mb-4">
+            <p>The provider has marked the task as completed. Please confirm if the task is indeed completed.</p>
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700" onclick="closeModal('completeTaskModal')">Close</button>
+            <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800 " onclick="confirmTaskCompletion()">Confirm Completion</button>
         </div>
     </div>
+</div>
 
     <!-- Payment Modal -->
     <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50" id="paymentModal" style="display: none;">
@@ -223,12 +239,11 @@
 </x-app-layout>
 
 <!-- Rating Modal -->
-<!-- Rating Modal -->
 <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="seekerRatingModal" style="display: none;">
     <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
         <div class="border-b pb-4 mb-4 flex justify-between items-center">
             <h5 class="text-xl font-semibold">Rate the Provider</h5>
-            <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal('seekerRatingModal')">&times;</button>
+            <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none" onclick="closeModal('seekerRatingModal')">&times;</button>
         </div>
         <div class="mb-4">
             <p class="text-lg">On a scale of one to ten, rate the provider by the following criteria:</p>
@@ -253,7 +268,7 @@
                         <div class="flex justify-center space-x-2">
                             @for ($i = 1; $i <= 10; $i++)
                                 <input type="radio" name="rating_{{ $field }}" value="{{ $i }}" id="{{ $field }}-{{ $i }}" class="hidden" />
-                                <label for="{{ $field }}-{{ $i }}" class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150" onclick="highlightSelected(this)">
+                                <label for="{{ $field }}-{{ $i }}" class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-cyan-800 transition-colors duration-150" onclick="highlightSelected(this)">
                                     {{ $i }}
                                 </label>
                             @endfor
@@ -270,7 +285,7 @@
                 <textarea name="feedback" id="feedback" rows="4" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
             </div>
             <div class="flex justify-center pt-4">
-                <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
+                <button type="submit" class="px-6 py-2 bg-custom-lightest-blue text-white rounded-md hover:bg-cyan-800 focus:outline-none">Submit</button>
             </div>
         </form>
         @if(session('success'))
@@ -392,8 +407,8 @@
 
     function highlightSelected(label) {
         const group = label.parentElement.querySelectorAll('.rating-label');
-        group.forEach(l => l.classList.remove('bg-blue-500', 'text-white'));
-        label.classList.add('bg-blue-500', 'text-white');
+        group.forEach(l => l.classList.remove('bg-custom-lightest-blue', 'text-white'));
+        label.classList.add('bg-custom-lightest-blue', 'text-white');
     }
 
     function closeModal(modalId) {

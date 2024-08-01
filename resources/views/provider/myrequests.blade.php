@@ -43,10 +43,17 @@
                         Upload Government ID for final verification
                         <a href="{{ route('philid.index') }}" class="text-blue-500">Upload Government ID</a>
                     </div>
+                    @elseif ($serviceRequests->isEmpty() && Auth::user()->philID->status === 'Pending')
+                    <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                        You must first be verified before you can receive service requests.
+                    </div>
+
                 @elseif ($serviceRequests->isEmpty())
                     <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
                         No service requests found.
                     </div>
+                    
+
                 @else
                     @foreach ($serviceRequests as $serviceRequest)
                         @php
@@ -67,10 +74,18 @@
                                 </div>
 
                                 <div class="text-sm text-gray-600 md:mt-2">
-                                    {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }}
-                                    {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
-                                    {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('F j, Y') }}
-                                    {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                    @if (
+                                        \Carbon\Carbon::parse($serviceRequest->start_date)->isSameDay(
+                                            \Carbon\Carbon::parse($serviceRequest->end_date)))
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }},
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }}
+                                        -
+                                        {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                    @else
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                        -
+                                        {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                    @endif
                                 </div>
                             </div>
 

@@ -5,7 +5,7 @@
                 <div class="flex flex-wrap">
                     <div class="w-full">
                         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-300">
-                            <h1 class="text-2xl font-semibold text-gray-700">Service Request Details</h1>
+                            <h1 class="text-2xl font-semibold text-gray-800">Service Request Details</h1>
                             <div class="border-b pb-4 mb-4"></div>
 
                             <!-- Status Indicator -->
@@ -13,17 +13,21 @@
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-green-100">
                                     <div>The task has been completed.</div>
                                 </div>
+                            @elseif ($channel->is_task_started === 'true' && $channel->is_task_completed === 'pending')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
+                                    <div>Waiting for seeker to confirm task completion.</div>
+                                </div>    
                             @elseif ($channel->is_task_started === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-yellow-100">
                                     <div>The task is in progress.</div>
                                 </div>
+                            @elseif ($channel->is_task_started === 'pending')
+                            <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100 text-blue-500">
+                                <div>Awaiting seeker's task start confirmation.</div>
+                            </div>
                             @elseif ($channel->is_arrived === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
-                                    <div>Awaiting provider's task start confirmation.</div>
-                                </div>
-                                @elseif ($channel->is_arrived === 'pending')
-                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
-                                    <div>Awaiting seeker's arrival confirmation.</div>
+                                    <div>Start the task</div>
                                 </div>
                             @endif
 
@@ -35,7 +39,7 @@
                                     </div>
                                     <div class="mt-2">
                                         <div class="flex items-center pl-6">
-                                            <span class="material-icons mr-1 text-red-500">location_on</span>
+                                            <span class="material-icons mr-1 text-gray-500">location_on</span>
                                             <span>{{ $channel->serviceRequest->location }}</span>
                                         </div>
                                         <div class="mt-2 pl-6">
@@ -95,9 +99,9 @@
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">
-                                    <h3 class="text-2xl font-semibold">Bid Details</h3>
+                                    <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
                                 </div>
-                                <div>
+                                <div class="text-gray-800">
                                     <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
                                     <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
                                 </div>
@@ -105,38 +109,40 @@
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">
-                                    <h3 class="text-2xl font-semibold">Task Actions</h3>
+                                    <h3 class="text-2xl font-semibold text-gray-800">Task Actions</h3>
                                 </div>
                                 <div class="space-y-4">
                                     @if ($channel->is_on_the_way == '1' && is_null($channel->is_arrived))
                                         <!-- Only show the "Notify Seeker Provider has Arrived" button -->
                                         <button onclick="setArrived()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Notify
+                                            class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded">Notify
                                             Seeker Provider has Arrived</button>
                                     @elseif ($channel->is_arrived === 'true')
                                         @if ($channel->is_task_started === 'true')
                                             @if ($channel->is_task_completed === 'true')
                                                 <p class="text-green-500">Task is completed.</p>
                                             @else
-                                                <p class="text-yellow-500">Task is ongoing.</p>
+                                                <p class="text-gray-500">Click complete task to notify provider you have finished the request.</p>
                                                 <button onclick="completeTask()"
-                                                    class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Complete
+                                                    class="bg-custom-light-blue hover:bg-sky-800 text-white py-2 px-4 rounded">Complete
                                                     Task</button>
                                             @endif
                                         @else
                                             <button onclick="startTask()"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Start
+                                                class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded">Start
                                                 Task</button>
                                         @endif
                                     @elseif (is_null($channel->is_on_the_way))
                                         <button onclick="informSeekerOnTheWay()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Inform
+                                            class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded">Inform
                                             Seeker Provider is on the way</button>
+                                    @elseif ($channel->is_arrived == 'pending')
+                                        <div>Awaiting seeker's arrival confirmation.</div>
+                                    @elseif ($channel->is_task_started == 'pending')
+                                    <div class="text-gray-500">Task is ongoing</div>
                                     @endif
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -154,13 +160,13 @@
                     onclick="closeModal('providerPaymentModal')">&times;</button>
             </div>
             <div>
-                <p>Amount: {{ $channel->bid->bid_amount }}</p>
-                <p>Confirm you have received the payment.</p>
+                <p><strong>Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+                <p class="text-custom-500">Confirm you have received the payment.</p>
             </div>
-            <div class="flex justify-end">
+            <div class="flex justify-end pt-4">
                 <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2"
                     onclick="closeModal('providerPaymentModal')">Close</button>
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                <button type="button" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded"
                     onclick="confirmProviderPayment()">Confirm Payment</button>
             </div>
         </div>
@@ -221,7 +227,7 @@
                 </div>
                 <div class="flex justify-center pt-4">
                     <button type="submit"
-                        class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
+                        class="px-6 py-2 bg-custom-light-blue text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
                 </div>
             </form>
             @if (session('success'))
@@ -304,10 +310,10 @@
         function highlightSelected(label) {
             // Remove selected class from all labels in the group
             const group = label.parentElement.querySelectorAll('.rating-label');
-            group.forEach(l => l.classList.remove('bg-blue-500', 'text-white'));
+            group.forEach(l => l.classList.remove('bg-custom-light-blue', 'text-white'));
 
             // Highlight the selected label
-            label.classList.add('bg-blue-500', 'text-white');
+            label.classList.add('bg-custom-light-blue', 'text-white');
         }
 
         // Modal display functions

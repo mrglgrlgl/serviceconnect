@@ -37,18 +37,19 @@
                     @if ($certificationsCount === 0)
                         <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                             Add your certifications if there are any.
-                            <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
+                            <a href="{{ route('certifications') }}" class="text-blue-500 underline">Upload</a>
                         </div>
                     @else
                         <div class="bg-green-100 text-green-700 p-4 rounded mb-6">
                             Certifications are added.
+                            <a href="{{ route('certifications') }}" class="text-blue-500 underline">Add another.</a>
                         </div>
                     @endif
 
                     <!-- PhilID message -->
                     <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                         Your PhilID must be verified to access service requests.
-                        <a href="{{ route('philid.index') }}" class="text-blue-500">Submit or Check PhilID Status</a>
+                        <a href="{{ route('philid.index') }}" class="text-blue-500 underline">Submit or Check PhilID Status</a>
                     </div>
                 @endif
 
@@ -71,10 +72,14 @@
                                             <span class="text-gray-900">- {{ $serviceRequest->user->name }}</span>
                                         </div>
                                         <div class="text-sm text-gray-600 md:mt-2">
-                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }}
+                                            @if (\Carbon\Carbon::parse($serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($serviceRequest->end_date)))
+                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }},
                                             {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
-                                            {{ \Carbon\Carbon::parse($serviceRequest->end_date)->format('F j, Y') }}
                                             {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                            - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                        @endif
                                         </div>
                                     </div>
                                     <div class="flex items-start px-8">
