@@ -20,7 +20,7 @@
         <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
     </div>
 
-    <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all' }">
+    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
             <div class="relative inline-block mb-4">
                 <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div x-data="dashboard()" class="py-12">
+        <div class="py-12">
             <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
                 @if ($serviceRequests->isEmpty())
                     <div class="flex flex-col items-center">
@@ -62,20 +62,20 @@
                                     - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
                                 </div>
                             </div>
-                
+
                             <div class="mt-4 mx-12">
                                 <div class="font-semibold text-xl mb-2 text-custom-header">
                                     {{ $serviceRequest->title }}
                                 </div>
-                
+
                                 <div class="mb-4 text-custom-default-text">
                                     {{ $serviceRequest->description }}
                                 </div>
-                
+
                                 <div class="mb-4">
                                     {{-- Request image here --}}
                                 </div>
-                
+
                                 <div class="flex justify-between items-center">
                                     @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
                                         <div class="flex items-center space-x-2">
@@ -119,9 +119,10 @@
                                             @if ($reportExists)
                                                 <span class="text-gray-500 ml-4">Report submitted</span>
                                             @else
-                                                <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                                <a href="#" class="text-blue-500 underline ml-3" @click.prevent="openReportModal({{ $serviceRequest->id }})">Report</a>
                                             @endif
                                         @endif
+
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +136,7 @@
         <div x-show="showBidsPanel" x-transition class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4" style="display: none;">
             <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
                 <div class="pb-8">
-                    <button @click="closeBidsPanel()" class="absolute top-4 right-4 text-red-500 text-xl">&times;</button>
+                    <button @click="closeBidsPanel" class="absolute top-4 right-4 text-red-500 text-xl">&times;</button>
                 </div>
                 <template x-if="bids.length === 0">
                     <div class="text-center text-gray-600 bg-gray-100 py-4">
@@ -155,10 +156,10 @@
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
                                     <div class="flex justify-end space-x-2">
-<a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
-    View Profile
-</a>                        
-<button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
+                                        <a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+                                            View Profile
+                                        </a>
+                                        <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                                     </div>
                                 </div>
                             </div>
@@ -167,87 +168,170 @@
                 </ul>
             </div>
         </div>
-    </div>
 
-    <!-- Profile Modal -->
-    <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="showProfileModal = false">
-        <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
-                <button @click="closeProfileModal()" class="text-red-500 hover:text-red-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="grid grid-cols-1 gap-4">
-                <div class="col-span-1">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
-                        <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
-                    </div>
-                    <div class="flex justify-between">
-                        <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
-                        <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
-                    </div>
-                    <div class="flex items-center mb-2">
-                        <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
-                        <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
-                    </div>
-                    <div class="flex items-center mb-2">
-                        <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
-                        <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
-                    </div>
+        <!-- Profile Modal -->
+        <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="closeProfileModal">
+            <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
+                    <button @click="closeProfileModal" class="text-red-500 hover:text-red-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-                <div class="mt-6 flex justify-end space-x-4">
-                    <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="col-span-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
+                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
+                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
+                            <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
+                            <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Report Modal -->
-    <div id="report-modal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-            <div class="bg-white p-4">
-                <div class="flex justify-between items-center pb-2">
-                    <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
-                    <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('report.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="service_request_id" id="service_request_id">
-
-                    <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
-                    <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="non_payment">Non Payment</option>
-                        <option value="illegal_activity">Illegal Activity</option>
-                        <option value="unprofessional_behavior">Unprofessional Behavior</option>
-                        <option value="poor_quality_work">Poor Quality Work</option>
-                        <option value="other">Other</option>
-                    </select>
-
-                    <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
-                    <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
-
-                    <div class="flex justify-center mt-4">
-                        <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
+        <!-- Report Modal -->
+        <div x-show="showReportModal" x-transition class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                <div class="bg-white p-4">
+                    <div class="flex justify-between items-center pb-2">
+                        <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showReportModal = false">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                </form>
+                    <form action="{{ route('report.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="service_request_id" x-model="serviceRequestId">
+
+                        <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                        <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="non_payment">Non Payment</option>
+                            <option value="illegal_activity">Illegal Activity</option>
+                            <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                            <option value="poor_quality_work">Poor Quality Work</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                        <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+
+                        <div class="flex justify-center mt-4">
+                            <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function showReportModal(serviceRequestId) {
-            document.getElementById('service_request_id').value = serviceRequestId;
-            document.getElementById('report-modal').classList.remove('hidden');
-        }
+        function dashboard() {
+            return {
+                filter: 'all',
+                showBidsPanel: false,
+                showProfileModal: false,
+                showReportModal: false,
+                serviceRequestId: null,
+                bids: [],
+                profile: {},
+                selectedRequestId: null,
 
-        function closeReportModal() {
-            document.getElementById('report-modal').classList.add('hidden');
+                async fetchBids(requestId) {
+                    this.selectedRequestId = requestId;
+                    try {
+                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const data = await response.json();
+                        this.bids = data;
+                        this.showBidsPanel = true;
+                    } catch (error) {
+                        console.error('There was a problem with the fetch operation:', error);
+                    }
+                },
+
+                async viewProfile(bidderId) {
+                    try {
+                        const response = await fetch(`/api/providers/${bidderId}`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        this.profile = data;
+                        this.showProfileModal = true;
+                    } catch (error) {
+                        console.error('Error fetching profile:', error);
+                    }
+                },
+
+                async confirmBid(bidId, requestId) {
+                    try {
+                        const response = await fetch(`/bids/${bidId}/confirm`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ request_id: requestId })
+                        });
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const data = await response.json();
+                        alert(data.message);
+                        if (data.success) {
+                            this.bids.forEach(bid => {
+                                if (bid.id === bidId) {
+                                    bid.confirmed = true;
+                                } else {
+                                    bid.rejected = true;
+                                }
+                            });
+                            this.bids = this.bids.filter(bid => !bid.rejected);
+                            const serviceRequest = @json($serviceRequests).find(req => req.id === requestId);
+                            serviceRequest.bid_confirmed = true;
+                        }
+                    } catch (error) {
+                        console.error('There was a problem with the fetch operation:', error);
+                    }
+                },
+
+                openReportModal(serviceRequestId) {
+                    console.log("Opening report modal for service request: " + serviceRequestId); // Debugging line
+                    this.serviceRequestId = serviceRequestId;
+                    this.showReportModal = true;
+                },
+
+                closeReportModal() {
+                    this.showReportModal = false;
+                },
+
+                closeBidsPanel() {
+                    this.showBidsPanel = false;
+                },
+
+                closeProfileModal() {
+                    this.showProfileModal = false;
+                }
+            }
         }
     </script>
 </x-dashboard>
