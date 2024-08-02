@@ -1,9 +1,10 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full mb-6">
-                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                <div
+                    class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                     <x-nav-link href="{{ route('provider.dashboard') }}" :active="request()->routeIs('provider.dashboard')">
                         {{ __('Open Requests') }}
                     </x-nav-link>
@@ -103,9 +104,6 @@
                                             </div>
                                             <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                                         </div>
-                                    <div>
-                                        {{ $serviceRequest->attach_media }}
-                                </div>
                                     </div>
 
                                     <div x-data="{ showModal: false, selectedServiceRequestId: null, maxBudget: '', showConfirmationModal: false }">

@@ -37,4 +37,11 @@ class ReportController extends Controller
 
         return back()->with('success', 'Report submitted successfully.');
     }
+
+//authorizer
+public function index()
+{
+    $reports = Report::with(['reportedBy', 'reportedUser'])->get();
+    return view('authorizer.reports', compact('reports'));
+}
 }

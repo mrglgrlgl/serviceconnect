@@ -2,16 +2,12 @@
     <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                        {{ __('My Service Requests') }}
-                    </div>
-                </x-category-link>
-                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('analytics')" :active="request()->routeIs('analytics')">
-                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                        {{ __('Analytics') }}
-                    </div>
-                </x-category-link>
+                <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    {{ __('Open Requests') }}
+                </x-nav-link>
+                <x-nav-link href="{{ route('analytics') }}" :active="request()->routeIs('analytics')">
+                    {{ __('My Requests') }}
+                </x-nav-link>
             </div>
         </div>
     </div>
@@ -119,7 +115,7 @@
                                                     ->isNotEmpty();
                                             @endphp
                                             @if ($reportExists)
-                                                <span class="text-gray-500 ml-4">Report submitted</span>
+                                                <span class="text-red-500 ml-4">Report submitted</span>
                                             @else
                                                 <a href="#" class="text-red-500 font-semibold underline ml-3" @click.prevent="openReportModal({{ $serviceRequest->id }})">Report</a>
                                             @endif

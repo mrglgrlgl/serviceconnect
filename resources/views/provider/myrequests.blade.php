@@ -3,7 +3,8 @@
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full mb-6">
-                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                <div
+                    class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                     <x-nav-link href="{{ route('provider.dashboard') }}" :active="request()->routeIs('provider.dashboard')">
                         {{ __('Open Requests') }}
                     </x-nav-link>
@@ -151,63 +152,70 @@
                                     @endif
 
                                     @if ($serviceRequest->status == 'completed')
-                                    <!-- Display Report Link or Label -->
-                                    @if ($reportExists)
-                                        <span class="text-gray-500 ml-4">Report submitted</span>
-                                    @else
-                                        <a href="#" class="text-red-500 underline ml-3 font-semibold" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                        <!-- Display Report Link or Label -->
+                                        @if ($reportExists)
+                                            <span class="text-red-500 ml-4">Report submitted</span>
+                                        @else
+                                            <a href="#" class="text-red-500 underline ml-3 font-semibold"
+                                                onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                        @endif
                                     @endif
-                                @endif
                             </div>
                         </div>
                     @endif
                 @endforeach
-            @endif
-        </div>
-    </div>
-
-    <!-- Report Modal -->
-    <div id="report-modal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-            <div class="bg-white p-4">
-                <div class="flex justify-between items-center pb-2">
-                    <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
-                    <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('report.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="service_request_id" id="service_request_id">
-
-                    <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
-                    <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <option value="non_payment">Non Payment</option>
-                        <option value="illegal_activity">Illegal Activity</option>
-                        <option value="unprofessional_behavior">Unprofessional Behavior</option>
-                        <option value="poor_quality_work">Poor Quality Work</option>
-                        <option value="other">Other</option>
-                    </select>
-
-                    <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
-                    <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"></textarea>
-
-                    <div class="flex justify-center mt-4">
-                        <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
-                    </div>
-                </form>
+                @endif
             </div>
         </div>
-    </div>
 
-    <script>
-        function showReportModal(serviceRequestId) {
-            document.getElementById('service_request_id').value = serviceRequestId;
-            document.getElementById('report-modal').classList.remove('hidden');
-        }
+        <!-- Report Modal -->
+        <div id="report-modal"
+            class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                <div class="bg-white p-4">
+                    <div class="flex justify-between items-center pb-2">
+                        <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close"
+                            onclick="closeReportModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ route('report.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="service_request_id" id="service_request_id">
 
-        function closeReportModal() {
-            document.getElementById('report-modal').classList.add('hidden');
-        }
-    </script>
+                        <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                        <select name="issue_type" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="non_payment">Non Payment</option>
+                            <option value="illegal_activity">Illegal Activity</option>
+                            <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                            <option value="poor_quality_work">Poor Quality Work</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                        <textarea name="details" required
+                            class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"></textarea>
+
+                        <div class="flex justify-center mt-4">
+                            <button type="submit"
+                                class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit
+                                Report</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showReportModal(serviceRequestId) {
+                document.getElementById('service_request_id').value = serviceRequestId;
+                document.getElementById('report-modal').classList.remove('hidden');
+            }
+
+            function closeReportModal() {
+                document.getElementById('report-modal').classList.add('hidden');
+            }
+        </script>
 </x-app-layout>
