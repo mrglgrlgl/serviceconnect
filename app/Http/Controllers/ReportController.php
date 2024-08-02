@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Models\ServiceRequest;
@@ -41,7 +41,7 @@ class ReportController extends Controller
 //authorizer
 public function index()
 {
-    $reports = Report::with(['reportedBy', 'reportedUser'])->get();
+    $reports = Report::with(['reportedBy', 'reportedUser', 'serviceRequest'])->get();
     return view('authorizer.reports', compact('reports'));
 }
 }
