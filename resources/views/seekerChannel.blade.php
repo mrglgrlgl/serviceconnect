@@ -93,24 +93,9 @@
                                             <div class="mt-4 pl-4">
                                                 <div class="font-semibold">Availability:</div>
                                                 <div class="flex flex-wrap space-x-2 mt-2">
-                                                    @php
-                                                        $daysAbbreviations = ['M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday', 'Th' => 'Thursday', 'F' => 'Friday', 'S' => 'Saturday', 'Sn' => 'Sunday'];
-                                                        $availabilityDays = explode(',', optional($channel->provider->providerDetails)->availability_days);
-                                                    @endphp
-                                                    @if($availabilityDays)
-                                                        @foreach ($availabilityDays as $day)
-                                                            @php
-                                                                $abbr = array_search(trim($day), $daysAbbreviations);
-                                                            @endphp
-                                                            <div class="day-label flex items-center justify-center w-7 h-7 border border-gray-300 rounded-full bg-gray-100 text-sm text-gray-700 mt-2">
-                                                                {{ $abbr }}
-                                                            </div>
-                                                        @endforeach
-                                                    @else
-                                                        <span class="text-gray-500 mt-2">No availability provided.</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                                    <div>
+                                                        <x-availability :providerDetails="$channel->provider->providerDetails" />
+                                                    </div>
                                             <div class="mt-4 pl-4">
                                                 <span>{{ optional($channel->provider->providerDetails)->description }}</span>
                                             </div>

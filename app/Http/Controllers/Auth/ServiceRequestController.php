@@ -7,6 +7,7 @@ use App\Models\ServiceRequestImages;
 use App\Models\ProviderDetail;
 use App\Models\Certification;
 use App\Models\PhilID;
+use App\Models\PsaJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -31,15 +32,17 @@ class ServiceRequestController extends Controller
         $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
 
         if ($providerCategory) {
-            $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])->get();
-        } else {
+            $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
+                ->with('images') // Eager load images
+                ->get();
+        }else {
             $serviceRequests = collect(); // Empty collection if no category
         }
 
         // Get the count of certifications
         $certificationsCount = $user->certifications()->count();
     } else {
-        $serviceRequests = ServiceRequest::all();
+        $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
         $certificationsCount = 0; // Default value or handle accordingly
     }
 
@@ -50,16 +53,24 @@ class ServiceRequestController extends Controller
     
     
 
-    public function create()
-    {
-            $categories = Category::all(); // Fetch all categories
-            return view('layouts.modal', compact('categories')); // Pass categories to the view
-    }
+public function create()
+{
+    // Fetch all categories
+    $categories = Category::all();
+
+    // Fetch average hourly rates from PSA Jobs, keyed by job title
+    $psaJobs = PsaJob::pluck('Average_Occupational_Wage_per_Hour', 'Job_Title')->toArray();
+
+    // Pass categories and PSA job rates to the view
+    return view('layouts.modal', compact('categories', 'psaJobs'));
+}
+
     public function index()
     {
         // Retrieve service requests created by the authenticated user
-        $serviceRequests = ServiceRequest::where('user_id', Auth::id())->get();
-
+        $serviceRequests = ServiceRequest::where('user_id', Auth::id())
+        ->with('bids.bidder',) // Eager load bids and the user who made each bid (bidder)
+        ->get();
         return view('dashboard', compact('serviceRequests'));
     }
 
@@ -81,9 +92,14 @@ class ServiceRequestController extends Controller
             'skill_tags' => 'required|string|max:255',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
-            'min_price' => 'required|numeric|min:0',
-            'max_price' => 'required|numeric|min:0|gte:min_price',
-            'estimated_duration' => 'required|integer|min:0',
+            'price_type' => 'required|in:fixed,range',
+            // 'fixed_price' => 'nullable|numeric|min:0',
+            // 'min_price' => 'required|numeric|min:0',
+            // 'max_price' => 'required|numeric|min:0|gte:min_price',
+            'price_type' => 'required|in:fixed,range',
+            'max_price' => 'required|numeric|min:0', // Use the same field for both fixed and max price
+            'min_price' => 'nullable|numeric|min:0', // Ensure min_price is not required when nulls set
+    'estimated_duration' => 'required|integer|min:0',
             'attach_media1' => 'nullable|image|max:2048',
             'attach_media2' => 'nullable|image|max:2048',
             'attach_media3' => 'nullable|image|max:2048',
@@ -107,13 +123,20 @@ class ServiceRequestController extends Controller
                $serviceRequest->skill_tags = $validatedData['skill_tags'];
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
+               
                $serviceRequest->min_price = $validatedData['min_price'];
                $serviceRequest->max_price = $validatedData['max_price'];
                $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
                $serviceRequest->status = 'open'; // Default status
                $serviceRequest->user_id = auth()->id();
                $serviceRequest->agreed_to_terms = $validatedData['agreed_to_terms'];  // Include this field
-
+               if ($validatedData['price_type'] === 'fixed') {
+                $serviceRequest->min_price = null;
+                $serviceRequest->max_price = $validatedData['max_price'];
+            } else {
+                $serviceRequest->min_price = $validatedData['min_price'];
+                $serviceRequest->max_price = $validatedData['max_price'];
+            }
             //    $fileCount = count($request->file('attach_media', []));
             //    dd($fileCount);
                // Handling the file uploads

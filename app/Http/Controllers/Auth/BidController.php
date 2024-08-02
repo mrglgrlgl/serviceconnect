@@ -8,6 +8,7 @@ use App\Models\Bid;
 use App\Models\User;
 use App\Models\ProviderDetail;
 use App\Models\ServiceRequest;
+use App\Notifications\BidPlacedNotification;
 use App\Notifications\BidConfirmed;
 use Illuminate\Support\Facades\Notification;
 use App\Models\Channel;
@@ -24,7 +25,7 @@ class BidController extends Controller
 
         ]);
 
-        Bid::create([
+        $bid = Bid::create([
             'service_request_id' => $request->service_request_id,
             'bidder_id' => auth()->user()->id,
             'bid_amount' => $request->bid_amount,
@@ -37,6 +38,8 @@ class BidController extends Controller
         // Increment number_of_bids for the corresponding service request
         $serviceRequest = ServiceRequest::findOrFail($request->service_request_id);
         $serviceRequest->increment('number_of_bids');
+        $seeker = $serviceRequest->user; // Assuming a user relationship exists on the ServiceRequest model
+        $seeker->notify(new BidPlacedNotification($bid, $serviceRequest));
 
         return redirect()->back()->with('success', 'Bid placed successfully.');
     }

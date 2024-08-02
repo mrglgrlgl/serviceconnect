@@ -25,7 +25,7 @@
                     @if (!isset(Auth::user()->providerDetails))
                         <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                             Please complete your profile to view service requests.
-                            <a href="{{ route('create-profile') }}" class="text-blue-500">Build Profile</a>
+                            <a href="{{ route('create-profile') }}" class="text-blue-500 underline">Build Profile</a>
                         </div>
                     @else
                         <div class="bg-green-100 text-green-700 p-4 rounded mb-6">
@@ -168,6 +168,10 @@
                     @endif
                 @endif
             @endif
+            
         </div>
     </div>
+
+
+
 </x-app-layout>

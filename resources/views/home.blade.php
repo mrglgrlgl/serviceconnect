@@ -100,7 +100,6 @@
                     </div>
                 </div>
 
-                {{-- Provider list --}}
                 <div class="h-full overflow-y-auto p-4">
                     @if(isset($providers))
                         <h3 class="text-xl font-bold mb-4">Search Results</h3>
@@ -111,16 +110,18 @@
                                 @foreach($providers as $provider)
                                     <li class="mb-4">
                                         <div class="flex flex-col md:flex-row md:items-start">
-                                            <x-category :category="$provider->serviceCategory" />
-                                            <div class="ml-0 md:ml-4 flex-1">
+                                            <div class="flex-shrink-0">
+                                                <x-category :category="$provider->serviceCategory" class="mr-2" />
+                                            </div>
+                                            <div class="flex-1 ml-0 md:ml-4">
                                                 <div class="flex flex-col md:flex-row justify-between md:items-center">
-                                                    <div class="flex items-center mb-2 md:mb-0">
+                                                    <div class="flex flex-col md:flex-row md:items-center">
                                                         <div class="font-medium text-lg">{{ $provider->user->name }}</div>
                                                         <div class="ml-2 font-normal text-custom-default-text">Ratings: {{ $provider->ratings }}</div>
                                                     </div>
-                                                    <div class="font-normal text-custom-default-text">{{ '16 hires' }}</div>
+                                                    <div class="font-normal text-custom-default-text md:mt-0 mt-2">{{ '16 hires' }}</div>
                                                 </div>
-                                                <div class="w-full font-normal text-custom-default-text">
+                                                <div class="font-normal text-custom-default-text mt-2 max-w-md">
                                                     {{ strlen($provider->description) > 225 ? substr($provider->description, 0, 225) . '...' : $provider->description }}
                                                 </div>
                                                 <div class="flex justify-end items-center mt-2">
@@ -135,6 +136,9 @@
                                 @endforeach
                             </ul>
                         @endif
+                </div>
+                
+                
                     @else
                         <x-provider-list></x-provider-list>
                     @endif
