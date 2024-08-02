@@ -140,9 +140,10 @@
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
                                     <div class="flex justify-end space-x-2">
-<a :href="'/profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+<a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
     View Profile
-</a>                        <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
+</a>                        
+<button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                                     </div>
                                 </div>
                             </div>
