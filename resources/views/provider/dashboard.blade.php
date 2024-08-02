@@ -103,6 +103,9 @@
                                             </div>
                                             <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                                         </div>
+                                    <div>
+                                        {{ $serviceRequest->attach_media }}
+                                </div>
                                     </div>
 
                                     <div x-data="{ showModal: false, selectedServiceRequestId: null, maxBudget: '', showConfirmationModal: false }">
@@ -141,7 +144,7 @@
                                                         <div class="mb-4">
                                                             <label for="bid_description" class="block text-sm font-medium text-gray-700">Work Plan</label>
                                                             <textarea
-                                                                class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
                                                                 id="bid_description" name="bid_description" required></textarea>
                                                         </div>
 

@@ -47,7 +47,6 @@
                             <option value="Stone Cutting and Masonry">Stone Cutting and Masonry</option>
                             <option value="Hairdressing">Hairdressing</option>
                             <option value="Beauty Therapy">Beauty Therapy</option>
-                            <option value="Landscaping">Landscaping</option>
                         </select>
                         @error('serviceCategory')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

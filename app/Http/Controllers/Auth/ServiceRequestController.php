@@ -35,21 +35,63 @@ class ServiceRequestController extends Controller
             $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
                 ->with('images') // Eager load images
                 ->get();
-        }else {
+        } else {
             $serviceRequests = collect(); // Empty collection if no category
         }
 
         // Get the count of certifications
         $certificationsCount = $user->certifications()->count();
+
+        // Find in-progress requests
+        $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
+            ->where('status', 'in_progress')
+            ->get();
+
+        $conflictingRequests = [];
+
+        // Check for conflicts
+        foreach ($serviceRequests as $serviceRequest) {
+            foreach ($inProgressRequests as $inProgressRequest) {
+                if ($serviceRequest->id !== $inProgressRequest->id &&
+                    (
+                        ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
+                        ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
+                    )) {
+                    $conflictingRequests[$serviceRequest->id] = true;
+                    break;
+                }
+            }
+        }
     } else {
         $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
         $certificationsCount = 0; // Default value or handle accordingly
+        $conflictingRequests = []; // Default value or handle accordingly
     }
 
     // Pass data to the view
-    return view('provider.dashboard', compact('serviceRequests', 'certificationsCount'));
+    return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests'));
 }
 
+    
+    public function checkForConflict($serviceRequest, $userId)
+    {
+        $conflictingRequests = ServiceRequest::where('provider_id', $userId)
+            ->where('id', '!=', $serviceRequest->id) // Exclude the current task
+            ->where('status', '!=', 'completed')
+            ->where(function ($query) use ($serviceRequest) {
+                $query->where(function ($query) use ($serviceRequest) {
+                    $query->where('start_date', '<=', $serviceRequest->end_date)
+                        ->where('end_date', '>=', $serviceRequest->start_date);
+                })->orWhere(function ($query) use ($serviceRequest) {
+                    $query->where('start_time', '<=', $serviceRequest->end_time)
+                        ->where('end_time', '>=', $serviceRequest->start_time);
+                });
+            })
+            ->exists();
+    
+        return $conflictingRequests;
+    }
+    
     
     
 

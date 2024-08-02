@@ -295,7 +295,7 @@
             var today = new Date().toISOString().split('T')[0];
             var startDate = document.getElementById('start_date').value;
             var endDate = document.getElementById('end_date').value;
-         
+
             if (startDate < today) {
                 alert("Start date cannot be in the past.");
                 document.getElementById('start_date').value = today;
@@ -307,22 +307,13 @@
         }
 
         function validateTimes() {
-    // Get the values of the date and time fields
-    var startDate = document.getElementById('start_date').value;
-    var endDate = document.getElementById('end_date').value;
-    var startTime = document.getElementById('start_time').value;
-    var endTime = document.getElementById('end_time').value;
-
-    // Check if the dates are the same
-    if (startDate === endDate) {
-        // Validate the times only if both are provided and the end time is not after the start time
-        if (startTime && endTime && endTime <= startTime) {
-            alert("End time must be after start time.");
-            document.getElementById('end_time').value = ''; // Clear the invalid end time
+            var startTime = document.getElementById('start_time').value;
+            var endTime = document.getElementById('end_time').value;
+            if (startTime == endTime) {
+                alert("Cannot be the same time");
+                document.getElementById('end_time').value = '';
+            }
         }
-    }
-}
-
 
         function validateMinMax() {
             var minPrice = parseFloat(document.getElementById('min_price').value);

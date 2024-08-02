@@ -38,9 +38,37 @@
                 {{-- Ratings and Completed Jobs --}}
                 <div class="flex flex-col md:flex-row items-center justify-between mt-2">
                     <div class="text-gray-900 text-lg md:text-xl">
-                        {{ __('Ratings:') }}
+                        @php
+                        $totalRatings = $ratings->count();
+                        $sumRatings = $ratings->sum(function ($rating) {
+                            return ($rating->quality_of_service + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money + $rating->communication) / 5;
+                        });
+            
+                        $overallRating = $totalRatings > 0 ? $sumRatings / $totalRatings : 0;
+                        $overallStars = $overallRating / 2; // Convert to star rating scale
+                    @endphp
+            
+                    @if($totalRatings > 0)
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xl font-semibold pr-2">Overall Rating</div>
+                            <div class="flex items-center">
+                                <div class="flex items-center">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= floor($overallStars))
+                                            <span class="material-icons text-yellow-500">star</span>
+                                        @elseif ($i - $overallStars < 1)
+                                            <span class="material-icons text-yellow-500">star_half</span>
+                                        @else
+                                            <span class="material-icons text-gray-300">star</span>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <div class="ml-2 text-gray-600">({{ number_format($overallStars * 2, 1) }}/10)</div>
+                            </div>
+                        </div>
+                    @endif
                     </div>
-                    <div class="text-gray-900 text-lg md:text-xl">
+                    <div class="text-gray-500 text-lg md:text-xl">
                         {{ $completedJobsCount }} jobs completed
                     </div>
                 </div>
@@ -67,10 +95,6 @@
                     <div class="flex items-center">
                         <span class="material-icons pr-1">build</span>
                         <div class="">{{ $providerDetails->have_tools ? 'Has tools' : 'No tools' }}</div>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="material-icons pr-1">pin_drop</span>
-                        <div class="">{{ $user->address ?? 'N/A' }}</div>
                     </div>
                 </div>
             </div>
@@ -151,73 +175,76 @@
             </div> --}}
 
             <!-- Provider Ratings -->
-            <div class="w-10/12 mx-auto py-4">
-            <div class="mb-4">
-                <h2 class="text-2xl text-gray-800 font-semibold pt-8 pb-4">Ratings</h2>
-                
-                @forelse($ratings as $rating)
-                    @php
-                        $overallRating =
-                            ($rating->quality_of_service +
-                                $rating->professionalism +
-                                $rating->cleanliness_tidiness +
-                                $rating->value_for_money +
-                                $rating->communication) /
-                            5 /
-                            2; // Divide by 2 for star rating calculation
-                    @endphp
-                    <div class="mb-4 border rounded-lg shadow-sm p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="text-xl font-semibold">
-                                {{ $rating->user->name ?? 'User not found' }}
-                            </div>
-                            <div class="flex items-center">
-                                <div class="flex items-center">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @if ($i <= floor($overallRating))
-                                            <span class="material-icons text-yellow-500">star</span>
-                                        @elseif ($i - $overallRating < 1)
-                                            <span class="material-icons text-yellow-500">star_half</span>
-                                        @else
-                                            <span class="material-icons text-gray-300">star</span>
+           
+                <div class="w-10/12 mx-auto py-4">
+                    <div class="mb-4">
+                        <h2 class="text-2xl text-gray-800 font-semibold pt-8 pb-4">Ratings</h2>
+                    
+                        
+                                @forelse($ratings as $rating)
+                                    @php
+                                        $individualOverallRating =
+                                            ($rating->quality_of_service +
+                                            $rating->professionalism +
+                                            $rating->cleanliness_tidiness +
+                                            $rating->value_for_money +
+                                            $rating->communication) / 5 / 2; // Divide by 2 for star rating calculation
+                                    @endphp
+                                    <div class="mb-4 border rounded-lg shadow-sm p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <div class="text-xl font-semibold">
+                                                {{ $rating->user->name ?? 'User not found' }}
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="flex items-center">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= floor($individualOverallRating))
+                                                            <span class="material-icons text-yellow-500">star</span>
+                                                        @elseif ($i - $individualOverallRating < 1)
+                                                            <span class="material-icons text-yellow-500">star_half</span>
+                                                        @else
+                                                            <span class="material-icons text-gray-300">star</span>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <div class="ml-2 text-gray-600">({{ number_format($individualOverallRating * 2, 1) }}/10)</div>
+                                            </div>
+                                            <div class="text-gray-600 ml-4">
+                                                Rated on: {{ $rating->created_at->format('F j, Y, g:i a') }}
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4 pl-4 text-gray-800">
+                                            <div class="flex items-center">
+                                                <div class="font-semibold">Quality of Service:</div>
+                                                <div class="ml-2">{{ $rating->quality_of_service }}/10</div>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="font-semibold">Professionalism:</div>
+                                                <div class="ml-2">{{ $rating->professionalism }}/10</div>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="font-semibold">Communication:</div>
+                                                <div class="ml-2">{{ $rating->communication }}/10</div>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="font-semibold">Cleanliness & Tidiness:</div>
+                                                <div class="ml-2">{{ $rating->cleanliness_tidiness }}/10</div>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="font-semibold">Value for Money:</div>
+                                                <div class="ml-2">{{ $rating->value_for_money }}/10</div>
+                                            </div>
+                                        </div>
+                        
+                                        @if ($rating->additional_feedback)
+                                            <p class="mt-2"><strong>Additional Feedback:</strong> {{ $rating->additional_feedback }}</p>
                                         @endif
-                                    @endfor
-                                </div>
-                                <div class="ml-2 text-gray-600">({{ number_format($overallRating * 2, 1) }}/10)</div>
-                                <!-- Multiply back by 2 for display -->
-                            </div>
-                            <div class="text-gray-600 ml-4">
-                                Rated on: {{ $rating->created_at->format('F j, Y, g:i a') }}
+                                    </div>
+                                @empty
+                                    <p>No ratings available.</p>
+                                @endforelse
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 pl-4 text-gray-800">
-                            <div class="flex items-center">
-                                <div class="font-semibold">Professionalism:</div>
-                                <div class="ml-2">{{ $rating->professionalism }}/10</div>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="font-semibold">Communication:</div>
-                                <div class="ml-2">{{ $rating->communication }}/10</div>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="font-semibold">Cleanliness & Tidiness:</div>
-                                <div class="ml-2">{{ $rating->cleanliness_tidiness }}/10</div>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="font-semibold">Value for Money:</div>
-                                <div class="ml-2">{{ $rating->value_for_money }}/10</div>
-                            </div>
-                        </div>
-
-                        @if ($rating->additional_feedback)
-                            <p class="mt-2"><strong>Additional Feedback:</strong> {{ $rating->additional_feedback }}
-                            </p>
-                        @endif
-                    </div>
-                @empty
-                    <p>No ratings available.</p>
-                @endforelse
-            </div>
-        </div>
+                        
     </div>
 </x-app-layout>

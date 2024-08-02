@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\ProviderDetail;
 use App\Models\RequestList;
+use App\Models\Category;
+use App\Models\PsaJob;
 use App\Models\PhilId;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Log;
@@ -106,4 +108,16 @@ class RequestController extends Controller
 
         return view('authorizer.dashboard', compact('pendingRequests', 'approvedRequests'));
     }
+
+    public function create()
+{
+    // Fetch all categories
+    $categories = Category::all();
+
+    // Fetch average hourly rates from PSA Jobs, keyed by job title
+    $psaJobs = PsaJob::pluck('Average_Occupational_Wage_per_Hour', 'Job_Title')->toArray();
+
+    // Pass categories and PSA job rates to the view
+    return view('profilecreate', compact('categories', 'psaJobs'));
+}
 }

@@ -58,6 +58,10 @@ class ServiceRequest extends Model
     {
         return $this->hasMany(ServiceRequestImages::class, 'service_request_id');
     }
+    public function reports()
+{
+    return $this->hasMany(Report::class, 'service_request_id');
+}
     
 }
 

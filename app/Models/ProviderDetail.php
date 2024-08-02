@@ -34,5 +34,8 @@ public function serviceRequests()
 {
     return $this->hasMany(ServiceRequest::class, 'provider_id', 'id');
 }
-
+public function ratings()
+{
+    return $this->hasMany(Rating::class, 'rated_for_id', 'user_id');
+}
 }

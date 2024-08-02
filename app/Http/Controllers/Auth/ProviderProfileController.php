@@ -99,4 +99,57 @@ class ProviderProfileController extends Controller
 
         return redirect()->route('provider.dashboard')->with('success', 'Certification added successfully.');
     }
+
+    //edit profile after login
+
+
+    // Edit the profile
+    public function show()
+    {
+        $user = Auth::user();
+        $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+        $certifications = Certification::where('provider_id', $user->id)->get();
+
+        return view('profile.profile', compact('user', 'providerDetail', 'certifications'));
+    }
+
+    // Edit the profile
+    public function edit(Request $request)
+    {
+        $user = Auth::user();
+        $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+        $certifications = Certification::where('provider_id', $user->id)->get();
+
+        return view('profile.profile', compact('user', 'providerDetail', 'certifications'));
+    }
+
+    // Update the profile
+    public function update(Request $request)
+    {
+        $validatedData = $request->validate([
+            'work_email' => 'nullable|email',
+            'contact_number' => 'nullable|string',
+            'serviceCategory' => 'required|string',
+            'description' => 'required|string',
+            'years_of_experience' => 'required|integer',
+            'have_tools' => 'required|string',
+            'availability_days' => 'required|array',
+            'availability_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+        ]);
+
+        $providerDetail = ProviderDetail::updateOrCreate(
+            ['provider_id' => Auth::id()],
+            [
+                'work_email' => $validatedData['work_email'],
+                'contact_number' => $validatedData['contact_number'],
+                'serviceCategory' => $validatedData['serviceCategory'],
+                'description' => $validatedData['description'],
+                'years_of_experience' => $validatedData['years_of_experience'],
+                'have_tools' => $validatedData['have_tools'],
+                'availability_days' => implode(',', $validatedData['availability_days']),
+            ]
+        );
+
+        return redirect()->route('profile.view')->with('success', 'Profile updated successfully!');
+    }
 }

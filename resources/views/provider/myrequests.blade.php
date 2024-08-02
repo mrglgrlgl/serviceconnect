@@ -54,10 +54,12 @@
                     </div>
                     
 
+
                 @else
                     @foreach ($serviceRequests as $serviceRequest)
                         @php
                             $userBid = $serviceRequest->bids->where('bidder_id', auth()->user()->id)->first();
+                            $reportExists = $serviceRequest->reports->where('reported_by', auth()->id())->isNotEmpty();
                         @endphp
 
                         <div class="p-4 border border-gray-300 bg-white shadow-sm rounded-lg md:mb-4"
@@ -88,6 +90,12 @@
                                     @endif
                                 </div>
                             </div>
+
+                            @if ($serviceRequest->status !== 'in_progress' && isset($conflictingRequests[$serviceRequest->id]))
+                            <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                                Warning: This service request may have a conflict with your current in-progress tasks.
+                            </div>
+                        @endif
 
                             <div class="flex items-start px-8">
                                 <div class="flex-1">
@@ -141,12 +149,65 @@
                                             <span>Edit Bid</span>
                                         </button>
                                     @endif
+
+                                    @if ($serviceRequest->status == 'completed')
+                                    <!-- Display Report Link or Label -->
+                                    @if ($reportExists)
+                                        <span class="text-gray-500 ml-4">Report submitted</span>
+                                    @else
+                                        <a href="#" class="text-red-500 underline ml-3 font-semibold" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                    @endif
                                 @endif
                             </div>
                         </div>
-                    @endforeach
-                @endif
+                    @endif
+                @endforeach
+            @endif
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <div class="bg-white p-4">
+                <div class="flex justify-between items-center pb-2">
+                    <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                    <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('report.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="service_request_id" id="service_request_id">
+
+                    <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                    <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="non_payment">Non Payment</option>
+                        <option value="illegal_activity">Illegal Activity</option>
+                        <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                        <option value="poor_quality_work">Poor Quality Work</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                    <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"></textarea>
+
+                    <div class="flex justify-center mt-4">
+                        <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        function showReportModal(serviceRequestId) {
+            document.getElementById('service_request_id').value = serviceRequestId;
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
 </x-app-layout>

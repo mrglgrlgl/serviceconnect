@@ -32,8 +32,9 @@ class ViewProfileController extends Controller
         $completedJobsCount = ServiceRequest::where('provider_id', $user->id)
                                              ->where('status', 'completed') // Adjust based on actual status indicator
                                              ->count();
+
         // Pass data to the view
-        return view('profileview', compact('user', 'providerDetails', 'certifications', 'ratings', 'philidCards','completedJobsCount'));
+        return view('profileview', compact('user', 'providerDetails', 'certifications', 'ratings', 'philidCards', 'completedJobsCount'));
     }
 
 

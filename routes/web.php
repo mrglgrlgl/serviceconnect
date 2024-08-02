@@ -24,23 +24,30 @@ use App\Http\Controllers\Auth\ProviderProfileController;
 use App\Http\Controllers\Auth\PhilIDController;
 use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReportController;
+
+
+Route::post('/report', [ReportController::class, 'store'])->name('report.store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
     Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
     Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
+
 });
+
+Route::get('/view-profile/{providerId}', [ViewProfileController::class, 'show'])->name('view-profile');
+
 // Route::middleware(['auth', 'verified',])->group(function () {
 //     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
 // });
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 // Route to show the provider's profile
-Route::get('/provider/profile', [ViewProfileController::class, 'edit'])->name('provider.profile.edit');
+// Route::get('/provider/profile', [ViewProfileController::class, 'edit'])->name('provider.profile.edit');
 
-// Route to update the provider's profile
-Route::post('/provider/profile/update', [ViewProfileController::class, 'update'])->name('provider.profile.update');
-Route::get('/profile/{providerId}', [ViewProfileController::class, 'show'])->name('profile.show');
+// // Route to update the provider's profile
+// Route::post('/provider/profile/update', [ViewProfileController::class, 'update'])->name('provider.profile.update');
 Route::view('/terms', 'terms')->name('terms');
 
 
@@ -167,7 +174,7 @@ Route::get('/chat', function () {
 Route::middleware('auth')->group(function () {
     // Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
 
-    Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
+    // Route::get('/profile/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -214,6 +221,13 @@ Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->nam
 // Route::post('/save-step2', [BecomeProviderController::class, 'saveStep2'])->name('save-step2');
 // Route::get('/bp_step3', [BecomeProviderController::class, 'showStep3Form'])->name('bp_step3');
 // Route::post('/save-step3', [BecomeProviderController::class, 'saveStep3'])->name('save-step3');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile/view', [App\Http\Controllers\Auth\ProviderProfileController::class, 'show'])->name('profile.view');
+    Route::get('/profile/edit', [App\Http\Controllers\Auth\ProviderProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [App\Http\Controllers\Auth\ProviderProfileController::class, 'update'])->name('profile.update');
+});
+
 
 Route::post('/profilecreate', [ProviderProfileController::class, 'saveProfileCreate'])->name('profilecreate');
 Route::get('/profilecreate', [ProviderProfileController::class, 'index'])->name('create-profile');
