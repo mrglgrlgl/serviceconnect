@@ -168,7 +168,7 @@
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
                                     tabindex="-1" id="menu-item-0">Profile</a>
                                     
-                                <a href="{{ route('become-provider') }}"
+                                <a href=""
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
                                     tabindex="-1" id="menu-item-1">Become a Provider!</a>
                                 <form method="POST" action="{{ route('logout') }}" role="none">

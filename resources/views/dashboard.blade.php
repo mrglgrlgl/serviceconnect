@@ -1,24 +1,24 @@
 <x-dashboard>
-        <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
-            <div class="flex justify-center text-center w-full">
-                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
-                    <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('My Service Requests') }}
-                        </div>
-                    </x-category-link>
-                    <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('analytics')" :active="request()->routeIs('analytics')">
-                        <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
-                            {{ __('Analytics') }}
-                        </div>
-                    </x-category-link>
-                </div>
+    <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
+        <div class="flex justify-center text-center w-full">
+            <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                        {{ __('My Service Requests') }}
+                    </div>
+                </x-category-link>
+                <x-category-link class="inline-block text-custom-dark-text hover:text-custom-lightest-blue" :href="route('analytics')" :active="request()->routeIs('analytics')">
+                    <div class="flex flex-col items-center text-base md:text-xl font-open-sans">
+                        {{ __('Analytics') }}
+                    </div>
+                </x-category-link>
             </div>
         </div>
+    </div>
 
-        <div class="flex justify-center">
-            <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
-        </div>
+    <div class="flex justify-center">
+        <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
+    </div>
 
     <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all' }">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
@@ -34,86 +34,101 @@
         </div>
 
         <div x-data="dashboard()" class="py-12">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
-            @if ($serviceRequests->isEmpty())
-                <div class="flex flex-col items-center">
-                    <div class="alert-info mb-4 text-custom-danger">
-                        No service requests found. Create one now!
-                    </div>
-                    <a href="{{ route('service-requests.create') }}"
-                       class="h-11 w-auto px-6 justify-center text-sm rounded-lg border text-white font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center">
-                        {{ __('Create Service Request') }}
-                    </a>
-                </div>
-            @else
-                @foreach ($serviceRequests as $serviceRequest)
-                    <div class="servicerequestindividual p-4 shadow-sm rounded-lg md:mb-4 border bg-white border-gray-300"
-                         :class="{ 'hidden': filter !== 'all' && filter !== '{{ $serviceRequest->status }}' }"
-                         x-show="filter === 'all' || filter === '{{ $serviceRequest->status }}'">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex flex-col items-start">
-                                <div class="flex items-center">
-                                    <x-category :category="$serviceRequest->category" class="mr-2" />
-                                </div>
-                                <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''" />
-                            </div>
-                            <div class="text-sm text-custom-light-text md:mt-2">
-                                {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
-                                - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
-                            </div>
+            <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+                @if ($serviceRequests->isEmpty())
+                    <div class="flex flex-col items-center">
+                        <div class="alert-info mb-4 text-custom-danger">
+                            No service requests found. Create one now!
                         </div>
-                
-                        <div class="mt-4 mx-12">
-                            <div class="font-semibold text-xl mb-2 text-custom-header">
-                                {{ $serviceRequest->title }}
-                            </div>
-                
-                            <div class="mb-4 text-custom-default-text">
-                                {{ $serviceRequest->description }}
-                            </div>
-                
-                            <div class="mb-4">
-                                {{-- Request image here --}}
-                            </div>
-                
-                            <div class="flex justify-between items-center">
-                                @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
-                                    <div class="flex items-center space-x-2">
-                                        <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
-                                            <span class="material-symbols-outlined">
-                                                edit
-                                            </span>
-                                        </a>
-                                        <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this service request?')">
-                                                <span class="material-symbols-outlined">
-                                                    delete
-                                                </span>
-                                            </button>
-                                        </form>
+                        <a href="{{ route('service-requests.create') }}"
+                           class="h-11 w-auto px-6 justify-center text-sm rounded-lg border text-white font-bold border-custom-lightest-blue hover:text-white hover:border-custom-lightestblue-accent bg-custom-lightest-blue hover:bg-custom-lightestblue-accent flex items-center">
+                            {{ __('Create Service Request') }}
+                        </a>
+                    </div>
+                @else
+                    @foreach ($serviceRequests as $serviceRequest)
+                        <div class="servicerequestindividual p-4 shadow-sm rounded-lg md:mb-4 border bg-white border-gray-300"
+                             :class="{ 'hidden': filter !== 'all' && filter !== '{{ $serviceRequest->status }}' }"
+                             x-show="filter === 'all' || filter === '{{ $serviceRequest->status }}'">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex flex-col items-start">
+                                    <div class="flex items-center">
+                                        <x-category :category="$serviceRequest->category" class="mr-2" />
                                     </div>
-                                @endif
-                                <div class="flex items-center justify-end w-full">
-                                    @if ($serviceRequest->hasAcceptedBid())
-                                        <div class="flex items-center text-green-500 font-semibold">
-                                            <span class="material-icons">
-                                                check_circle
-                                            </span>
-                                            <span class="ml-1">Bid Confirmed</span>
+                                    <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''" />
+                                </div>
+                                <div class="text-sm text-custom-light-text md:mt-2">
+                                    {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                    - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                </div>
+                            </div>
+                
+                            <div class="mt-4 mx-12">
+                                <div class="font-semibold text-xl mb-2 text-custom-header">
+                                    {{ $serviceRequest->title }}
+                                </div>
+                
+                                <div class="mb-4 text-custom-default-text">
+                                    {{ $serviceRequest->description }}
+                                </div>
+                
+                                <div class="mb-4">
+                                    {{-- Request image here --}}
+                                </div>
+                
+                                <div class="flex justify-between items-center">
+                                    @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
+                                        <div class="flex items-center space-x-2">
+                                            <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
+                                                <span class="material-symbols-outlined">
+                                                    edit
+                                                </span>
+                                            </a>
+                                            <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this service request?')">
+                                                    <span class="material-symbols-outlined">
+                                                        delete
+                                                    </span>
+                                                </button>
+                                            </form>
                                         </div>
-                                        <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
-                                    @else
-                                        <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
-                                        <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                                     @endif
+                                    <div class="flex items-center justify-end w-full">
+                                        @if ($serviceRequest->hasAcceptedBid())
+                                            <div class="flex items-center text-green-500 font-semibold">
+                                                <span class="material-icons">
+                                                    check_circle
+                                                </span>
+                                                <span class="ml-1">Bid Confirmed</span>
+                                            </div>
+                                            <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
+                                        @else
+                                            <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
+                                            <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
+                                        @endif
+
+                                       @if ($serviceRequest->status == 'completed')
+    <!-- Display Report Link or Label -->
+    @php
+        $reportExists = $serviceRequest->reports
+            ->where('reported_by', auth()->id())
+            ->isNotEmpty();
+    @endphp
+    @if ($reportExists)
+        <span class="text-gray-500 ml-4">Report submitted</span>
+    @else
+        <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+    @endif
+@endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            @endif
+                    @endforeach
+                @endif
+            </div>
         </div>
 
         <!-- Bids Panel -->
@@ -191,92 +206,49 @@
         </div>
     </div>
 
-         <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('dashboard', () => ({
-                    showBidsPanel: false,
-                    showProfileModal: false,
-                    bids: [],
-                    profile: {},
-                    selectedRequestId: null,
+    <!-- Report Modal -->
+    <div id="report-modal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <div class="bg-white p-4">
+                <div class="flex justify-between items-center pb-2">
+                    <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                    <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('report.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="service_request_id" id="service_request_id">
 
-                    async fetchBids(requestId) {
-                        this.selectedRequestId = requestId;
-                        try {
-                            const response = await fetch(`/api/service-requests/${requestId}/bids`);
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            const data = await response.json();
-                            this.bids = data;
-                            this.showBidsPanel = true;
-                        } catch (error) {
-                            console.error('There was a problem with the fetch operation:', error);
-                        }
-                    },
+                    <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                    <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="non_payment">Non Payment</option>
+                        <option value="illegal_activity">Illegal Activity</option>
+                        <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                        <option value="poor_quality_work">Poor Quality Work</option>
+                        <option value="other">Other</option>
+                    </select>
 
-                    async viewProfile(bidderId) {
-                        try {
-                            const response = await fetch(`/api/providers/${bidderId}`);
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            const data = await response.json();
-                            this.profile = data; // Update profile data
-                            this.showProfileModal = true;
-                        } catch (error) {
-                            console.error('Error fetching profile:', error);
-                        }
-                    },
+                    <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                    <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
 
-                    async confirmBid(bidId, requestId) {
-                        try {
-                            const response = await fetch(`/bids/${bidId}/confirm`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').getAttribute('content')
-                                },
-                                body: JSON.stringify({
-                                    request_id: requestId
-                                })
-                            });
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            const data = await response.json();
-                            alert(data.message);
-                            if (data.success) {
-                                // Mark the confirmed bid
-                                this.bids.forEach(bid => {
-                                    if (bid.id === bidId) {
-                                        bid.confirmed = true;
-                                    } else {
-                                        bid.rejected = true;
-                                    }
-                                });
-                                // Remove rejected bids from the view
-                                this.bids = this.bids.filter(bid => !bid.rejected);
-                                // Update the service request to show the link
-                                const serviceRequest = @json($serviceRequests).find(req => req
-                                    .id === requestId);
-                                serviceRequest.bid_confirmed = true;
-                            }
-                        } catch (error) {
-                            console.error('There was a problem with the fetch operation:', error);
-                        }
-                    },
+                    <div class="flex justify-center mt-4">
+                        <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                    closeBidsPanel() {
-                        this.showBidsPanel = false;
-                    },
+    <script>
+        function showReportModal(serviceRequestId) {
+            document.getElementById('service_request_id').value = serviceRequestId;
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
 
-                    closeProfileModal() {
-                        this.showProfileModal = false;
-                    }
-                }));
-            });
-            
-        </script>
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
+
 </x-dashboard>

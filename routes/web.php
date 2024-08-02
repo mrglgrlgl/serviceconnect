@@ -24,6 +24,10 @@ use App\Http\Controllers\Auth\ProviderProfileController;
 use App\Http\Controllers\Auth\PhilIDController;
 use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReportController;
+
+
+Route::post('/report', [ReportController::class, 'store'])->name('report.store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');

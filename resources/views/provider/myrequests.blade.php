@@ -19,13 +19,13 @@
                     <a href="{{ route('create-profile') }}" class="text-blue-500">Build Profile</a>
                 </div>
 
-                 <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                     Add your certifications if there are any
                     <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
                 </div>
 
-              <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
-                   Upload Government ID for final verification
+                <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                    Upload Government ID for final verification
                     <a href="{{ route('philid.index') }}" class="text-blue-500">Upload Government</a>
                 </div>
             @elseif ($serviceRequests->isEmpty())
@@ -33,7 +33,6 @@
                     No service requests found.
                 </div>
             @else
-
                 @foreach ($serviceRequests as $serviceRequest)
                     @php
                         $userBid = $serviceRequest->bids->where('bidder_id', auth()->user()->id)->first();
@@ -95,13 +94,16 @@
                             <div class="flex justify-end items-center space-x-2 mt-4">
                                 @if ($userBid->status == 'accepted')
                                     <span class="text-green-500 font-semibold">Bid Accepted</span>
-                                    <a
-                                    href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
-                                    Channel</a>
+                                    <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View Channel</a>
                                 @elseif ($userBid->status == 'rejected')
                                     <span class="text-red-500 font-semibold">Bid Closed</span>
                                 @else
                                     <span class="text-gray-500 font-semibold">Bid Sent</span>
+                                @endif
+
+                                @if ($serviceRequest->status == 'completed')
+                                    <!-- Report Link -->
+                                    <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
                                 @endif
                             </div>
                         </div>
@@ -110,4 +112,49 @@
             @endif
         </div>
     </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <div class="bg-white p-4">
+                <div class="flex justify-between items-center pb-2">
+                    <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                    <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('report.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="service_request_id" id="service_request_id">
+
+                    <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                    <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="non_payment">Non Payment</option>
+                        <option value="illegal_activity">Illegal Activity</option>
+                        <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                        <option value="poor_quality_work">Poor Quality Work</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                    <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+
+                    <div class="flex justify-center mt-4">
+                        <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showReportModal(serviceRequestId) {
+            document.getElementById('service_request_id').value = serviceRequestId;
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
 </x-app-layout>

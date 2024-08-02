@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
-               <div class="flex justify-center text-center w-full mb-6">
+            <div class="flex justify-center text-center w-full mb-6">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                     <x-nav-link href="{{ route('provider.dashboard') }}" :active="request()->routeIs('provider.dashboard')">
                         {{ __('Open Requests') }}
@@ -11,13 +11,10 @@
                     </x-nav-link>
                 </div>
             </div>
-            @if (Auth::check() && Auth::user()->role == 2)
 
-                <!-- Start with PhilID check -->
+            @if (Auth::check() && Auth::user()->role == 2)
                 @if (isset(Auth::user()->philID) && Auth::user()->philID->status === 'Accepted')
-                    <!-- PhilID is verified, you can load the main content or skip displaying other messages -->
                 @else
-                    <!-- Profile completeness message -->
                     @if (!isset(Auth::user()->providerDetails))
                         <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                             Please complete your profile to view service requests.
@@ -29,7 +26,6 @@
                         </div>
                     @endif
 
-                    <!-- Certifications message -->
                     @if ($certificationsCount === 0)
                         <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                             Add your certifications if there are any.
@@ -41,19 +37,16 @@
                         </div>
                     @endif
 
-                    <!-- PhilID message -->
                     <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                         Your PhilID must be verified to access service requests.
                         <a href="{{ route('philid.index') }}" class="text-blue-500">Submit or Check PhilID Status</a>
                     </div>
                 @endif
 
-                <!-- Display Service Requests if PhilID is verified -->
                 @if (isset(Auth::user()->philID) && Auth::user()->philID->status === 'Accepted')
                     @if ($serviceRequests->isEmpty())
                         <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
-                            No service requests found. <a href="{{ route('service-requests.create') }}"
-                                class="text-blue-500">Create one now!</a>
+                            No service requests found. <a href="{{ route('service-requests.create') }}" class="text-blue-500">Create one now!</a>
                         </div>
                     @else
                         @foreach ($serviceRequests as $serviceRequest)
@@ -73,7 +66,13 @@
                                     </div>
                                 </div>
 
-                               <div class="flex items-start px-8">
+                                @if ($serviceRequest->status !== 'in_progress' && isset($conflictingRequests[$serviceRequest->id]))
+                                    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                                        Warning: This service request may have a conflict with your current in-progress tasks.
+                                    </div>
+                                @endif
+
+                                <div class="flex items-start px-8">
                                     <div class="flex-1">
                                         <div class="flex text-gray-700 items-center space-x-4">
                                             <div class="flex items-center p-2">
@@ -81,7 +80,7 @@
                                                 {{ $serviceRequest->job_type }}
                                             </div>
 
-                                           <div class="flex items-center p-2">
+                                            <div class="flex items-center p-2">
                                                 <span class="material-symbols-outlined mr-1">request_quote</span>
                                                 @if ($serviceRequest->min_price === null)
                                                     Fixed Price: {{ $serviceRequest->max_price }}
@@ -89,7 +88,6 @@
                                                     Price Range: {{ $serviceRequest->min_price }} - {{ $serviceRequest->max_price }}
                                                 @endif
                                             </div>
-
 
                                             <div class="flex items-center p-2">
                                                 Estimated Duration: {{ $serviceRequest->estimated_duration }}
@@ -104,17 +102,10 @@
                                     </div>
                                 </div>
 
-                                
-
-
-                                <!-- Display Service Request Status Here -->
-                                        <div class="flex items-center p-2">
+                                <div class="flex items-center p-2">
                                     Status: {{ ucfirst($serviceRequest->status) }}
                                 </div>
 
-                                 <!-- Button to open modal -->
-
-                                
                                 <div class="flex justify-end items-center space-x-2 mt-4">
                                     @php
                                         $userBid = $serviceRequest->bids
@@ -124,6 +115,9 @@
                                             ->where('status', 'accepted')
                                             ->where('bidder_id', '!=', auth()->user()->id)
                                             ->count();
+                                        $reportExists = $serviceRequest->reports
+                                            ->where('reported_by', auth()->id())
+                                            ->isNotEmpty();
                                     @endphp
 
                                     @if ($userBid)
@@ -146,13 +140,9 @@
                                                     Go to chat
                                                 </a>
                                                 @if (!$serviceRequest->isCompleted())
-                                                    <a
-                                                        href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View
-                                                        Channel</a>
+                                                    <a href="{{ route('provider-channel', ['serviceRequestId' => $serviceRequest->id]) }}">View Channel</a>
                                                 @else
-                                                    <span class="text-gray-500 ml-4">This service request is completed
-                                                        and no
-                                                        longer available.</span>
+                                                    <span class="text-gray-500 ml-4">This service request is completed and no longer available.</span>
                                                 @endif
                                             @elseif ($userBid->status == 'rejected')
                                                 <span class="text-red-500 font-semibold">Bid Closed</span>
@@ -171,8 +161,16 @@
                                                 Place Bid
                                             </button>
                                         @else
-                                            <span class="text-gray-500">This service request is no longer open for
-                                                bids.</span>
+                                            <span class="text-gray-500">This service request is no longer open for bids.</span>
+                                        @endif
+
+                                        <!-- Display Report Link or Label -->
+                                        @if ($serviceRequest->status == 'completed')
+                                            @if ($reportExists)
+                                                <span class="text-gray-500 ml-4">Report submitted</span>
+                                            @else
+                                                <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                            @endif
                                         @endif
 
                                         <!-- Bid Modal -->
@@ -183,8 +181,7 @@
                                                 class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                                                 <div class="bg-white p-4">
                                                     <div class="flex justify-between items-center pb-2">
-                                                        <h5 class="text-lg font-semibold text-custom-header">Place Bid
-                                                        </h5>
+                                                        <h5 class="text-lg font-semibold text-custom-header">Place Bid</h5>
                                                         <button type="button" class="text-gray-400 hover:text-gray-600"
                                                             aria-label="Close" @click="showModal = false">
                                                             <span aria-hidden="true">&times;</span>
@@ -192,32 +189,26 @@
                                                     </div>
                                                     <form action="{{ route('bids.store') }}" method="POST">
                                                         @csrf
-                                                        <input type="hidden" name="service_request_id"
-                                                            value="{{ $serviceRequest->id }}">
+                                                        <input type="hidden" name="service_request_id" value="{{ $serviceRequest->id }}">
                                                         <div class="mb-4">
                                                             <label for="bid_amount"
-                                                                class="block text-sm font-medium text-gray-700">Bid
-                                                                Amount</label>
+                                                                class="block text-sm font-medium text-gray-700">Bid Amount</label>
                                                             <x-text-input type="number" step="0.01"
                                                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                                 id="bid_amount" name="bid_amount" required />
-                                                            <p class="text-sm text-gray-600">Max Budget:
-                                                                {{ $serviceRequest->max_price}}
-                                                            </p>
+                                                            <p class="text-sm text-gray-600">Max Budget: {{ $serviceRequest->max_price}}</p>
                                                             <p id="bid_warning" class="text-red-500 text-sm"
                                                                 style="display: none;">
                                                                 Your bid exceeds the maximum budget!</p>
                                                         </div>
                                                         <div class="mb-4">
                                                             <label for="bid_description"
-                                                                class="block text-sm font-medium text-gray-700">Work
-                                                                Plan</label>
+                                                                class="block text-sm font-medium text-gray-700">Work Plan</label>
                                                             <textarea
                                                                 class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                                 id="bid_description" name="bid_description" required></textarea>
                                                         </div>
 
-                                                        <!-- Terms and Conditions Checkbox -->
                                                         <div class="mb-4">
                                                             <label class="flex items-center">
                                                                 <input type="checkbox" name="agreed_to_terms"
@@ -228,7 +219,6 @@
                                                                         conditions</a>.</span>
                                                             </label>
                                                         </div>
-
 
                                                         <div class="flex justify-center">
                                                             <button type="submit"
@@ -248,8 +238,7 @@
                                                 class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
                                                 <div class="bg-white p-4">
                                                     <div class="flex justify-between items-center pb-2">
-                                                        <h5 class="text-lg font-semibold text-custom-header">Bid
-                                                            Accepted</h5>
+                                                        <h5 class="text-lg font-semibold text-custom-header">Bid Accepted</h5>
                                                         <button type="button"
                                                             class="text-gray-400 hover:text-gray-600"
                                                             aria-label="Close" @click="showConfirmationModal = false">
@@ -262,8 +251,7 @@
                                                         </p>
                                                         <div class="flex justify-center space-x-4">
                                                             <a href="{{ route('chat') }}"
-                                                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Proceed
-                                                                to Chat</a>
+                                                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Proceed to Chat</a>
                                                             <button type="button"
                                                                 class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                                                                 @click="showConfirmationModal = false">Close</button>
@@ -286,7 +274,4 @@
             
         </div>
     </div>
-
-
-
 </x-app-layout>
