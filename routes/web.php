@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
     Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
 
+       Route::get('/authorizer/reports', [ReportController::class, 'index'])->name('authorizer.reports');
+
 });
 
 Route::get('/view-profile/{providerId}', [ViewProfileController::class, 'show'])->name('view-profile');

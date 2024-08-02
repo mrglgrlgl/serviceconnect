@@ -109,19 +109,19 @@
                                             <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                                         @endif
 
-                                       @if ($serviceRequest->status == 'completed')
-    <!-- Display Report Link or Label -->
-    @php
-        $reportExists = $serviceRequest->reports
-            ->where('reported_by', auth()->id())
-            ->isNotEmpty();
-    @endphp
-    @if ($reportExists)
-        <span class="text-gray-500 ml-4">Report submitted</span>
-    @else
-        <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
-    @endif
-@endif
+                                        @if ($serviceRequest->status == 'completed')
+                                            <!-- Display Report Link or Label -->
+                                            @php
+                                                $reportExists = $serviceRequest->reports
+                                                    ->where('reported_by', auth()->id())
+                                                    ->isNotEmpty();
+                                            @endphp
+                                            @if ($reportExists)
+                                                <span class="text-gray-500 ml-4">Report submitted</span>
+                                            @else
+                                                <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                            @endif
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -250,5 +250,4 @@
             document.getElementById('report-modal').classList.add('hidden');
         }
     </script>
-
 </x-dashboard>

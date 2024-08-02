@@ -274,4 +274,16 @@
             
         </div>
     </div>
+
+    <script>
+        function showReportModal(serviceRequestId) {
+            document.getElementById('service_request_id').value = serviceRequestId;
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
+
 </x-app-layout>

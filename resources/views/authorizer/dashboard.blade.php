@@ -56,6 +56,13 @@
     </style>
 
     <div class="container">
+    <!-- Add this button in your authorizer/dashboard.blade.php -->
+<div class="text-center my-4">
+    <a href="{{ route('authorizer.reports') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        View Reports
+    </a>
+</div>
+
         <h1>All PhilID Records</h1>
 
         @if(isset($philIDs) && $philIDs->isNotEmpty())

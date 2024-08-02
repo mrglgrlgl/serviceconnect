@@ -36,6 +36,7 @@
                 @foreach ($serviceRequests as $serviceRequest)
                     @php
                         $userBid = $serviceRequest->bids->where('bidder_id', auth()->user()->id)->first();
+                        $reportExists = $serviceRequest->reports->where('reported_by', auth()->id())->isNotEmpty();
                     @endphp
 
                     @if ($userBid)
@@ -102,8 +103,12 @@
                                 @endif
 
                                 @if ($serviceRequest->status == 'completed')
-                                    <!-- Report Link -->
-                                    <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                    <!-- Display Report Link or Label -->
+                                    @if ($reportExists)
+                                        <span class="text-gray-500 ml-4">Report submitted</span>
+                                    @else
+                                        <a href="#" class="text-blue-500 underline ml-3" onclick="showReportModal({{ $serviceRequest->id }})">Report</a>
+                                    @endif
                                 @endif
                             </div>
                         </div>
