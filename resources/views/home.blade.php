@@ -1,3 +1,4 @@
+<!-- resources/views/home.blade.php -->
 <x-seekerhome>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -17,61 +18,15 @@
             <div class="flex flex-col items-center text-header w-full md:w-auto">
                 <x-seeker-home-filter name="category" id="category" class="mt-2 w-full md:w-auto">
                     <option class="text-gray-400" value="" disabled selected>Select category</option>
-                    <option value="category1">Category 1</option>
-                    <option value="category2">Category 2</option>
-                    <option value="category3">Category 3</option>
-                </x-seeker-home-filter>
-            </div>
-
-            {{-- SubCategory Filter --}}
-            <div class="flex flex-col items-center text-header md:border-l md:border-slate-500 md:pl-4 w-full md:w-auto">
-                <x-seeker-home-filter name="subcategory" id="subcategory" class="mt-2 w-full md:w-auto">
-                    <option class="text-gray-400" value="" disabled selected>Select subcategory</option>
-                    <option value="subcategory1">Subcategory 1</option>
-                    <option value="subcategory2">Subcategory 2</option>
-                    <option value="subcategory3">Subcategory 3</option>
-                </x-seeker-home-filter>
-            </div>
-
-            {{-- Date Filter --}}
-            <div class="flex flex-col items-center text-header md:border-l md:border-slate-500 md:pl-4 w-full md:w-auto">
-                <x-seeker-home-filter name="date" id="date" class="mt-2 w-full md:w-auto">
-                    <option class="text-gray-400" value="" disabled selected>Select date</option>
-                    <option value="today">Today</option>
-                    <option value="tomorrow">Tomorrow</option>
-                    <option value="this_week">This Week</option>
-                </x-seeker-home-filter>
-            </div>
-
-            {{-- Time Filter --}}
-            <div class="flex flex-col items-center text-header md:border-l md:border-slate-500 md:pl-4 w-full md:w-auto">
-                <x-seeker-home-filter name="time" id="time" class="mt-2 w-full md:w-auto">
-                    <option class="text-gray-400" value="" disabled selected>Select time of day</option>
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="evening">Evening</option>
-                </x-seeker-home-filter>
-            </div>
-
-            {{-- Ratings Filter --}}
-            <div class="flex flex-col items-center text-header md:border-l md:border-slate-500 md:pl-4 w-full md:w-auto">
-                <x-seeker-home-filter name="ratings" id="ratings" class="mt-2 w-full md:w-auto">
-                    <option class="text-gray-400" value="" disabled selected>Select rating</option>
-                    <option value="1_star">1 Star</option>
-                    <option value="2_star">2 Stars</option>
-                    <option value="3_star">3 Stars</option>
-                    <option value="4_star">4 Stars</option>
-                    <option value="5_star">5 Stars</option>
-                </x-seeker-home-filter>
-            </div>
-
-            {{-- Sort By Filter --}}
-            <div class="flex flex-col items-center text-header md:border-l md:border-slate-500 md:pl-4 w-full md:w-auto">
-                <x-seeker-home-filter name="sort_by" id="sort_by" class="mt-2 w-full md:w-auto">
-                    <option class="text-gray-400" value="" disabled selected>Select sorting</option>
-                    <option value="price_asc">Price Low to High</option>
-                    <option value="price_desc">Price High to Low</option>
-                    <option value="rating_desc">Rating High to Low</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="Beauty Therapy">Beauty Therapy</option>
+                    <option value="Food Service">Food Service</option>
+                    <option value="Welding">Welding</option>
+                    <option value="Hairdressing">Hairdressing</option>
+                    <option value="Carpentry">Carpentry</option>
+                    <option value="Stone Cutting and Masonry">Stone Cutting and Masonry</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Building and Related">Building and Related</option>
                 </x-seeker-home-filter>
             </div>
 
@@ -93,8 +48,8 @@
                 <!-- Search Bar -->
                 <div class="pt-4">
                     <div class="relative shadow-sm">
-                        <input type="text" id="provider-search" class="w-full rounded-3xl h-12 border border-custom-fields focus:border-custom-lightest-blue pl-4 pr-10" placeholder="Search...">
-                        <button type="button" class="absolute right-0 top-0 h-full px-6 flex items-center justify-center bg-custom-lightest-blue text-white rounded-r-3xl rounded-l-md">
+                        <input type="text" id="provider-search" name="search" class="w-full rounded-3xl h-12 border border-custom-fields focus:border-custom-lightest-blue pl-4 pr-10" placeholder="Search...">
+                        <button type="submit" class="absolute right-0 top-0 h-full px-6 flex items-center justify-center bg-custom-lightest-blue text-white rounded-r-3xl rounded-l-md">
                             <span class="material-symbols-outlined">search</span>
                         </button>
                     </div>
@@ -110,27 +65,38 @@
                             <ul class="list-none space-y-4">
                                 @foreach($providers as $provider)
                                     <li class="mb-4">
-                                        <div class="flex flex-col md:flex-row md:items-start">
-                                            <x-category :category="$provider->serviceCategory" />
-                                            <div class="ml-0 md:ml-4 flex-1">
-                                                <div class="flex flex-col md:flex-row justify-between md:items-center">
-                                                    <div class="flex items-center mb-2 md:mb-0">
-                                                        <div class="font-medium text-lg">{{ $provider->user->name }}</div>
-                                                        <div class="ml-2 font-normal text-custom-default-text">Ratings: {{ $provider->ratings }}</div>
+                                        @if ($provider->user)
+                                            <div class="flex flex-col md:flex-row md:items-start">
+                                                <x-category :category="$provider->serviceCategory" />
+                                                <div class="ml-0 md:ml-4 flex-1">
+                                                    <div class="flex flex-col md:flex-row justify-between md:items-center">
+                                                        <div class="flex items-center mb-2 md:mb-0">
+                                                            <div class="font-medium text-lg">{{ $provider->user->name }}</div>
+                                                            <div class="ml-2 font-normal text-custom-default-text">
+                                                                Ratings: {{ round($provider->user->ratings_avg_quality_of_service ?? 0, 2) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="font-normal text-custom-default-text">
+                                                            {{ $provider->user->completed_service_requests_count ?? 0 }} hires
+                                                        </div>
                                                     </div>
-                                                    <div class="font-normal text-custom-default-text">{{ '16 hires' }}</div>
-                                                </div>
-                                                <div class="w-full font-normal text-custom-default-text">
-                                                    {{ strlen($provider->description) > 225 ? substr($provider->description, 0, 225) . '...' : $provider->description }}
-                                                </div>
-                                                <div class="flex justify-end items-center mt-2">
-                                                    <a href="#" class="text-base h-8 w-38 rounded-md bg-white hover:text-custom-light-blue text-custom-lightest-blue">
-                                                        {{ __('View Profile >>') }}
-                                                    </a>
+                                                    <div class="w-full font-normal text-custom-default-text">
+                                                        {{ strlen($provider->description) > 225 ? substr($provider->description, 0, 225) . '...' : $provider->description }}
+                                                    </div>
+                                                    <div class="flex justify-end items-center mt-2">
+                                                        <a href="{{ url('/view-profile/' . $provider->user->id) }}" class="text-base h-8 w-38 rounded-md bg-white hover:text-custom-light-blue text-custom-lightest-blue">
+                                                            {{ __('View Profile') }}
+                                                        </a>
+                                                    </div>
+                                                    <div class="flex justify-end items-center mt-2">
+                                                        <button onclick="showConfirmationModal({{ $provider->user->id }})" class="text-base h-8 w-38 rounded-md bg-green-500 hover:bg-green-700 text-white">
+                                                            {{ __('Direct Hire') }}
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="border-t my-4"></div>
+                                            <div class="border-t my-4"></div>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
@@ -142,4 +108,34 @@
             </div>
         </div>
     </form>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h2 class="text-xl font-bold mb-4">Confirm Direct Hire</h2>
+            <p>Are you sure you want to hire this provider?</p>
+            <div class="flex justify-end mt-4">
+                <button onclick="hideConfirmationModal()" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                <button onclick="confirmHire()" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showConfirmationModal(providerId) {
+            document.getElementById('confirmationModal').dataset.providerId = providerId;
+            document.getElementById('confirmationModal').classList.remove('hidden');
+        }
+
+        function hideConfirmationModal() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        }
+
+        function confirmHire() {
+            var providerId = document.getElementById('confirmationModal').dataset.providerId;
+            // Redirect or perform an action with the providerId
+            console.log("Confirmed hire for provider ID:", providerId);
+            hideConfirmationModal();
+        }
+    </script>
 </x-seekerhome>
