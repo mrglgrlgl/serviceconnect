@@ -25,9 +25,12 @@ use App\Http\Controllers\Auth\PhilIDController;
 use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DirectHireController;
 
 
 Route::post('/report', [ReportController::class, 'store'])->name('report.store');
+Route::get('/direct-hire/create/{providerId}', [DirectHireController::class, 'create'])->name('direct-hire.create');
+Route::post('/direct-hire/store', [DirectHireController::class, 'store'])->name('direct-hire.store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');

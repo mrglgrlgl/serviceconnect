@@ -1,4 +1,3 @@
-<!-- resources/views/home.blade.php -->
 <x-seekerhome>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -89,7 +88,7 @@
                                                         </a>
                                                     </div>
                                                     <div class="flex justify-end items-center mt-2">
-                                                        <button onclick="showConfirmationModal({{ $provider->user->id }})" class="text-base h-8 w-38 rounded-md bg-green-500 hover:bg-green-700 text-white">
+                                                        <button type="button" onclick="showConfirmationModal({{ $provider->user->id }})" class="text-base h-8 w-38 rounded-md bg-green-500 hover:bg-green-700 text-white">
                                                             {{ __('Direct Hire') }}
                                                         </button>
                                                     </div>
@@ -115,8 +114,8 @@
             <h2 class="text-xl font-bold mb-4">Confirm Direct Hire</h2>
             <p>Are you sure you want to hire this provider?</p>
             <div class="flex justify-end mt-4">
-                <button onclick="hideConfirmationModal()" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
-                <button onclick="confirmHire()" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
+                <button type="button" onclick="hideConfirmationModal()" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                <button type="button" onclick="confirmHire()" class="bg-green-500 text-white px-4 py-2 rounded">Confirm</button>
             </div>
         </div>
     </div>
@@ -131,11 +130,10 @@
             document.getElementById('confirmationModal').classList.add('hidden');
         }
 
-        function confirmHire() {
-            var providerId = document.getElementById('confirmationModal').dataset.providerId;
-            // Redirect or perform an action with the providerId
-            console.log("Confirmed hire for provider ID:", providerId);
-            hideConfirmationModal();
-        }
+   function confirmHire() {
+    var providerId = document.getElementById('confirmationModal').dataset.providerId;
+    window.location.href = '/direct-hire/create/' + providerId;
+}
+
     </script>
 </x-seekerhome>
