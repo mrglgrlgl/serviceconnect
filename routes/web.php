@@ -256,6 +256,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [ServiceRequestController::class, 'index'])->name('dashboard');
     // Other authenticated routes...
 });
+Route::post('/dashboard', [ServiceRequestController::class, 'checkBidAmount'])->name('dashboard.checkBidAmount');
 // Resource routes for service requests
 
 Route::middleware('auth')->group(function () {
