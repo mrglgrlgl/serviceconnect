@@ -3,10 +3,10 @@
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                 <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                    {{ __('Open Requests') }}
+                    {{ __('My Requests') }}
                 </x-nav-link>
                 <x-nav-link href="{{ route('analytics') }}" :active="request()->routeIs('analytics')">
-                    {{ __('My Requests') }}
+                    {{ __('Analytics') }}
                 </x-nav-link>
             </div>
         </div>
@@ -54,8 +54,14 @@
                                     <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''" />
                                 </div>
                                 <div class="text-sm text-custom-light-text md:mt-2">
-                                    {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
-                                    - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                            @if (\Carbon\Carbon::parse($serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($serviceRequest->end_date)))
+                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }},
+                                            {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
+                                            {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                            - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                        @endif
                                 </div>
                             </div>
 
@@ -92,7 +98,7 @@
                                         </div>
                                     @endif
                                     <div class="flex items-center justify-end w-full">
-                                        @if ($serviceRequest->hasAcceptedBid() && $serviceRequest->status !== 'completed')
+                                        @if ($serviceRequest->hasAcceptedBid())
                                             <div class="flex items-center text-green-500 font-semibold">
                                                 <span class="material-icons">
                                                     check_circle
@@ -102,9 +108,7 @@
                                             <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
                                         @else
                                             <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
-                                            @if ($serviceRequest->status === 'open')
-                                                <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
-                                            @endif
+                                            <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                                         @endif
 
                                         @if ($serviceRequest->status == 'completed')
@@ -115,9 +119,9 @@
                                                     ->isNotEmpty();
                                             @endphp
                                             @if ($reportExists)
-                                                <span class="text-red-500 ml-4">Report submitted</span>
+                                                <span class="text-gray-500 ml-4">Report submitted</span>
                                             @else
-                                                <a href="#" class="text-red-500 font-semibold underline ml-3" @click.prevent="openReportModal({{ $serviceRequest->id }})">Report</a>
+                                                <a href="#" class="text-red-500 underline ml-3" @click.prevent="openReportModal({{ $serviceRequest->id }})">Report</a>
                                             @endif
                                         @endif
 
@@ -210,7 +214,7 @@
                 <div class="bg-white p-4">
                     <div class="flex justify-between items-center pb-2">
                         <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
-                        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="closeReportModal">
+                        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showReportModal = false">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -248,16 +252,7 @@
                 showReportModal: false,
                 serviceRequestId: null,
                 bids: [],
-                profile: {
-                    providerDetails: {
-                        serviceCategory: '',
-                        years_of_experience: '',
-                        description: '',
-                        have_tools: false,
-                        work_email: '',
-                        contact_number: ''
-                    }
-                },
+                profile: {},
                 selectedRequestId: null,
 
                 async fetchBids(requestId) {
@@ -322,6 +317,7 @@
                 },
 
                 openReportModal(serviceRequestId) {
+                    console.log("Opening report modal for service request: " + serviceRequestId); // Debugging line
                     this.serviceRequestId = serviceRequestId;
                     this.showReportModal = true;
                 },

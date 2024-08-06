@@ -10,7 +10,7 @@
                 <div class="p-4 mb-4 bg-white rounded-lg shadow-md">
                     <h3 class="text-lg font-semibold">Report ID: {{ $report->id }}</h3>
                     <p><strong>Service Request ID:</strong> {{ $report->service_request_id }}</p>
-                    <p><strong>Reported By:</strong> {{ $report->reporter->name }}</p>
+                    <p><strong>Reported By:</strong> {{ $report->reportedBy->name }}</p>
                     <p><strong>Reported User:</strong> {{ $report->reportedUser->name }}</p>
                     <p><strong>Issue Type:</strong> {{ ucfirst(str_replace('_', ' ', $report->issue_type)) }}</p>
                     <p><strong>Details:</strong> {{ $report->details }}</p>

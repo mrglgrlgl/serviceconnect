@@ -29,6 +29,7 @@ class ServiceRequest extends Model
         'status',
         'user_id',
         'provider_id',
+        'is_direct_hire',
     ];
 
     public function user()

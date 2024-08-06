@@ -106,6 +106,7 @@
                 Certifications
             </h2>
             <div>
+                @if(isset($ceritfication))
                 @foreach ($certifications as $certification)
                     <div class="border border-gray-300 p-4 rounded-md flex justify-between">
                         <div>
@@ -118,6 +119,9 @@
                         @endif
                     </div>
                 @endforeach
+                @else
+                <div class="text-gray-500"> User has no certifications </div>
+                @endif
             </div>
         </div>
 

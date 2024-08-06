@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->hasMany(ServiceRequest::class);
     }
 
+    public function completedServiceRequests()
+    {
+        return $this->hasMany(ServiceRequest::class, 'provider_id', 'id')->where('status', 'completed');
+    }
+
     public static function getByRole(int $roleNumber)
     {
         return static::where('role', $roleNumber)->get();
@@ -72,5 +77,9 @@ class User extends Authenticatable
     public function certifications()
     {
         return $this->hasOne(Certification::class,'provider_id', 'id'); // Adjust based on your actual class and relationship
+    }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rated_for_id', 'id');
     }
 }

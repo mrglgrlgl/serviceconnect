@@ -1,7 +1,6 @@
 <x-app-layout>
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
-            <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full mb-6">
                 <div
                     class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -83,6 +82,13 @@
                                         @endif
                                         </div>
                                     </div>
+
+                                    @if ($serviceRequest->status !== 'in_progress' && isset($conflictingRequests[$serviceRequest->id]))
+                                    <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                                        Warning: This service request may have a conflict with your current in-progress tasks.
+                                    </div>
+                                    @endif
+
                                     <div class="flex items-start px-8">
                                         <div class="flex-1">
                                             <div class="flex text-gray-700 items-center space-x-4">
@@ -92,7 +98,11 @@
                                                 </div>
                                                 <div class="flex items-center p-2">
                                                     <span class="material-symbols-outlined text-gray-500">request_quote</span>
-                                                    Price Range: {{ $serviceRequest->min_price }} - {{ $serviceRequest->max_price }}
+                                                    Price: 
+                                                    @if ($serviceRequest->min_price)
+                                                        {{ $serviceRequest->min_price }} -
+                                                    @endif
+                                                    {{ $serviceRequest->max_price }}
                                                 </div>
                                                 <div class="flex items-center p-2">
                                                     Estimated Duration: {{ $serviceRequest->estimated_duration }} {{ 'hours'}}
@@ -169,7 +179,7 @@
                     @endif
                 @endif
             @endif
-            
+    
         </div>
     </div>
 

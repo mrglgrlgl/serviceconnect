@@ -18,59 +18,63 @@ class ServiceRequestController extends Controller
 {
 
     public function retrieveByUserRole()
-{
-    $user = Auth::user();
-
-    // Ensure the user is authenticated and has a role
-    if (!$user) {
-        return redirect()->route('login');
-    }
-
-    // Determine if the user is a provider
-    if ($user->role == 2) {
-        $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
-        $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
-
-        if ($providerCategory) {
-            $serviceRequests = ServiceRequest::whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
-                ->with('images') // Eager load images
-                ->get();
-        } else {
-            $serviceRequests = collect(); // Empty collection if no category
+    {
+        $user = Auth::user();
+    
+        // Ensure the user is authenticated and has a role
+        if (!$user) {
+            return redirect()->route('login');
         }
-
-        // Get the count of certifications
-        $certificationsCount = $user->certifications()->count();
-
-        // Find in-progress requests
-        $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
-            ->where('status', 'in_progress')
+    
+        // Determine if the user is a provider
+        if ($user->role == 2) {
+            $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+            $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
+    
+            // Retrieve service requests for the provider's category and direct hire requests for the provider
+            $serviceRequests = ServiceRequest::where(function ($query) use ($providerCategory, $user) {
+                $query->whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
+                      ->orWhere(function ($query) use ($user) {
+                          $query->where('provider_id', $user->id)
+                                ->where('is_direct_hire', true);
+                      });
+            })
+            ->with('images') // Eager load images
             ->get();
-
-        $conflictingRequests = [];
-
-        // Check for conflicts
-        foreach ($serviceRequests as $serviceRequest) {
-            foreach ($inProgressRequests as $inProgressRequest) {
-                if ($serviceRequest->id !== $inProgressRequest->id &&
-                    (
-                        ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
-                        ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
-                    )) {
-                    $conflictingRequests[$serviceRequest->id] = true;
-                    break;
+    
+            // Get the count of certifications
+            $certificationsCount = $user->certifications()->count();
+    
+            // Find in-progress requests
+            $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
+                ->where('status', 'in_progress')
+                ->get();
+    
+            $conflictingRequests = [];
+    
+            // Check for conflicts
+            foreach ($serviceRequests as $serviceRequest) {
+                foreach ($inProgressRequests as $inProgressRequest) {
+                    if ($serviceRequest->id !== $inProgressRequest->id &&
+                        (
+                            ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
+                            ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
+                        )) {
+                        $conflictingRequests[$serviceRequest->id] = true;
+                        break;
+                    }
                 }
             }
+        } else {
+            $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
+            $certificationsCount = 0; // Default value or handle accordingly
+            $conflictingRequests = []; // Default value or handle accordingly
         }
-    } else {
-        $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
-        $certificationsCount = 0; // Default value or handle accordingly
-        $conflictingRequests = []; // Default value or handle accordingly
+    
+        // Pass data to the view
+        return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests'));
     }
-
-    // Pass data to the view
-    return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests'));
-}
+    
 
     
     public function checkForConflict($serviceRequest, $userId)
@@ -120,6 +124,7 @@ public function create()
     {
         // dd($request->file('attach_media'));
         // dd($request->all());
+        // Log::info('ServiceRequestController@store: Request data', $request->all());
 
         // Validate the incoming request data
         $validatedData = $request->validate([
@@ -151,7 +156,8 @@ public function create()
       
         ]);
         // dd($validatedData);  // Dump and Die
-   
+
+
                // Create new service request instance
                $serviceRequest = new ServiceRequest();
                $serviceRequest->category = $validatedData['category'];
@@ -165,7 +171,7 @@ public function create()
                $serviceRequest->skill_tags = $validatedData['skill_tags'];
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
-               
+               $serviceRequest->is_direct_hire = false;
                $serviceRequest->min_price = $validatedData['min_price'];
                $serviceRequest->max_price = $validatedData['max_price'];
                $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
@@ -182,6 +188,7 @@ public function create()
             //    $fileCount = count($request->file('attach_media', []));
             //    dd($fileCount);
                // Handling the file uploads
+               Log::info('ServiceRequest model data:', $serviceRequest->toArray());
 
                $serviceRequest->save();
 
