@@ -97,7 +97,7 @@
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-lg border p-6 mt-6">
+                            {{-- <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">
                                     <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
                                 </div>
@@ -105,7 +105,50 @@
                                     <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
                                     <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
                                 </div>
-                            </div>
+                            </div> --}}
+
+                            <div class="bg-white rounded-lg border p-6 mt-6">
+    <div class="border-b pb-4 mb-4">
+        <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
+    </div>
+    <div class="text-gray-800">
+        <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+    </div>
+    <button onclick="toggleEditForm()" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded mt-4">Edit Bid</button>
+
+    <!-- Edit Form -->
+    <div id="editForm" class="hidden mt-4">
+        <form action="{{ route('bids.update', $channel->bid->id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <div class="mb-4">
+                <label for="bid_amount" class="block text-gray-700">Bid Amount:</label>
+                <input type="number" name="bid_amount" id="bid_amount" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $channel->bid->bid_amount }}" required>
+            </div>
+            <div class="mb-4">
+                <label for="bid_description" class="block text-gray-700">Bid Description:</label>
+                <textarea name="bid_description" id="bid_description" rows="4" class="w-full p-2 border border-gray-300 rounded-md" required>{{ $channel->bid->bid_description }}</textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" onclick="toggleEditForm()" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                <button type="submit" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleEditForm() {
+        var editForm = document.getElementById('editForm');
+        if (editForm.classList.contains('hidden')) {
+            editForm.classList.remove('hidden');
+        } else {
+            editForm.classList.add('hidden');
+        }
+    }
+</script>
+
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
                                 <div class="border-b pb-4 mb-4">

@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AddressController;
-use App\Http\Controllers\Auth\BecomeProviderController;
+// use App\Http\Controllers\Auth\BecomeProviderController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\ServiceRequestController;
@@ -65,35 +65,34 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating');
 Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
 
+// Outside the auth middleware group
 Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
-
-
 Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
-Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+// Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
 
 Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
 
-Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
-Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
+// Removed duplicate definitions
+// Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
+// Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
 
-// web.php
 Route::middleware(['auth'])->group(function () {
+    Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
+
+
     Route::post('/channel/{channel}/set-arrived', [App\Http\Controllers\ChannelController::class, 'setArrived'])->name('channel.setArrived');
     Route::post('/channel/{channel}/confirm-arrival', [App\Http\Controllers\ChannelController::class, 'confirmArrival'])->name('channel.confirmArrival');
-    
     Route::post('/channel/{channel}/start-task', [App\Http\Controllers\ChannelController::class, 'startTask'])->name('channel.startTask');
     Route::post('/channel/{channel}/complete-task', [App\Http\Controllers\ChannelController::class, 'completeTask'])->name('channel.completeTask');
     Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
     Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
-    Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
-    Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
+    
     Route::post('/channel/{channel}/confirm-task-start', [App\Http\Controllers\ChannelController::class, 'confirmTaskStart'])->name('channel.confirmTaskStart');
-
     Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
     Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
     Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
-
 });
+
 // Route::post('/channel/{channel}/inform-seeker', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
 
 
@@ -180,12 +179,12 @@ Route::middleware('auth')->group(function () {
     // Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
 
     // Route::get('/profile/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('user.profile.destroy');
 
-    Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
-    Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
+    // Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
+    // Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
 
 // Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
 // Route::post('/becomeprovider', [BecomeProviderController::class, 'store'])->name('becomeprovider.store');
@@ -219,9 +218,9 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
     // Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
 // Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
 //become provider
-Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');
-Route::post('/save-step1', [BecomeProviderController::class, 'saveStep1'])->name('save-step1');
-Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->name('bp_step2');
+// Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');
+// Route::post('/save-step1', [BecomeProviderController::class, 'saveStep1'])->name('save-step1');
+// Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->name('bp_step2');
 
 // Route::post('/save-step2', [BecomeProviderController::class, 'saveStep2'])->name('save-step2');
 // Route::get('/bp_step3', [BecomeProviderController::class, 'showStep3Form'])->name('bp_step3');
@@ -307,14 +306,13 @@ Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('
 
 // Route for confirming a bid
 // Route for seekers
-Route::get('/seeker-channel/{serviceRequest}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
+// Route::get('/seeker-channel/{serviceRequest}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
 
 // Route for providers
-Route::get('/provider-channel', [ChannelController::class, 'providerChannel'])->name('channel.provider');
 
-Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+// Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
-Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+// Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 
 }); 
 Route::get('/profile/complete', [BidController::class, 'complete'])->name('profile.complete');

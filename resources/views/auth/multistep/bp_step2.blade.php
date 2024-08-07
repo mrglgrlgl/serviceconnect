@@ -1,4 +1,4 @@
-<x-app-layout>
+{{-- <x-app-layout>
     <div class="md:mt-6 md:px-12 md:py-12 px-4 py-6 bg-white shadow-md sm:rounded-lg md:w-5/12 mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue pb-6">
@@ -105,4 +105,4 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-</x-app-layout>
+</x-app-layout> --}}

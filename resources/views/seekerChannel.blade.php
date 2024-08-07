@@ -95,21 +95,18 @@
                                                 <span class="material-icons mr-2 text-gray-400">call</span>
                                                 <span>{{ optional($channel->provider->providerDetails)->contact_number }}</span>
                                             </div>
-                                            <div class="mt-4 pl-4">
-                                                <div class="font-semibold">Availability:</div>
-                                                <div class="flex flex-wrap space-x-2 mt-2">
-                                                    <div>
-                                                        <x-availability :providerDetails="$channel->provider->providerDetails" />
-                                                    </div>
-                                                    <div class="mt-4 pl-4">
-                                                        <span>{{ optional($channel->provider->providerDetails)->description }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                      
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                              <div class="border-b pb-4 mb-4">
+        <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
+    </div>
+    <div class="text-gray-800">
+        <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+    </div>
                         </div>
 
                         <div class="bg-white rounded-lg shadow-md p-6 mt-6">
