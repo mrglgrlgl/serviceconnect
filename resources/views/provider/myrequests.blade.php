@@ -17,7 +17,7 @@
                 <div class="border-t w-full text-center border-custom-cat-border"></div>
             </div>
 
-            <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all' }">
+            <div class="pt-6 pb-6 bg-gray-100" x-data="{ filter: 'all', showModal: false, showEditModal: false, selectedServiceRequestId: null, maxBudget: '', currentBidId: null, currentBidAmount: '', currentBidDescription: '' }">
                 <div class="w-full mx-auto flex justify-end pb-4">
                     <div class="relative inline-block">
                         <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
@@ -39,14 +39,6 @@
                     <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                         Add your certifications if there are any
                         <a href="{{ route('certifications') }}" class="text-blue-500">Upload</a>
-                    </div>
-                    <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
-                        Upload Government ID for final verification
-                        <a href="{{ route('philid.index') }}" class="text-blue-500">Upload Government ID</a>
-                    </div>
-                @elseif ($serviceRequests->isEmpty() && Auth::user()->philID->status === 'Pending')
-                    <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
-                        You must first be verified before you can receive service requests.
                     </div>
                 @elseif ($serviceRequests->isEmpty())
                     <div class="bg-blue-100 text-blue-700 p-4 rounded mb-6">
@@ -135,7 +127,7 @@
                                         <span class="text-gray-500 font-semibold">Bid Sent</span>
                                         <a href="#"
                                             class="border-2 border-custom-light-blue text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2"
-                                            @click.prevent="showModal = true; selectedServiceRequestId = {{ $serviceRequest->id }}; maxBudget = '{{ $serviceRequest->max_price }}'">
+                                            @click.prevent="showEditModal = true; selectedServiceRequestId = {{ $serviceRequest->id }}; currentBidId = {{ $userBid->id }}; currentBidAmount = {{ $userBid->bid_amount }}; currentBidDescription = '{{ $userBid->bid_description }}'">
                                             <span class="material-symbols-outlined">edit</span>
                                             <span>Edit Bid</span>
                                         </a>
@@ -157,8 +149,8 @@
             </div>
         </div>
 
-        <div x-data="{ showModal: false, selectedServiceRequestId: null, maxBudget: '' }">
-            <!-- Bid Modal -->
+        <div x-data="{ showModal: false, showEditModal: false, selectedServiceRequestId: null, maxBudget: '', currentBidId: null, currentBidAmount: '', currentBidDescription: '' }">
+            <!-- Place Bid Modal -->
             <div x-show="showModal" x-cloak
                 class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
                 @click.away="showModal = false">
@@ -200,6 +192,46 @@
                             <div class="flex justify-center">
                                 <button type="submit"
                                     class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Bid</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Bid Modal -->
+            <div x-show="showEditModal" x-cloak
+                class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50"
+                @click.away="showEditModal = false">
+                <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                    <div class="bg-white p-4">
+                        <div class="flex justify-between items-center pb-2">
+                            <h5 class="text-lg font-semibold text-custom-header">Edit Bid</h5>
+                            <button type="button" class="text-gray-400 hover:text-gray-600"
+                                aria-label="Close" @click="showEditModal = false">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('bids.update', ['id' => 'currentBidId']) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="service_request_id" :value="selectedServiceRequestId">
+                            <input type="hidden" name="id" :value="currentBidId">
+                            <div class="mb-4">
+                                <label for="bid_amount_edit" class="block text-sm font-medium text-gray-700">Bid Amount</label>
+                                <x-text-input type="number" step="0.01"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    id="bid_amount_edit" name="bid_amount" x-model="currentBidAmount" required />
+                            </div>
+                            <div class="mb-4">
+                                <label for="bid_description_edit" class="block text-sm font-medium text-gray-700">Work Plan</label>
+                                <textarea
+                                    class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
+                                    id="bid_description_edit" name="bid_description" x-model="currentBidDescription" required></textarea>
+                            </div>
+
+                            <div class="flex justify-center">
+                                <button type="submit"
+                                    class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Update Bid</button>
                             </div>
                         </form>
                     </div>

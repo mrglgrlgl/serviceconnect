@@ -63,7 +63,7 @@
     </a>
 </div>
 
-        <h1>All PhilID Records</h1>
+        {{-- <h1>All PhilID Records</h1>
 
         @if(isset($philIDs) && $philIDs->isNotEmpty())
             @foreach ($philIDs as $philID)
@@ -147,5 +147,5 @@
                 overlay.style.display = 'none';
             });
         });
-    </script>
+    </script> --}}
 </x-app-layout>
