@@ -323,10 +323,14 @@ Route::get('/profile/view', [ProfileController::class, 'profile'])->name('profil
 
 
 // analytics
-Route::get('/analytics', function () {
-    return view('analytics');
-})->middleware(['auth', 'verified','normal'])->name('analytics');
-Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+Route::get('/analytics', [AnalyticsController::class, 'seekeranalytics'])
+    ->middleware(['auth', 'verified'])
+    ->name('analytics');
+
+// Define route for provider analytics with appropriate middleware
+Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])
+    ->middleware(['auth', 'verified'])
+    ->name('provider.analytics');
 
 
 require __DIR__.'/auth.php';
