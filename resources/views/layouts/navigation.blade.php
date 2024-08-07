@@ -11,13 +11,11 @@
         .nav-link,
         .nav-link-dropdown {
             padding: 0.75rem 1rem;
-            /* Adjusted padding to align borders */
             display: inline-flex;
             align-items: center;
             text-decoration: none;
             color: #333;
             border-bottom: 4px solid transparent;
-            /* Adjusted to 4px for clearer visibility */
             transition: border-color 0.3s ease, color 0.3s ease;
         }
 
@@ -25,12 +23,10 @@
         .nav-link-dropdown:hover {
             color: #00aaff;
             border-bottom: 4px solid #00aaff;
-            /* Ensure hover effect matches active state */
         }
 
         .nav-link-active {
             border-bottom: 4px solid #00aaff;
-            /* Active state border */
             color: #00aaff;
         }
 
@@ -158,7 +154,7 @@
                             class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                             role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                             <div class="py-1" role="none">
-                                <a href="{{ route('profile.view') }}"
+                                <a href="{{ $user->role == 3 ? route('seekerprofile') : route('profile.view') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
                                     tabindex="-1" id="menu-item-0">Profile</a>
                                     
