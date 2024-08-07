@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ProviderDetail;
 use App\Models\User;
+use App\Models\Rating;
 
 class SearchController extends Controller
 {
@@ -36,19 +37,30 @@ class SearchController extends Controller
             return $provider->user->ratings_avg_quality_of_service ?? 0;
         });
 
-        return view('home', compact('providers'));
+            // Fetch ratings for each provider
+    $providerRatings = [];
+    foreach ($providers as $provider) {
+        // $user = User::findOrFail($providerId);
+        $ratings = Rating::where('rated_for_id', $provider->user->id)->get();
+        $providerRatings[$provider->user->id] = $ratings;
     }
 
-    public function profile($id)
-    {
-        $provider = User::with('providerDetails')->findOrFail($id);
-
-        return response()->json([
-            'name' => $provider->name,
-            'serviceCategory' => $provider->providerDetails->serviceCategory,
-            'email' => $provider->email,
-            'contact_number' => $provider->providerDetails->contact_number,
-            'description' => $provider->providerDetails->description,
-        ]);
+        return view('home', compact('providers', 'ratings'));
     }
+
+    // public function profile($providerId)
+    // {
+    //     $provider = User::with('providerDetails')->findOrFail($id);
+    //     $ratings = Rating::where('rated_for_id', $providerId)->with('user')->get();
+            
+        
+    //     return response()->json([
+    //         'name' => $provider->name,
+    //         'serviceCategory' => $provider->providerDetails->serviceCategory,
+    //         'email' => $provider->email,
+    //         'contact_number' => $provider->providerDetails->contact_number,
+    //         'description' => $provider->providerDetails->description,
+    //         $ratings
+    //     ]);
+    // }
 }

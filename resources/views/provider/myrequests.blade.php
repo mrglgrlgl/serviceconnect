@@ -26,6 +26,7 @@
                             <option value="in_progress">In Progress</option>
                             <option value="completed">Completed</option>
                             <option value="direct_hire">Direct Hire Requests</option>
+                            <option value="open_hire">Open Direct Hire Requests</option>
                         </select>
                         <span class="material-icons absolute left-3 top-2.5 text-gray-400">filter_list</span>
                     </div>
@@ -59,12 +60,21 @@
                             $reportExists = $serviceRequest->reports->where('reported_by', auth()->id())->isNotEmpty();
                         @endphp
 
+                        {{-- Debugging Output --}}
+                        <div>
+                            <p>Service Request ID: {{ $serviceRequest->id }}</p>
+                            <p>is_direct_hire: {{ $serviceRequest->is_direct_hire }}</p>
+                            <p>Status: {{ $serviceRequest->status }}</p>
+                        </div>
+
                         <div class="p-4 border border-gray-300 bg-white shadow-sm rounded-lg md:mb-4"
                              x-show="filter === 'all' 
                                 || (filter === 'sent_bids' && {{ $userBid ? 'true' : 'false' }} && '{{ $serviceRequest->status }}' === 'open')
                                 || (filter === 'in_progress' && '{{ $serviceRequest->status }}' === 'in_progress')
-                                || (filter === 'completed' && '{{ $serviceRequest->status }}' === 'completed')
-                                || (filter === 'direct_hire' && {{ $serviceRequest->is_direct_hire ? 'true' : 'false' }})">
+
+                                || (filter === 'direct_hire' && {{ $serviceRequest->is_direct_hire ? 'true' : 'false' }})
+                                || (filter === 'open_direct_hire' && '{{ $serviceRequest->status }}' === 'open' && {{ $serviceRequest->is_direct_hire ? 'true' : 'false' }})
+                                || (filter === 'open_hire' && '{{ $serviceRequest->status }}' === 'in_progress' && {{ $serviceRequest->is_direct_hire ? 'true' : 'false' }})">
                             
                             <div class="flex justify-between items-center mb-4 {{ $serviceRequest->is_direct_hire ? 'bg-yellow-100' : '' }}">
                                 <div class="flex items-center space-x-2">

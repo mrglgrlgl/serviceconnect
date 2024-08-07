@@ -15,33 +15,6 @@ use Illuminate\Support\Facades\Log;
 
 class ChannelController extends Controller
 {
-    // public function seekerChannel($serviceRequestId)
-    // {
-    //     $user = Auth::user();
-
-    //     if ($user->role != 3) {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-
-    //     try {
-    //         $channel = Channel::where('service_request_id', $serviceRequestId)
-    //             ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
-    //             ->firstOrFail();
-
-    //         $ratings = Rating::where('provider_id', $channel->provider_id)->get();
-    //         $averageRating = $ratings->count() > 0
-    //             ? $ratings->avg(function ($rating) {
-    //                 return ($rating->quality_of_service + $rating->communication + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money) / 5;
-    //             })
-    //             : null;
-
-    //         return view('seekerChannel', compact('channel', 'averageRating'));
-
-    //     } catch (\Exception $e) {
-    //         Log::error('Error retrieving channel or calculating average rating: ' . $e->getMessage());
-    //         abort(404, 'Channel not found.');
-    //     }
-    // }
 
     public function seekerChannel($serviceRequestId)
     {
@@ -58,16 +31,16 @@ class ChannelController extends Controller
                 ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
                 ->firstOrFail();
 
+            $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
 
-                $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
-
+            $ratings = Rating::where('rated_for_id', $user->id)->get(); 
 
         } catch (\Exception $e) {
             Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
 
-        return view('seekerChannel', compact('channel','serviceRequestImages'));
+        return view('seekerChannel', compact('channel','serviceRequestImages', 'ratings'));
     }
 
     public function providerChannel($serviceRequestId)

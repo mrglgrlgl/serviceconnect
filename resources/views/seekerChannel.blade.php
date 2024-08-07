@@ -95,53 +95,51 @@
                                                 <span class="material-icons mr-2 text-gray-400">call</span>
                                                 <span>{{ optional($channel->provider->providerDetails)->contact_number }}</span>
                                             </div>
-                                            <div class="mt-4 pl-4">
-                                                <div class="font-semibold">Availability:</div>
-                                                <div class="flex flex-wrap space-x-2 mt-2">
-                                                    <div>
-                                                        <x-availability :providerDetails="$channel->provider->providerDetails" />
-                                                    </div>
-                                                    <div class="mt-4 pl-4">
-                                                        <span>{{ optional($channel->provider->providerDetails)->description }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                            <div class="border-b pb-4 mb-4">
-                                <h3 class="text-2xl font-semibold">Task Actions</h3>
+                            <div class="bg-white rounded-lg border p-6 mt-6">
+                                <div class="border-b pb-4 mb-4">
+                                    <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
+                                </div>
+                                <div class="text-gray-800">
+                                    <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+                                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+                                </div>
                             </div>
-                            <div class="space-y-4">
-                                @if ($channel->is_on_the_way == 'pending')
-                                    <button onclick="confirmArrival()"
-                                        class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Confirm
-                                        Provider Arrival</button>
-                                @elseif ($channel->is_task_started === 'true')
-                                    <p class="text-gray-500">Task is currently in progress. Wait for the provider to
-                                        send a task completion notification.</p>
-                                @elseif ($channel->is_arrived === 'true')
-                                    <p class="text-gray-500">Waiting for provider to start the task.</p>
-                                @elseif ($channel->is_task_started === 'true')
-                                    @if ($channel->is_task_completed === 'pending')
-                                        <p class="text-green-500">Waiting for seeker to confirm task completion</p>
-                                    @elseif ($channel->is_task_completed === 'true')
-                                        <p class="text-green-500">Task is completed.</p>
+    
+                            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+                                <div class="border-b pb-4 mb-4">
+                                    <h3 class="text-2xl font-semibold">Task Actions</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    @if ($channel->is_on_the_way == 'pending')
+                                        <button onclick="confirmArrival()"
+                                            class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Confirm
+                                            Provider Arrival</button>
+                                    @elseif ($channel->is_task_started === 'true')
+                                        <p class="text-gray-500">Task is currently in progress. Wait for the provider to
+                                            send a task completion notification.</p>
+                                    @elseif ($channel->is_arrived === 'true')
+                                        <p class="text-gray-500">Waiting for provider to start the task.</p>
+                                    @elseif ($channel->is_task_started === 'true')
+                                        @if ($channel->is_task_completed === 'pending')
+                                            <p class="text-green-500">Waiting for seeker to confirm task completion</p>
+                                        @elseif ($channel->is_task_completed === 'true')
+                                            <p class="text-green-500">Task is completed.</p>
+                                        @else
+                                            <button onclick="completeTask()"
+                                                class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete
+                                                Task</button>
+                                        @endif
                                     @else
-                                        <button onclick="completeTask()"
-                                            class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete
-                                            Task</button>
+                                        <p class="text-gray-500">Waiting for the provider to arrive.</p>
                                     @endif
-                                @else
-                                    <p class="text-gray-500">Waiting for the provider to arrive.</p>
-                                @endif
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

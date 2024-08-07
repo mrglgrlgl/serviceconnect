@@ -41,7 +41,7 @@
                         @php
                         $totalRatings = $ratings->count();
                         $sumRatings = $ratings->sum(function ($rating) {
-                            return ($rating->quality_of_service + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money + $rating->communication) / 5;
+                            return ($rating->quality_of_service + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money + $rating->communication) / 9;
                         });
             
                         $overallRating = $totalRatings > 0 ? $sumRatings / $totalRatings : 0;
@@ -72,6 +72,7 @@
                         {{ $completedJobsCount }} jobs completed
                     </div>
                 </div>
+
             </div>
         </div>
 

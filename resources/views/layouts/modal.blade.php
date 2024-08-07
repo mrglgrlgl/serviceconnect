@@ -238,7 +238,7 @@
         } else {
             minPriceContainer.style.display = 'block';
             maxPriceLabel.innerText = 'Maximum Price';
-            maxPriceInput.placeholder = 'Enter the maximum price';
+            maxPriceInput.placeholder = '';
         }
     });
 

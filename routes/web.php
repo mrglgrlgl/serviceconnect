@@ -319,6 +319,7 @@ Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsR
 }); 
 Route::get('/profile/complete', [BidController::class, 'complete'])->name('profile.complete');
 Route::get('/profile/view', [ProfileController::class, 'profile'])->name('profile.view')->middleware('auth');
+// Ratings
 
 
 // analytics
