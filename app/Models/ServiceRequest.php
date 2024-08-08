@@ -16,7 +16,6 @@ class ServiceRequest extends Model
         'end_date',
         'start_time',
         'end_time',
-        'skill_tags',
         'provider_gender',
         'job_type',
         'min_price',

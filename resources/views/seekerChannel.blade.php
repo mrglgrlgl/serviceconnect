@@ -79,13 +79,20 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->provider->name }}
-                                                <span class="ml-2 text-yellow-500">
+                                                {{-- <span class="ml-2 text-yellow-500">
                                                     @if (isset($averageRating))
                                                         {{ number_format($averageRating, 2) }} / 5
                                                     @else
                                                         No ratings yet
                                                     @endif
-                                                </span>
+                                                </span> --}}
+                                                <div>
+                                                <a href="{{ url('/view-profile/' . $channel->provider_id) }}" class="p-4 h-8 w-38 rounded-md bg-white hover:text-custom-light-blue text-custom-lightest-blue mr-2 text-base underline">
+                                                    {{ __('View Profile') }}
+                                                </a>
+                                            </div>
+
+
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -106,7 +113,7 @@
                                 </div>
                                 <div class="text-gray-800">
                                     <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+                                    <p><strong>Work Plan:</strong> {{ $channel->bid->bid_description }}</p>
                                 </div>
                             </div>
     

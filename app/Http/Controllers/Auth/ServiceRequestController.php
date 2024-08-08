@@ -136,14 +136,12 @@ public function create()
             'end_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
-            'skill_tags' => 'required|string|max:255',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
             'price_type' => 'required|in:fixed,range',
             // 'fixed_price' => 'nullable|numeric|min:0',
             // 'min_price' => 'required|numeric|min:0',
             // 'max_price' => 'required|numeric|min:0|gte:min_price',
-            'price_type' => 'required|in:fixed,range',
             'max_price' => 'required|numeric|min:0', // Use the same field for both fixed and max price
             'min_price' => 'nullable|numeric|min:0', // Ensure min_price is not required when nulls set
     'estimated_duration' => 'required|integer|min:0',
@@ -168,7 +166,7 @@ public function create()
                $serviceRequest->end_date = $validatedData['end_date'];
                $serviceRequest->start_time = $validatedData['start_time'];
                $serviceRequest->end_time = $validatedData['end_time'];
-               $serviceRequest->skill_tags = $validatedData['skill_tags'];
+
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
                $serviceRequest->is_direct_hire = false;
@@ -178,13 +176,9 @@ public function create()
                $serviceRequest->status = 'open'; // Default status
                $serviceRequest->user_id = auth()->id();
                $serviceRequest->agreed_to_terms = $validatedData['agreed_to_terms'];  // Include this field
-               if ($validatedData['price_type'] === 'fixed') {
-                $serviceRequest->min_price = null;
-                $serviceRequest->max_price = $validatedData['max_price'];
-            } else {
                 $serviceRequest->min_price = $validatedData['min_price'];
                 $serviceRequest->max_price = $validatedData['max_price'];
-            }
+            
             //    $fileCount = count($request->file('attach_media', []));
             //    dd($fileCount);
                // Handling the file uploads
@@ -238,7 +232,6 @@ public function update(Request $request, $id)
         'end_date' => 'required|date',
         'start_time' => 'required|date_format:H:i',
         'end_time' => 'required|date_format:H:i',
-        'skill_tags' => 'required|string|max:255',
         'provider_gender' => 'nullable|in:male,female',
         'job_type' => 'required|in:project_based,hourly_rate',
         'hourly_rate' => 'required|numeric|min:0',
@@ -276,7 +269,6 @@ public function update(Request $request, $id)
 
     // $serviceRequest->start_time = $request->start_time;
     // $serviceRequest->end_time = $request->end_time;
-    $serviceRequest->skill_tags = $validatedData['skill_tags'];
     $serviceRequest->provider_gender = $validatedData['provider_gender'];
     $serviceRequest->job_type = $validatedData['job_type'];
     $serviceRequest->hourly_rate = $validatedData['hourly_rate'];

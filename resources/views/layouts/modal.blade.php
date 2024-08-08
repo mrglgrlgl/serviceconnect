@@ -34,12 +34,13 @@
                             id="description" name="description" rows="4" required></textarea>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-8">
                         <label for="location" class="block text-base text-custom-default-text">Location</label>
                         <x-text-input type="text" id="location" name="location" required
                             class="mt-1 block w-full" />
                     </div>
 
+                    <div class="text-xl font-semibold text-gray-800">Schedule of service</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
                         <div>
                             <label for="start_date" class="block text-base text-custom-default-text">Start Date</label>
@@ -53,7 +54,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4 mb-8">
                         <div>
                             <label for="start_time" class="form-label">Start Time</label>
                             <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="start_time"
@@ -66,11 +67,11 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="skill_tags" class="form-label">Skill Tags</label>
                         <x-text-input type="text" class="mt-1 block w-full sm:text-sm rounded-md" id="skill_tags"
                             name="skill_tags" required />
-                    </div>
+                    </div> --}}
 
                     <div class="mb-3">
                         <label for="provider_gender" class="form-label">Preferred Provider Gender</label>
@@ -83,8 +84,8 @@
                     <div class="mb-3">
                         <label for="job_type" class="form-label">Job Type</label>
                         <x-selection class="form-select" id="job_type" name="job_type">
-                            <option value="project_based">Project Based</option>
                             <option value="hourly_rate">Hourly Rate</option>
+                            <option value="project_based">Project Based</option>
                         </x-selection>
                     </div>
 
@@ -100,14 +101,15 @@
                         </div>
                     </div> --}}
 
-       <div class="mb-3">
+       {{-- <div>
+        <div class="text-lg pt-4 text-gray-800 font-semibold"> Price Range (hourly rate)</div>
     <label for="price_type" class="form-label">Price Type</label>
     <x-selection class="form-select" id="price_type" name="price_type">
-        <option value="fixed">Fixed Price</option>
         <option value="range">Price Range</option>
     </x-selection>
-</div>
+</div> --}}
 
+<div class="text-xl mt-8 text-gray-800"><strong>Price Range</strong></div>
 <div class="mb-3" id="minPriceContainer">
     <label for="min_price" class="form-label">Minimum Price</label>
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" />
@@ -117,9 +119,7 @@
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" />
 </div>
 
-
-
-                    <div class="mb-3">
+                    <div class="mb-8">
                         <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
                         <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md"
                             id="estimated_duration" name="estimated_duration" value="" required />
@@ -127,18 +127,24 @@
 
                     <!-- Attach Images -->
                     <div class="file-upload-container">
-                        <label class="form-label">Attach Photos (up to 4)</label>
+                        <label class="form-label text-lg text-gray-800"><strong>Attach Task Photos</strong> (At least 1 required)</label>
                         <div class="upload-wrapper">
                             <div class="file-upload-box">
                                 <input type="file" id="attach_media1" name="attach_media1" accept="image/*"
                                     onchange="previewImage(event, 1)" />
                                 <div id="preview1" class="image-preview"></div>
                             </div>
+                            @error('attach_media1')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                             <div class="file-upload-box">
                                 <input type="file" id="attach_media2" name="attach_media2" accept="image/*"
                                     onchange="previewImage(event, 2)" />
                                 <div id="preview2" class="image-preview"></div>
                             </div>
+                            @error('attach_media2')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                             <div class="file-upload-box">
                                 <input type="file" id="attach_media3" name="attach_media3" accept="image/*"
                                     onchange="previewImage(event, 3)" />
@@ -165,8 +171,7 @@
 
                     <div class="flex justify-center">
                         <x-primary-button type="submit" class="md:mt-6 text-white rounded-md btn-lg">Create
-                            Service
-                            Request</x-primary-button>
+                            Service Request</x-primary-button>
                     </div>
                 </form>
             </div>
@@ -220,58 +225,32 @@
     </style>
 
     <script>
-
-           document.addEventListener('DOMContentLoaded', function() {
-    const priceTypeSelect = document.getElementById('price_type');
-    const minPriceContainer = document.getElementById('minPriceContainer');
-    const maxPriceContainer = document.getElementById('maxPriceContainer');
-    const maxPriceLabel = document.querySelector('label[for="max_price"]');
-    const minPriceInput = document.getElementById('min_price');
-    const maxPriceInput = document.getElementById('max_price');
-
-    priceTypeSelect.addEventListener('change', function() {
-        if (priceTypeSelect.value === 'fixed') {
-            minPriceContainer.style.display = 'none';
-            maxPriceLabel.innerText = 'Price';
-            maxPriceInput.placeholder = 'Enter the fixed price';
-            minPriceInput.value = null; // Set min_price to null for backend handling
-        } else {
-            minPriceContainer.style.display = 'block';
-            maxPriceLabel.innerText = 'Maximum Price';
-            maxPriceInput.placeholder = '';
-        }
-    });
-
-    // Trigger change event to set initial state
-    priceTypeSelect.dispatchEvent(new Event('change'));
-});
-
-      document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const categorySelect = document.getElementById('category');
-            const maxPriceInput = document.getElementById('max_price');
+            const minPriceInput = document.getElementById('min_price');
             const jobTypeSelect = document.getElementById('job_type');
             const rateWarning = document.createElement('div');
             rateWarning.id = 'rateWarning';
             rateWarning.style.color = 'red';
             rateWarning.style.display = 'none';
-            maxPriceInput.parentNode.appendChild(rateWarning);
+            minPriceInput.parentNode.appendChild(rateWarning);
 
             // Ensure $psaJobs is passed and correctly converted to JSON
             const psaRates = @json($psaJobs);
 
             categorySelect.addEventListener('change', checkRate);
-            maxPriceInput.addEventListener('input', checkRate);
+            minPriceInput.addEventListener('input', checkRate);
             jobTypeSelect.addEventListener('change', checkRate);
 
             function checkRate() {
                 const selectedCategory = categorySelect.value.trim();
-                const enteredRate = parseFloat(maxPriceInput.value) || 0;
+                const enteredRate = parseFloat(minPriceInput.value) || 0;
                 const jobType = jobTypeSelect.value;
                 const referenceRate = parseFloat(psaRates[selectedCategory]) || 0;
 
                 if (jobType === 'hourly_rate' && enteredRate > referenceRate) {
                     rateWarning.innerText =
-                        `The entered rate is higher by ${(enteredRate - referenceRate).toFixed(2)} PHP than the average occupational wage per hour (${referenceRate} PHP) for ${selectedCategory}.`;
+                        `The entered minimum hourly rate is higher by ${(enteredRate - referenceRate).toFixed(2)} PHP than the average occupational wage per hour (${referenceRate} PHP) for ${selectedCategory}.`;
                     rateWarning.style.display = 'block';
                 } else {
                     rateWarning.style.display = 'none';

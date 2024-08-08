@@ -296,6 +296,9 @@ Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bid
 Route::patch('bids/{id}', [BidController::class, 'update'])->name('bids.update');
 Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bidders-profile');
 
+Route::get('/dashboard', [BidController::class, 'psaInfo'])->name('dashboard');
+
+
 // Route::patch('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 // Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 

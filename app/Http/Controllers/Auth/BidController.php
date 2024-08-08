@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Routing\Controller;  // Correct import for the base controller
 use Illuminate\Http\Request;
 use App\Models\Bid;
+use App\Models\PsaJob;
 use App\Models\User;
 use App\Models\ProviderDetail;
+use App\Models\ServiceCategory;
 use App\Models\ServiceRequest;
 use App\Notifications\BidPlacedNotification;
 use App\Notifications\BidConfirmed;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Channel;
 
 class BidController extends Controller
@@ -131,6 +134,13 @@ public function getProviderProfile($bidderId)
     return response()->json($profileData);
 }
 
+public function psaInfo()
+{
+    $psaJobs = PsaJob::pluck('Average_Occupational_Wage_per_Hour', 'Job_Title')->toArray();
+    $serviceRequests = ServiceRequest::with(['bids.bidder.providerDetails'])->get();
+    
+    return view('dashboard', compact('psaJobs', 'serviceRequests'));
+}
 
 
 }
