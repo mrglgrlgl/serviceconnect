@@ -7,6 +7,7 @@ use App\Models\ServiceRequestImages;
 use App\Models\ProviderDetail;
 use App\Models\Certification;
 use App\Models\PhilID;
+use Illuminate\Support\Facades\DB;
 use App\Models\PsaJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,10 @@ class ServiceRequestController extends Controller
     {
         $user = Auth::user();
     
+        $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
+        $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
+        return view('provider.dashboard', compact('psaJobs', 'serviceRequests'));
+
         // Ensure the user is authenticated and has a role
         if (!$user) {
             return redirect()->route('login');
@@ -52,6 +57,10 @@ class ServiceRequestController extends Controller
     
             $conflictingRequests = [];
     
+            $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
+            $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
+
+
             // Check for conflicts
             foreach ($serviceRequests as $serviceRequest) {
                 foreach ($inProgressRequests as $inProgressRequest) {
@@ -72,7 +81,7 @@ class ServiceRequestController extends Controller
         }
     
         // Pass data to the view
-        return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests'));
+        return view('provider.dashboard', compact('serviceRequests', ' psaJobs', 'certificationsCount', 'conflictingRequests'));
     }
     
 

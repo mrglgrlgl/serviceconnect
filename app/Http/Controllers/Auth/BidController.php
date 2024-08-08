@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Bid;
 use App\Models\PsaJob;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProviderDetail;
 use App\Models\ServiceCategory;
 use App\Models\ServiceRequest;
@@ -136,10 +137,9 @@ public function getProviderProfile($bidderId)
 
 public function psaInfo()
 {
-    $psaJobs = PsaJob::pluck('Average_Occupational_Wage_per_Hour', 'Job_Title')->toArray();
-    $serviceRequests = ServiceRequest::with(['bids.bidder.providerDetails'])->get();
-    
-    return view('dashboard', compact('psaJobs', 'serviceRequests'));
+    $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
+    $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
+    return view('provider.dashboard', compact('psaJobs', 'serviceRequests'));
 }
 
 

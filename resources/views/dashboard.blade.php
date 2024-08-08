@@ -105,7 +105,8 @@
                                                 </span>
                                                 <span class="ml-1">Bid Confirmed</span>
                                             </div>
-                                            <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
+                                            <a href="{{ route('channel.seeker', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
+                                            {{-- <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a> --}}
                                         @else
                                             <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
                                             <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>

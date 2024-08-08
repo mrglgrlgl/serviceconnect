@@ -2,8 +2,7 @@
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             <div class="flex justify-center text-center w-full mb-6">
-                <div
-                    class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
+                <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                     <x-nav-link href="{{ route('provider.dashboard') }}" :active="request()->routeIs('provider.dashboard')">
                         {{ __('Open Requests') }}
                     </x-nav-link>
@@ -65,6 +64,7 @@
                         @foreach ($serviceRequests as $serviceRequest)
                             @php
                                 $userBid = $serviceRequest->bids->where('bidder_id', auth()->user()->id)->first();
+                                $referenceRate = $psaJobs[$serviceRequest->category] ?? 'N/A';
                             @endphp
                             @if (!$userBid && $serviceRequest->status === 'open')
                                 <div class="p-4 border border-gray-300 bg-white shadow-sm rounded-lg md:mb-4">
@@ -146,6 +146,11 @@
                                                         <input type="hidden" name="service_request_id" :value="selectedServiceRequestId">
                                                         <div class="mb-4">
                                                             <label for="bid_amount" class="block text-sm font-medium text-gray-700">Bid Amount</label>
+
+                                                            <div class="text-red-500">
+                                                                The average occupational wage per hour for {{ $serviceRequest->category }} is {{ $referenceRate }}
+                                                            </div>
+
                                                             <x-text-input type="number" step="0.01"
                                                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                                                 id="bid_amount" name="bid_amount" required />
@@ -182,10 +187,6 @@
                     @endif
                 @endif
             @endif
-    
         </div>
     </div>
-
-
-
 </x-app-layout>
