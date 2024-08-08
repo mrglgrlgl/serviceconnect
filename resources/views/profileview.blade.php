@@ -3,12 +3,12 @@
         <div class="flex flex-col md:flex-row w-10/12 mx-auto">
 
             {{-- User Profile Picture --}}
-            <div class="flex justify-center md:justify-start mb-4 md:mb-0">
+            {{-- <div class="flex justify-center md:justify-start mb-4 md:mb-0">
                 @if ($providerDetails->profilePicture)
                     <img src="{{ Storage::url($providerDetails->profilePicture) }}" alt="Profile Picture"
                         class="rounded-full h-20 w-20 mr-4">
                 @endif
-            </div>
+            </div> --}}
 
             {{-- User's Name and Details --}}
             <div class="w-full">

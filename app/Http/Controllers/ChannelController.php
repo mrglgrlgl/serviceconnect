@@ -232,31 +232,31 @@ public function confirmTaskCompletion(Channel $channel)
 
 }
 
-public function confirmPayment(Channel $channel)
-{
-    try {
-        $user = Auth::user();
+// public function confirmPayment(Channel $channel)
+// {
+//     try {
+//         $user = Auth::user();
 
-        if ($user->role != 2) { // Assuming role 2 is the provider role
-            return response()->json(['message' => 'Unauthorized action.'], 403);
-        }
+//         if ($user->role != 2) { // Assuming role 2 is the provider role
+//             return response()->json(['message' => 'Unauthorized action.'], 403);
+//         }
 
-        $channel->is_paid = 'true';
-        $channel->status = 'completed'; // Set the status to completed
-        $channel->save();
+//         $channel->is_paid = 'true';
+//         $channel->status = 'completed'; // Set the status to completed
+//         $channel->save();
 
-         $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined
-        if ($serviceRequest) {
-            $serviceRequest->status = 'completed';
-            $serviceRequest->save();
-        }
+//          $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined
+//         if ($serviceRequest) {
+//             $serviceRequest->status = 'completed';
+//             $serviceRequest->save();
+//         }
 
-        return response()->json(['message' => 'Payment confirmed.']);
-    } catch (\Exception $e) {
-        Log::error('Error confirming payment: ' . $e->getMessage(), ['exception' => $e]);
-        return response()->json(['message' => 'Error confirming payment.'], 500);
-    }
-}
+//         return response()->json(['message' => 'Payment confirmed.']);
+//     } catch (\Exception $e) {
+//         Log::error('Error confirming payment: ' . $e->getMessage(), ['exception' => $e]);
+//         return response()->json(['message' => 'Error confirming payment.'], 500);
+//     }
+// }
 
 
 public function editBid(Request $request, $bidId)

@@ -228,6 +228,7 @@ Route::post('/requests/{requestList}/decline', [RequestController::class, 'decli
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile/view', [App\Http\Controllers\Auth\ProviderProfileController::class, 'show'])->name('profile.view');
+    Route::get('/seekerprofile', [ProfileController::class, 'seekerProfile'])->name('seekerprofile');
     Route::get('/profile/edit', [App\Http\Controllers\Auth\ProviderProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [App\Http\Controllers\Auth\ProviderProfileController::class, 'update'])->name('profile.update');
 });

@@ -80,11 +80,11 @@
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->provider->name }}
                                                 <span class="ml-2 text-yellow-500">
-                                                    @if (isset($averageRating))
+                                                    {{-- @if (isset($averageRating))
                                                         {{ number_format($averageRating, 2) }} / 5
                                                     @else
                                                         No ratings yet
-                                                    @endif
+                                                    @endif --}}
                                                 </span>
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
@@ -104,9 +104,20 @@
         <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
     </div>
     <div class="text-gray-800">
+
+     <p>{{ $channel->bid->job_type }}</p>
+            @if ($channel->serviceRequest->job_type == 'hourly_rate' )
+
         <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
         <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+        <span>{{ $channel->serviceRequest->estimated_duration }}</span>
+
+        <p><strong>Total Amount:</strong> {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}</p>
+            @else
+            <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
     </div>
+    @endif
                         </div>
 
                         <div class="bg-white rounded-lg shadow-md p-6 mt-6">
@@ -146,7 +157,7 @@
     </div>
     </div>
 
-    <!-- Modals for Arrival, Task Start, Task Completion, Payment Confirmation, and Rating -->
+    <!-- Modals for Arrival, Task Start, Task Completion, and Rating -->
     <!-- Modals similar to what you provided earlier -->
 
     <!-- Arrival Confirmation Modal -->
@@ -155,14 +166,14 @@
         <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
             <div class="flex justify-between items-center border-b pb-4 mb-4">
                 <h5 class="text-xl font-semibold">Confirm Provider Arrival</h5>
-                <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none"
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
                     onclick="closeModal('arrivalModal')">&times;</button>
             </div>
             <div class="mb-4">
                 <p>The provider has arrived. Please confirm their arrival.</p>
             </div>
             <div class="flex justify-end">
-                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-cyan-800"
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
                     onclick="closeModal('arrivalModal')">Close</button>
                 <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800"
                     onclick="confirmArrival()">Confirm Arrival</button>
@@ -176,14 +187,14 @@
         <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
             <div class="flex justify-between items-center border-b pb-4 mb-4">
                 <h5 class="text-xl font-semibold">Confirm Task Start</h5>
-                <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none"
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
                     onclick="closeModal('startTaskModal')">&times;</button>
             </div>
             <div class="mb-4">
                 <p>The provider has marked the task as started. Please confirm if the task is indeed started.</p>
             </div>
             <div class="flex justify-end">
-                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-cyan-800"
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
                     onclick="closeModal('startTaskModal')">Close</button>
                 <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800"
                     onclick="confirmTaskStart()">Confirm Start</button>
@@ -213,116 +224,84 @@
         </div>
     </div>
 
-    <!-- Payment Modal -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900 bg-opacity-50"
-        id="paymentModal" style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
-            <div class="border-b pb-4 mb-4">
-                <h5 class="text-xl font-semibold">Payment Confirmation</h5>
+    <!-- Rating Modal -->
+    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="seekerRatingModal"
+        style="display: none;">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
+            <div class="border-b pb-4 mb-4 flex justify-between items-center">
+                <h5 class="text-xl font-semibold">Rate the Provider</h5>
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onclick="closeModal('seekerRatingModal')">&times;</button>
             </div>
             <div class="mb-4">
-                <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                @if ($channel->is_paid === 'true')
-                    <p>Payment has been confirmed.</p>
-                @else
-                    <p>Waiting for payment confirmation from the provider.</p>
-                @endif
+                <p class="text-lg">On a scale of one to ten, rate the provider by the following criteria:</p>
             </div>
-            <div class="flex justify-end">
-                @if ($channel->is_paid === 'true')
-                    <button type="button" class="btn btn-primary"
-                        onclick="closeModal('paymentModal')">Close</button>
-                @else
-                    <button type="button" class="btn btn-primary" disabled>Waiting for Payment Confirmation</button>
-                @endif
-            </div>
+            <form action="{{ route('submit.seeker.rating') }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="channel_id" value="{{ $channel->id }}">
+                <input type="hidden" name="rated_for_id" value="{{ $channel->provider_id }}">
+                @php
+                    $criteria = [
+                        'quality_of_service' => 'Quality of Service',
+                        'communication' => 'Communication',
+                        'professionalism' => 'Professionalism',
+                        'cleanliness_tidiness' => 'Cleanliness and Tidiness',
+                        'value_for_money' => 'Value for Money',
+                    ];
+                @endphp
+                <div class="space-y-4">
+                    @foreach ($criteria as $field => $label)
+                        <div>
+                            <label class="block text-lg font-medium text-gray-700 text-center">{{ $label }}</label>
+                            <div class="flex justify-center space-x-2">
+                                @for ($i = 1; $i <= 10; $i++)
+                                    <input type="radio" name="rating_{{ $field }}" value="{{ $i }}"
+                                        id="{{ $field }}-{{ $i }}" class="hidden" />
+                                    <label for="{{ $field }}-{{ $i }}"
+                                        class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-cyan-800 transition-colors duration-150"
+                                        onclick="highlightSelected(this)">
+                                        {{ $i }}
+                                    </label>
+                                @endfor
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mt-1">
+                                <span>Poor</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="space-y-2 pt-4">
+                    <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback
+                        (Optional)</label>
+                    <textarea name="feedback" id="feedback" rows="4"
+                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                        placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
+                </div>
+                <div class="flex justify-center pt-4">
+                    <button type="submit"
+                        class="px-6 py-2 bg-custom-lightest-blue text-white rounded-md hover:bg-cyan-800 focus:outline-none">Submit</button>
+                </div>
+            </form>
+            @if (session('success'))
+                <div class="alert alert-success mt-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger mt-4">
+                    {{ session('error') }}
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
 
-<!-- Rating Modal -->
-<div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="seekerRatingModal"
-    style="display: none;">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
-        <div class="border-b pb-4 mb-4 flex justify-between items-center">
-            <h5 class="text-xl font-semibold">Rate the Provider</h5>
-            <button type="button" class="text-gray-500 hover:texcyana8-700 focus:outline-none"
-                onclick="closeModal('seekerRatingModal')">&times;</button>
-        </div>
-        <div class="mb-4">
-            <p class="text-lg">On a scale of one to ten, rate the provider by the following criteria:</p>
-        </div>
-        <form action="{{ route('submit.seeker.rating') }}" method="POST" class="space-y-6">
-            @csrf
-            <input type="hidden" name="channel_id" value="{{ $channel->id }}">
-            <input type="hidden" name="rated_for_id" value="{{ $channel->provider_id }}">
-            @php
-                $criteria = [
-                    'quality_of_service' => 'Quality of Service',
-                    'communication' => 'Communication',
-                    'professionalism' => 'Professionalism',
-                    'cleanliness_tidiness' => 'Cleanliness and Tidiness',
-                    'value_for_money' => 'Value for Money',
-                ];
-            @endphp
-            <div class="space-y-4">
-                @foreach ($criteria as $field => $label)
-                    <div>
-                        <label class="block text-lg font-medium text-gray-700 text-center">{{ $label }}</label>
-                        <div class="flex justify-center space-x-2">
-                            @for ($i = 1; $i <= 10; $i++)
-                                <input type="radio" name="rating_{{ $field }}" value="{{ $i }}"
-                                    id="{{ $field }}-{{ $i }}" class="hidden" />
-                                <label for="{{ $field }}-{{ $i }}"
-                                    class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-cyan-800 transition-colors duration-150"
-                                    onclick="highlightSelected(this)">
-                                    {{ $i }}
-                                </label>
-                            @endfor
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-600 mt-1">
-                            <span>Poor</span>
-                            <span>Excellent</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            <div class="space-y-2 pt-4">
-                <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback
-                    (Optional)</label>
-                <textarea name="feedback" id="feedback" rows="4"
-                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
-            </div>
-            <div class="flex justify-center pt-4">
-                <button type="submit"
-                    class="px-6 py-2 bg-custom-lightest-blue text-white rounded-md hover:bg-cyan-800 focus:outline-none">Submit</button>
-            </div>
-        </form>
-        @if (session('success'))
-            <div class="alert alert-success mt-4">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger mt-4">
-                {{ session('error') }}
-            </div>
-        @endif
-    </div>
-</div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
-        console.log('is_paid:', '{{ $channel->is_paid ?? 'No Data' }}');
-
-        if ('{{ $channel->is_task_completed }}' === 'true' && '{{ $channel->is_paid }}' === 'pending') {
-            console.log('Showing payment modal');
-            document.getElementById('paymentModal').style.display = 'block';
-        } else {
-            console.log('Conditions not met for showing payment modal');
+        if ('{{ $channel->is_task_completed }}' === 'true') {
+            document.getElementById('seekerRatingModal').style.display = 'flex';
         }
 
         if ('{{ $channel->is_arrived }}' === 'pending') {
@@ -390,39 +369,9 @@
             });
     }
 
-    function confirmPayment() {
-        axios.post('{{ route('channel.confirmPayment', $channel->id) }}')
-            .then(response => {
-                alert(response.data.message);
-                location.reload(); // Reload the page to update the status
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('is_task_completed:', '{{ $channel->is_task_completed }}');
-        console.log('is_paid:', '{{ $channel->is_paid ?? 'No Data' }}');
-
-        var taskCompleted = '{{ $channel->is_task_completed }}' === 'true';
-        var paymentStatus = '{{ $channel->is_paid }}' === 'true';
-
-        if (taskCompleted && paymentStatus) {
-            console.log('Conditions met, showing rating modal');
-            document.getElementById('seekerRatingModal').style.display = 'flex';
-        } else {
-            console.log('Conditions not met for showing rating modal');
-        }
-    });
-
     function highlightSelected(label) {
         const group = label.parentElement.querySelectorAll('.rating-label');
         group.forEach(l => l.classList.remove('bg-custom-lightest-blue', 'text-white'));
         label.classList.add('bg-custom-lightest-blue', 'text-white');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
     }
 </script>

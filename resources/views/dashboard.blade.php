@@ -69,10 +69,39 @@
                                 <div class="font-semibold text-xl mb-2 text-custom-header">
                                     {{ $serviceRequest->title }}
                                 </div>
+                                <div class="flex items-center p-2">
+                                                    <span class="material-symbols-outlined text-gray-500">work</span>
+                                                    {{ $serviceRequest->job_type }}
+                                                </div>
+<div class="flex items-center p-2">
+                                                    <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                                    Price: 
+                                                    @if ($serviceRequest->min_price)
+                                                        {{ $serviceRequest->min_price }} -
+                                                    @endif
+                                                    {{ $serviceRequest->max_price }}
+                                                </div>
 
                                 <div class="mb-4 text-custom-default-text">
                                     {{ $serviceRequest->description }}
                                 </div>
+ <div class="flex items-center p-2">
+                                                    Estimated Duration: {{ $serviceRequest->estimated_duration }} {{ 'hours'}}
+                                                </div>
+
+   <div class="flex items-center p-2">
+                                                <span class="material-symbols-outlined text-red-500">location_on</span>
+                                                {{ $serviceRequest->location }}
+                                            </div>
+
+
+
+
+
+
+
+
+
 
                                 <div class="mb-4">
                                     {{-- Request image here --}}

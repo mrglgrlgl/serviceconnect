@@ -58,21 +58,21 @@
                     <div class="bg-white p-4 rounded-lg shadow md:col-span-1">
                         <h3 class="text-lg font-semibold text-primary">Completion Rate</h3>
                         <p class="text-2xl font-bold">{{ number_format($completionRate, 2) }}%</p>
-                        <p class="text-muted">{{ $completedServices }}</p>
+                        {{-- <p class="text-muted">{{ $completedServices }}</p> --}}
                     </div>
 
                     <!-- Most Availed Service -->
                     <div class="bg-white p-4 rounded-lg shadow md:col-span-1">
                         <h3 class="text-lg font-semibold text-primary">Most Availed Service</h3>
                         <p class="text-2xl font-bold">{{ $mostAvailedService->category }}</p>
-                        <p class="text-muted">{{ $mostAvailedService->completed_services }}</p>
+                        {{-- <p class="text-muted">{{ $mostAvailedService->completed_services }}</p> --}}
                     </div>
 
-                    <!-- Most Loyal Provider (slightly bigger) -->
+
                     <div class="bg-white p-4 rounded-lg shadow md:col-span-3">
                         <h3 class="text-lg font-semibold text-primary">Most Availed Provider</h3>
                         <p class="text-2xl font-bold">{{ $mostLoyalProvider->name }}</p>
-                        <p class="text-muted">{{ $mostLoyalProvider->completed_services }}</p>
+                        {{-- <p class="text-muted">{{ $mostLoyalProvider->completed_services }}</p> --}}
                     </div>
                 </div>
             </div>

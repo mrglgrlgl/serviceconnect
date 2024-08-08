@@ -76,13 +76,13 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->seeker->name }}
-                                                <span class="ml-2 text-yellow-500">
+                                                {{-- <span class="ml-2 text-yellow-500">
                                                     @if (isset($averageRating))
                                                         {{ number_format($averageRating, 2) }} / 5
                                                     @else
                                                         No ratings yet
                                                     @endif
-                                                </span>
+                                                </span> --}}
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -111,11 +111,22 @@
     <div class="border-b pb-4 mb-4">
         <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
     </div>
-    <div class="text-gray-800">
+
+
+      <p>{{ $channel->bid->job_type }}</p>
+            @if ($channel->serviceRequest->job_type == 'hourly_rate' )
+
         <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
         <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
+        <span>{{ $channel->serviceRequest->estimated_duration }}</span>
+
+        <p><strong>Total Amount:</strong> {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}</p>
+            @else
+            <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
+        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
     </div>
-    <button onclick="toggleEditForm()" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded mt-4">Edit Bid</button>
+    @endif
+    {{-- <button onclick="toggleEditForm()" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded mt-4">Edit Bid</button>
 
     <!-- Edit Form -->
     <div id="editForm" class="hidden mt-4">
@@ -147,7 +158,7 @@
             editForm.classList.add('hidden');
         }
     }
-</script>
+</script> --}}
 
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
@@ -192,7 +203,7 @@
             </div>
         </div>
     </div>
-
+{{-- 
     <!-- Payment Confirmation Modal -->
     <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="providerPaymentModal"
         style="display: none;">
@@ -212,7 +223,7 @@
                 <button type="button" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded"
                     onclick="confirmProviderPayment()">Confirm Payment</button>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Rating Modal -->
@@ -334,17 +345,6 @@
                 });
         }
 
-        function confirmProviderPayment() {
-            axios.post('{{ route('channel.confirmPayment', $channel->id) }}')
-                .then(response => {
-                    alert(response.data.message);
-                    closeModal('providerPaymentModal');
-                    location.reload(); // Refresh to reflect the changes
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
@@ -367,13 +367,9 @@
         // Trigger the modal opening conditionally
         document.addEventListener('DOMContentLoaded', function() {
             var taskCompleted = '{{ $channel->is_task_completed }}';
-            var paymentStatus = '{{ $channel->is_paid }}';
+        
 
-            if (taskCompleted === 'true' && paymentStatus === 'pending') {
-                document.getElementById('providerPaymentModal').style.display = 'flex';
-            }
-
-            if (paymentStatus === 'true') {
+            if (taskCompleted === 'true') {
                 openRatingModal();
             }
         });

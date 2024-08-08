@@ -15,6 +15,7 @@ class AnalyticsController extends Controller
         // Fetch services completed
         $completedServices = DB::table('service_requests')
             ->where('status', 'completed')
+            ->where('user_id', $userId)
             ->count();
 
         // Fetch performance data
@@ -23,6 +24,7 @@ class AnalyticsController extends Controller
             'data' => DB::table('service_requests')
                 ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
                 ->where('status', 'completed')
+                ->where('user_id', $userId)
                 ->groupBy('month')
                 ->orderBy('month')
                 ->pluck('count', 'month')
@@ -59,6 +61,7 @@ class AnalyticsController extends Controller
                 COUNT(*) AS total_requests,
                 SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) AS completed_requests
             ')
+            ->where('user_id', $userId)
             ->first();
         $completionRate = $completionData->completed_requests / $completionData->total_requests * 100;
 
@@ -66,6 +69,7 @@ class AnalyticsController extends Controller
         $mostAvailedService = DB::table('service_requests')
             ->select('category', DB::raw('COUNT(*) AS completed_services'))
             ->where('status', 'completed')
+            ->where('user_id', $userId)
             ->groupBy('category')
             ->orderBy('completed_services', 'DESC')
             ->first();
@@ -101,6 +105,7 @@ class AnalyticsController extends Controller
         // Fetch services completed
         $completedServices = DB::table('service_requests')
             ->where('status', 'completed')
+            ->where('provider_id', $userId)
             ->count();
 
         // Fetch performance data
@@ -108,6 +113,7 @@ class AnalyticsController extends Controller
             'labels' => ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
             'data' => DB::table('service_requests')
                 ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->where('provider_id', $userId)
                 ->where('status', 'completed')
                 ->groupBy('month')
                 ->orderBy('month')
@@ -146,26 +152,29 @@ class AnalyticsController extends Controller
                 COUNT(*) AS total_requests,
                 SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) AS completed_requests
             ')
+            ->where('provider_id', $userId)
             ->first();
         $completionRate = $completionData->completed_requests / $completionData->total_requests * 100;
 
-        // Fetch most availed service
+        // Fetch most availed service by the provider
         $mostAvailedService = DB::table('service_requests')
             ->select('category', DB::raw('COUNT(*) AS completed_services'))
             ->where('status', 'completed')
+            ->where('provider_id', $userId)
             ->groupBy('category')
             ->orderBy('completed_services', 'DESC')
             ->first();
 
-        // Fetch most loyal provider
-        $mostLoyalProvider = DB::table('service_requests')
-            ->join('users', 'service_requests.provider_id', '=', 'users.id')
+        // Fetch most loyal seeker (customer) for the provider
+        $mostLoyalSeeker = DB::table('service_requests')
+            ->join('users', 'service_requests.user_id', '=', 'users.id')
             ->select('users.name', DB::raw('COUNT(service_requests.id) AS completed_services'))
             ->where('service_requests.status', 'completed')
+            ->where('service_requests.provider_id', $userId)
             ->groupBy('users.id', 'users.name')
             ->orderBy('completed_services', 'DESC')
             ->first();
-
+            
         return view('provider.analytics', compact(
             'completedServices',
             'performanceData',
@@ -173,7 +182,7 @@ class AnalyticsController extends Controller
             'cancellationRate',
             'completionRate',
             'mostAvailedService',
-            'mostLoyalProvider'
+            'mostLoyalSeeker'
         ));
     }
 }

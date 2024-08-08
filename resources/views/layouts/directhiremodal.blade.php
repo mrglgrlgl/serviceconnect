@@ -57,10 +57,10 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="skill_tags" class="form-label">Skill Tags</label>
                         <x-text-input type="text" class="mt-1 block w-full sm:text-sm rounded-md" id="skill_tags" name="skill_tags" required />
-                    </div>
+                    </div> --}}
 
                     <div class="mb-3">
                         <label for="provider_gender" class="form-label">Preferred Provider Gender</label>

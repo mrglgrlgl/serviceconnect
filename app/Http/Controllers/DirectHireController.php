@@ -31,7 +31,7 @@ class DirectHireController extends Controller
             'end_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
-            'skill_tags' => 'required|string|max:255',
+            // 'skill_tags' => 'required|string|max:255',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
             'price_type' => 'required|in:fixed,range',
@@ -54,7 +54,7 @@ class DirectHireController extends Controller
         $serviceRequest->end_date = $validatedData['end_date'];
         $serviceRequest->start_time = $validatedData['start_time'];
         $serviceRequest->end_time = $validatedData['end_time'];
-        $serviceRequest->skill_tags = $validatedData['skill_tags'];
+        // $serviceRequest->skill_tags = $validatedData['skill_tags'];
         $serviceRequest->provider_gender = $validatedData['provider_gender'];
         $serviceRequest->job_type = $validatedData['job_type'];
         $serviceRequest->min_price = $validatedData['min_price'];

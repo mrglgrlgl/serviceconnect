@@ -78,6 +78,17 @@ class ProfileController extends Controller
         return view('profile.profile', compact('user', 'providerDetail', 'ratings', 'certifications'));
     }
 
+    public function seekerProfile()
+    {
+        $user = Auth::user();
+
+        $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+        $ratings = Rating::where('rated_for_id', $user->id)->with('user')->get();
+        $certifications = Certification::where('provider_id', $user->id)->get();
+
+        return view('seekerprofile', compact('user', 'providerDetail', 'ratings', 'certifications'));
+    }
+
 }
 
 

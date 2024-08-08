@@ -34,7 +34,12 @@
                 name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
-
+  <!-- Address -->
+        <div class="mt-4">
+            <x-input-label for="address" :value="__('Address')" />
+            <x-text-input id="address" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md" type="text" name="address" :value="old('address')" required autocomplete="address" />
+            <x-input-error :messages="$errors->get('address')" class="mt-2" />
+        </div>
         <!-- Phone Number -->
         <div class="mt-4">
             <x-input-label for="cell_no" :value="__('Phone Number')" />

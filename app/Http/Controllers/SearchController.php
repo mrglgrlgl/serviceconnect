@@ -11,13 +11,10 @@ class SearchController extends Controller
     {
         $searchTerm = $request->input('search');
         $category = $request->input('category');
-
         $providers = ProviderDetail::with(['user' => function ($query) {
-            $query->whereHas('philID', function ($query) {
-                $query->where('status', 'Accepted');
-            })
-            ->withCount(['completedServiceRequests'])
-            ->withAvg('ratings', 'quality_of_service');
+            // Removed the philID condition
+            $query->withCount(['completedServiceRequests'])
+                  ->withAvg('ratings', 'quality_of_service');
         }])
         ->when($searchTerm, function ($query, $searchTerm) {
             $query->whereHas('user', function ($query) use ($searchTerm) {
