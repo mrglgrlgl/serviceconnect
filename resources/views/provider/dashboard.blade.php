@@ -9,6 +9,10 @@
                     <x-nav-link href="{{ route('provider.myrequests') }}" :active="request()->routeIs('provider.myrequests')">
                         {{ __('My Requests') }}
                     </x-nav-link>
+                 <x-nav-link href="{{ route('provider.analytics') }}" :active="request()->routeIs('provider.analytics')">
+    {{ __('Analytics') }}
+</x-nav-link>
+
                 </div>
             </div>
 

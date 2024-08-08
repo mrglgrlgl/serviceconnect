@@ -15,6 +15,9 @@ use App\Models\Channel;
 
 class BidController extends Controller
 {
+
+
+    
     public function store(Request $request)
     {
         $request->validate([

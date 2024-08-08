@@ -258,39 +258,42 @@ public function confirmPayment(Channel $channel)
     }
 }
 
+
+public function editBid(Request $request, $bidId)
+{
+    $user = Auth::user();
+
+    // Ensure the user has the correct role
+    if ($user->role != 2) { // Assuming role 2 is the provider role
+        abort(403, 'Unauthorized action.');
+    }
+
+    // Validate the request
+    $request->validate([
+        'bid_amount' => 'required|numeric',
+        'bid_description' => 'required|string',
+    ]);
+
+    try {
+        // Retrieve the bid
+        $bid = Bid::findOrFail($bidId);
+
+        // Check if the bid belongs to the authenticated provider
+        if ($bid->provider_id !== $user->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Update the bid details
+        $bid->bid_amount = $request->input('bid_amount');
+        $bid->bid_description = $request->input('bid_description');
+        $bid->save();
+
+        return response()->json(['message' => 'Bid updated successfully.']);
+    } catch (\Exception $e) {
+        Log::error('Error updating bid: ' . $e->getMessage());
+        return response()->json(['message' => 'Error updating bid.'], 500);
+    }
 }
-
-
-
-// public function startTask($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->start_time = now();
-//     $channel->status = 'in_progress';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Task started successfully']);
-// }
-
-// public function completeTask($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->completion_time = now();
-//     $channel->status = 'completed';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Task completed successfully']);
-// }
-
-// public function confirmPayment($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->amount_paid = $channel->bid->bid_amount;
-//     $channel->status = 'completed';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Payment confirmed successfully']);
-// }
-
+}
 
 
