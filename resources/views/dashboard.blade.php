@@ -16,7 +16,7 @@
         <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
     </div>
 
-    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard({{ json_encode($psaJobs) }}, {{ json_encode($serviceRequests) }})">
+    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
             <div class="relative inline-block mb-4">
                 <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
@@ -157,12 +157,6 @@
                                     <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
-                                    <template x-if="bid.bidder.providerDetails && psaRates[bid.bidder.providerDetails.serviceCategory] && parseFloat(bid.bid_amount) > parseFloat(psaRates[bid.bidder.providerDetails.serviceCategory])">
-                                        <div class="text-red-500 text-sm">
-                                            The bid amount is higher by <span x-text="(parseFloat(bid.bid_amount) - parseFloat(psaRates[bid.bidder.providerDetails.serviceCategory])).toFixed(2)"></span> PHP than the average occupational wage per hour (<span x-text="psaRates[bid.bidder.providerDetails.serviceCategory]"></span> PHP) for this category.
-                                        </div>
-                                    </template>
-
                                     <div class="flex justify-end space-x-2">
                                         <a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
                                             View Profile
@@ -250,7 +244,7 @@
     </div>
 
     <script>
-        function dashboard(psaRates, serviceRequests) {
+        function dashboard() {
             return {
                 filter: 'all',
                 showBidsPanel: false,
@@ -260,8 +254,6 @@
                 bids: [],
                 profile: {},
                 selectedRequestId: null,
-                psaRates: psaRates,
-                serviceRequests: serviceRequests,
 
                 async fetchBids(requestId) {
                     this.selectedRequestId = requestId;
@@ -316,7 +308,7 @@
                                 }
                             });
                             this.bids = this.bids.filter(bid => !bid.rejected);
-                            const serviceRequest = this.serviceRequests.find(req => req.id === requestId);
+                            const serviceRequest = @json($serviceRequests).find(req => req.id === requestId);
                             serviceRequest.bid_confirmed = true;
                         }
                     } catch (error) {

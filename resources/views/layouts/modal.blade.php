@@ -224,92 +224,96 @@
         }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const categorySelect = document.getElementById('category');
-            const minPriceInput = document.getElementById('min_price');
-            const jobTypeSelect = document.getElementById('job_type');
-            const rateWarning = document.createElement('div');
-            rateWarning.id = 'rateWarning';
-            rateWarning.style.color = 'red';
-            rateWarning.style.display = 'none';
-            minPriceInput.parentNode.appendChild(rateWarning);
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categorySelect = document.getElementById('category');
+        const minPriceInput = document.getElementById('min_price');
+        const jobTypeSelect = document.getElementById('job_type');
+        const rateWarning = document.createElement('div');
+        rateWarning.id = 'rateWarning';
+        rateWarning.style.color = 'red';
+        rateWarning.style.display = 'none';
+        minPriceInput.parentNode.appendChild(rateWarning);
 
-            // Ensure $psaJobs is passed and correctly converted to JSON
-            const psaRates = @json($psaJobs);
+        // Ensure $psaJobs is passed and correctly converted to JSON
+        const psaRates = @json($psaJobs);
 
-            categorySelect.addEventListener('change', checkRate);
-            minPriceInput.addEventListener('input', checkRate);
-            jobTypeSelect.addEventListener('change', checkRate);
+        categorySelect.addEventListener('change', checkRate);
+        minPriceInput.addEventListener('input', checkRate);
+        jobTypeSelect.addEventListener('change', checkRate);
 
-            function checkRate() {
-                const selectedCategory = categorySelect.value.trim();
-                const enteredRate = parseFloat(minPriceInput.value) || 0;
-                const jobType = jobTypeSelect.value;
-                const referenceRate = parseFloat(psaRates[selectedCategory]) || 0;
+        function checkRate() {
+            const selectedCategory = categorySelect.value.trim();
+            const enteredRate = parseFloat(minPriceInput.value) || 0;
+            const jobType = jobTypeSelect.value;
+            const referenceRate = parseFloat(psaRates[selectedCategory]) || 0;
 
-                if (jobType === 'hourly_rate' && enteredRate > referenceRate) {
-                    rateWarning.innerText =
-                        `The entered minimum hourly rate is higher by ${(enteredRate - referenceRate).toFixed(2)} PHP than the average occupational wage per hour (${referenceRate} PHP) for ${selectedCategory}.`;
-                    rateWarning.style.display = 'block';
-                } else {
-                    rateWarning.style.display = 'none';
-                }
-            }
-        });
-
-        function previewImage(event, boxId) {
-            var file = event.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var previewBox = document.getElementById('preview' + boxId);
-                    previewBox.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview" />';
-                }
-                reader.readAsDataURL(file);
+            if (jobType === 'hourly_rate' && enteredRate > referenceRate) {
+                rateWarning.innerText =
+                    `The entered minimum hourly rate is higher by ${(enteredRate - referenceRate).toFixed(2)} PHP than the average occupational wage per hour (${referenceRate} PHP) for ${selectedCategory}.`;
+                rateWarning.style.display = 'block';
+            } else if (jobType === 'project_based') {
+                rateWarning.innerText =
+                    `The average occupational wage per hour for ${selectedCategory} is ${referenceRate} PHP.`;
+                rateWarning.style.display = 'block';
+            } else {
+                rateWarning.style.display = 'none';
             }
         }
+    });
 
-        function validateDates() {
-            var today = new Date().toISOString().split('T')[0];
-            var startDate = document.getElementById('start_date').value;
-            var endDate = document.getElementById('end_date').value;
-
-            if (startDate < today) {
-                alert("Start date cannot be in the past.");
-                document.getElementById('start_date').value = today;
+    function previewImage(event, boxId) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var previewBox = document.getElementById('preview' + boxId);
+                previewBox.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview" />';
             }
-            if (endDate && endDate < startDate) {
-                alert("End date cannot be before the start date. The web app does not support time travel.");
-                document.getElementById('end_date').value = startDate;
-            }
+            reader.readAsDataURL(file);
         }
+    }
 
-        function validateTimes() {
-            var startTime = document.getElementById('start_time').value;
-            var endTime = document.getElementById('end_time').value;
-            if (startTime == endTime) {
-                alert("Cannot be the same time");
-                document.getElementById('end_time').value = '';
-            }
+    function validateDates() {
+        var today = new Date().toISOString().split('T')[0];
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+
+        if (startDate < today) {
+            alert("Start date cannot be in the past.");
+            document.getElementById('start_date').value = today;
         }
-
-        function validateMinMax() {
-            var minPrice = parseFloat(document.getElementById('min_price').value);
-            var maxPrice = parseFloat(document.getElementById('max_price').value);
-            if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice > maxPrice) {
-                alert("Minimum Price cannot be greater than Maximum Price.");
-                document.getElementById('max_price').value = '';
-            }
+        if (endDate && endDate < startDate) {
+            alert("End date cannot be before the start date. The web app does not support time travel.");
+            document.getElementById('end_date').value = startDate;
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('start_date').addEventListener('change', validateDates);
-            document.getElementById('end_date').addEventListener('change', validateDates);
-            document.getElementById('start_time').addEventListener('change', validateTimes);
-            document.getElementById('end_time').addEventListener('change', validateTimes);
-            document.getElementById('min_price').addEventListener('blur', validateMinMax);
-            document.getElementById('max_price').addEventListener('blur', validateMinMax);
-        });
-    </script>
+    function validateTimes() {
+        var startTime = document.getElementById('start_time').value;
+        var endTime = document.getElementById('end_time').value;
+        if (startTime == endTime) {
+            alert("Cannot be the same time");
+            document.getElementById('end_time').value = '';
+        }
+    }
+
+    function validateMinMax() {
+        var minPrice = parseFloat(document.getElementById('min_price').value);
+        var maxPrice = parseFloat(document.getElementById('max_price').value);
+        if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice > maxPrice) {
+            alert("Minimum Price cannot be greater than Maximum Price.");
+            document.getElementById('max_price').value = '';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('start_date').addEventListener('change', validateDates);
+        document.getElementById('end_date').addEventListener('change', validateDates);
+        document.getElementById('start_time').addEventListener('change', validateTimes);
+        document.getElementById('end_time').addEventListener('change', validateTimes);
+        document.getElementById('min_price').addEventListener('blur', validateMinMax);
+        document.getElementById('max_price').addEventListener('blur', validateMinMax);
+    });
+</script>
 </x-dashboard>
