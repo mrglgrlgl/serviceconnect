@@ -26,6 +26,22 @@ use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DirectHireController;
+use App\Http\Controllers\Auth\AdminUserController;
+use App\Http\Controllers\Auth\AdminDashboardController;
+
+
+// Admin User Authentication Routes
+Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [AdminUserController::class, 'login']);
+Route::post('admin/logout', [AdminUserController::class, 'logout'])->name('admin.logout');
+
+// Admin Dashboard and Protected Routes
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // Additional admin routes can be added here
+});
+
+
 
 
 Route::post('/report', [ReportController::class, 'store'])->name('report.store');
@@ -205,8 +221,8 @@ Route::get('provider-documents/{filename}', function ($filename) {
     return $response;
 })->name('provider.documents');
 // // Example web.php route definitions
-Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept'])->name('requests.accept');
-Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
+// Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept'])->name('requests.accept');
+// Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
 
 
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');

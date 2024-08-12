@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades;
 
 
 class ServiceRequestController extends Controller
