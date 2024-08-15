@@ -22,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // 'normal'=>Normal::class,
         'role.redirect' => RoleRedirect::class, // Register the new middleware here
         'auth.admin' => AdminAuthMiddleware::class,
+        'auth.agency' => AgencyAuthMiddleware::class, // Registering AgencyAuthMiddleware
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

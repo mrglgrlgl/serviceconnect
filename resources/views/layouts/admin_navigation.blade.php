@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Administrator</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,7 +12,6 @@
             background-color: #f4f6f8;
         }
 
-        /* Navbar styling */
         nav {
             background-color: #1a202c;
             color: #edf2f7;
@@ -29,7 +28,6 @@
             margin: 0;
         }
 
-        /* Profile dropdown styling */
         #admin-profile-dropdown {
             background-color: transparent;
             color: #edf2f7;
@@ -50,7 +48,7 @@
             color: #1a202c;
             border-radius: 0.375rem;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-            display: none; /* hidden by default */
+            display: none;
             position: absolute;
             right: 0;
             top: 60px;
@@ -82,7 +80,6 @@
             background-color: #f7fafc;
         }
 
-        /* Sidebar toggle button */
         #sidebar-toggle {
             background-color: transparent;
             color: #edf2f7;
@@ -95,9 +92,57 @@
         #sidebar-toggle:hover {
             color: #a0aec0;
         }
+
+        /* Sidebar Styles */
+        #admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #1a202c;
+            color: #edf2f7;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px; /* Add space for the navbar */
+        }
+
+        #admin-sidebar.active {
+            transform: translateX(0);
+        }
+
+        #admin-sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #admin-sidebar ul li {
+            margin: 20px 0;
+        }
+
+        #admin-sidebar ul li a {
+            color: #edf2f7;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+
+        #admin-sidebar ul li a:hover {
+            background-color: #2d3748;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Sidebar -->
+    <div id="admin-sidebar">
+        <ul>
+            <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ route('agencies.index') }}">Agencies</a></li>
+            <!-- Add other sidebar links here -->
+        </ul>
+    </div>
 
     <!-- Navbar -->
     <nav>
@@ -106,16 +151,12 @@
             &#9776; <!-- HTML entity for the hamburger icon -->
         </button>
 
-        <!-- Page Title -->
         <h2>Admin Dashboard</h2>
 
-        <!-- Admin Profile Dropdown -->
         <div class="relative">
             <button id="admin-profile-dropdown">
                 {{ Auth::guard('admin_user')->user()->name }}
             </button>
-
-            <!-- Dropdown Menu -->
             <div id="dropdown-menu">
                 <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf
@@ -143,11 +184,16 @@
             }
         });
 
-        // Toggle sidebar (if you implement one)
+        // Toggle sidebar visibility
         document.getElementById('sidebar-toggle').addEventListener('click', function() {
-            // Logic for toggling sidebar visibility
+            const sidebar = document.getElementById('admin-sidebar');
+            sidebar.classList.toggle('active');
         });
     </script>
 
+    <!-- Yield the content -->
+    <div>
+        @yield('content')
+    </div>
 </body>
 </html>

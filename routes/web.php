@@ -28,7 +28,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DirectHireController;
 use App\Http\Controllers\Auth\AdminUserController;
 use App\Http\Controllers\Auth\AdminDashboardController;
-
+use App\Http\Controllers\AgencyController;
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -38,7 +38,8 @@ Route::post('admin/logout', [AdminUserController::class, 'logout'])->name('admin
 // Admin Dashboard and Protected Routes
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    // Additional admin routes can be added here
+    Route::resource('agencies', AgencyController::class); // This creates all CRUD routes for the Agency resource
+
 });
 
 
