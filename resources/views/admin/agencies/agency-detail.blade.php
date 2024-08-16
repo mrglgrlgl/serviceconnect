@@ -20,7 +20,32 @@
         </div>
     </div>
 
-    <!-- You can add more sections here, like related users or services -->
+    <!-- Section for managing agency users -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Agency Users</h3>
+            <a href="{{ route('agencies.users.create', $agency->id) }}" class="btn btn-primary">Add Agency User</a>
+        </div>
+        <div class="card-body">
+            @if($agency->users->isEmpty())
+                <p>No agency users found.</p>
+            @else
+                <ul>
+                    @foreach($agency->users as $user)
+                        <li>
+                            <strong>{{ $user->name }}</strong> ({{ $user->email }})
+<a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="btn btn-warning">Edit</a>
+                            <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST" style="display: inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </div>
 </div>
 
 <style>
@@ -49,7 +74,7 @@
         margin: 0;
     }
 
-    .card-body p {
+    .card-body p, .card-body ul {
         margin: 5px 0;
     }
 
@@ -79,6 +104,21 @@
 
     .btn-warning {
         background-color: #ffc107;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
         color: white;
     }
 </style>

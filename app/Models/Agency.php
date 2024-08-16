@@ -17,5 +17,8 @@ class Agency extends Model
         'status',
     ];
     
-    // Optional: You could add some scopes or methods for common queries if needed.
+    public function users()
+    {
+        return $this->hasMany(AgencyUser::class);
+    }
 }
