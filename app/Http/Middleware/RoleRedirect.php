@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-
 class RoleRedirect
 {
     public function handle(Request $request, Closure $next)
@@ -16,30 +15,17 @@ class RoleRedirect
         }
 
         $userRole = Auth::user()->role;
-        $currentRoute = $request->route()->getName();
 
         switch ($userRole) {
             case 1:
-                if ($currentRoute !== 'authorizer.dashboard') {
-                    return redirect()->route('authorizer.dashboard');
-                }
-                break;
+                return redirect()->route('authorizer.dashboard');
             case 2:
-                if ($currentRoute !== 'provider.dashboard') {
-                    return redirect()->route('provider.dashboard');
-                }
-                break;
+                return redirect()->route('provider.dashboard');
             case 3:
-                if ($currentRoute !== 'dashboard') {
-                    return redirect()->route('dashboard');
-                }
-                break;
+                return redirect()->route('dashboard');
             default:
                 abort(403, 'Unauthorized action.');
         }
-
-        return $next($request); // Allow the request to proceed
     }
 }
-
 

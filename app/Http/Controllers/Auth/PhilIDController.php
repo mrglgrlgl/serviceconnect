@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PhilID;
 use App\Notifications\PhilIDRejected;
-
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 

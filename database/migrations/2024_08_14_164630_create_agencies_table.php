@@ -14,7 +14,7 @@ class CreateAgenciesTable extends Migration
             $table->string('email')->unique(); // Contact email for the agency
             $table->string('phone')->nullable(); // Contact phone number
             $table->string('address')->nullable(); // Physical address
-            $table->enum('status', ['active', 'inactive', 'pending'])->default('pending'); // Status of the agency
+            $table->enum('status', ['active', 'inactive'])->default('active'); // Status of the agency
             $table->timestamps();
         });
     }
