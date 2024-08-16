@@ -30,6 +30,8 @@ use App\Http\Controllers\Auth\AdminUserController;
 use App\Http\Controllers\Auth\AdminDashboardController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\CreateAgencyUserController;
+use App\Http\Controllers\Auth\AgencyUserController;
+
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
 Route::post('admin/login', [AdminUserController::class, 'login']);
@@ -42,6 +44,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], functio
     Route::resource('agencies.users', CreateAgencyUserController::class)->scoped([
         'user' => 'id',    ]);
 
+});
+// Add these to your routes/web.php
+
+Route::get('agency/login', [AgencyUserController::class, 'showLoginForm'])->name('agency.login');
+Route::post('agency/login', [AgencyUserController::class, 'login']);
+Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
+
+Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], function () {
+    Route::get('/home', function () {
+        // Point this to your home view
+        return view('agencyuser.home');
+    })->name('agency.home');  // Use agency.home instead of agency.dashboard
 });
 
 

@@ -10,7 +10,8 @@ class AgencyUserController extends Controller
 {
     public function showLoginForm()
     {
-        return view('agency.login');
+        // Ensure this points to the correct path in views
+        return view('agencyuser.login');
     }
 
     public function login(Request $request)
@@ -18,7 +19,7 @@ class AgencyUserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('agency_user')->attempt($credentials)) {
-            return redirect()->route('agency.dashboard');
+            return redirect()->route('agency.home');  // Redirect to agency.home
         }
 
         return back()->withErrors([
