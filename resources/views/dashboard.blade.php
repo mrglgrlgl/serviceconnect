@@ -1,5 +1,5 @@
 <x-dashboard>
-    <div class="relative w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto pt-8 overflow-hidden bg-gray-100">
+    {{-- <div class="relative w-full pt-8 mx-auto overflow-hidden bg-gray-100" style="max-width: calc(100% - 250px); margin-left: 250px;">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
                 <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
@@ -10,14 +10,14 @@
                 </x-nav-link>
             </div>
         </div>
+    </div> --}}
+
+    <div class="flex justify-center" style="max-width: calc(100% - 250px); margin-left: 250px;">
+        <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
 
-    <div class="flex justify-center">
-        <div class="border-t my-2 w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 text-center border-custom-cat-border"></div>
-    </div>
-
-    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
-        <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto flex justify-end">
+    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()" style="max-width: calc(100% - 250px); margin-left: 250px;">
+        <div class="w-full mx-auto flex justify-end">
             <div class="relative inline-block mb-4">
                 <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
                     <option value="all">All Requests</option>
@@ -29,8 +29,8 @@
             </div>
         </div>
 
-        <div class="py-12">
-            <div class="w-full md:w-10/12 lg:w-10/12 xl:w-8/12 2xl:w-6/12 mx-auto">
+        <div class="py-12 px-4 md:px-8 lg:px-16">
+            <div class="w-full mx-auto">
                 @if ($serviceRequests->isEmpty())
                     <div class="flex flex-col items-center">
                         <div class="alert-info mb-4 text-custom-danger">
@@ -43,7 +43,7 @@
                     </div>
                 @else
                     @foreach ($serviceRequests as $serviceRequest)
-                        <div class="servicerequestindividual p-4 shadow-sm rounded-lg md:mb-4 border bg-white border-gray-300"
+                        <div class="servicerequestindividual p-6 shadow-sm rounded-lg md:mb-4 border bg-white border-gray-300 mx-4"
                              :class="{ 'hidden': filter !== 'all' && filter !== '{{ $serviceRequest->status }}' }"
                              x-show="filter === 'all' || filter === '{{ $serviceRequest->status }}'">
                             <div class="flex justify-between items-start mb-4">
@@ -54,14 +54,14 @@
                                     <x-service-status :status="$serviceRequest->status" :class="($serviceRequest->status == 'completed') ? 'text-blue-500' : ''" />
                                 </div>
                                 <div class="text-sm text-custom-light-text md:mt-2">
-                                            @if (\Carbon\Carbon::parse($serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($serviceRequest->end_date)))
-                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }},
-                                            {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
-                                            {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
-                                        @else
-                                            {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
-                                            - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
-                                        @endif
+                                    @if (\Carbon\Carbon::parse($serviceRequest->start_date)->isSameDay(\Carbon\Carbon::parse($serviceRequest->end_date)))
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_date)->format('F j, Y') }},
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_time)->format('h:i A') }} -
+                                        {{ \Carbon\Carbon::parse($serviceRequest->end_time)->format('h:i A') }}
+                                    @else
+                                        {{ \Carbon\Carbon::parse($serviceRequest->start_date . ' ' . $serviceRequest->start_time)->format('F j, Y h:i A') }}
+                                        - {{ \Carbon\Carbon::parse($serviceRequest->end_date . ' ' . $serviceRequest->end_time)->format('F j, Y h:i A') }}
+                                    @endif
                                 </div>
                             </div>
 
@@ -70,38 +70,28 @@
                                     {{ $serviceRequest->title }}
                                 </div>
                                 <div class="flex items-center p-2">
-                                                    <span class="material-symbols-outlined text-gray-500">work</span>
-                                                    {{ $serviceRequest->job_type }}
-                                                </div>
-<div class="flex items-center p-2">
-                                                    <span class="material-symbols-outlined text-gray-500">request_quote</span>
-                                                    Price: 
-                                                    @if ($serviceRequest->min_price)
-                                                        {{ $serviceRequest->min_price }} -
-                                                    @endif
-                                                    {{ $serviceRequest->max_price }}
-                                                </div>
+                                    <span class="material-symbols-outlined text-gray-500">work</span>
+                                    {{ $serviceRequest->job_type }}
+                                </div>
+                                <div class="flex items-center p-2">
+                                    <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                    Price: 
+                                    @if ($serviceRequest->min_price)
+                                        {{ $serviceRequest->min_price }} -
+                                    @endif
+                                    {{ $serviceRequest->max_price }}
+                                </div>
 
                                 <div class="mb-4 text-custom-default-text">
                                     {{ $serviceRequest->description }}
                                 </div>
- <div class="flex items-center p-2">
-                                                    Estimated Duration: {{ $serviceRequest->estimated_duration }} {{ 'hours'}}
-                                                </div>
-
-   <div class="flex items-center p-2">
-                                                <span class="material-symbols-outlined text-red-500">location_on</span>
-                                                {{ $serviceRequest->location }}
-                                            </div>
-
-
-
-
-
-
-
-
-
+                                <div class="flex items-center p-2">
+                                    Estimated Duration: {{ $serviceRequest->estimated_duration }} {{ 'hours'}}
+                                </div>
+                                <div class="flex items-center p-2">
+                                    <span class="material-symbols-outlined text-red-500">location_on</span>
+                                    {{ $serviceRequest->location }}
+                                </div>
 
                                 <div class="mb-4">
                                     {{-- Request image here --}}
@@ -135,7 +125,6 @@
                                                 <span class="ml-1">Bid Confirmed</span>
                                             </div>
                                             <a href="{{ route('channel.seeker', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
-                                            {{-- <a href="{{ route('channel.seeker', ['serviceRequest' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a> --}}
                                         @else
                                             <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
                                             <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
