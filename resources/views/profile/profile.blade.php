@@ -1,6 +1,6 @@
 <x-app-layout class="font-open-sans">
-    <div class="mt-3 md:px-12 py-6 bg-white shadow-md sm:rounded-lg w-full md:w-3/5 mx-auto">
-        <div class="flex flex-col md:flex-row w-10/12 mx-auto">
+    <div class="mt-3 md:px-12 py-6 bg-white shadow-md sm:rounded-lg w-full mx-auto">
+        <div class="flex flex-col md:flex-row mx-auto">
             {{-- User Profile Picture --}}
             <div class="flex justify-center md:justify-start mb-4 md:mb-0">
                 @if ($providerDetail->profile_picture)

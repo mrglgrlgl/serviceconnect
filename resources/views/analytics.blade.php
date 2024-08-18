@@ -1,4 +1,4 @@
-<x-dashboard>
+<x-app-layout>
     {{-- <div class="relative w-full pt-8 mx-auto overflow-hidden bg-gray-100" style="max-width: calc(100% - 250px); margin-left: 250px;">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -120,4 +120,4 @@
             }
         });
     </script>
-</x-dashboard>
+</x-app-layout>

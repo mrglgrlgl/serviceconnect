@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12 font-open-sans">
-        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
+        <div class="w-full mx-auto">
             <div class="container mx-auto">
                 <div class="flex flex-wrap">
                     <div class="w-full">

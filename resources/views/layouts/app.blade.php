@@ -21,17 +21,20 @@
     <style>
         main {
             margin-left: 250px; /* Sidebar width */
-            padding: 20px;
+            padding: 40px 60px; /* Increase top/bottom padding to 40px and left/right to 60px */
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
+            box-sizing: border-box; /* Ensure padding is included in the width calculation */
         }
 
         .content-container {
-            max-width: calc(100% - 250px); /* Available width minus the sidebar */
-            padding: 20px; /* Add padding for separation */
+            max-width: 1400px; /* Set a max width for the content container */
+            width: 100%;
+            padding: 40px 60px; /* Increase padding inside the content container */
             margin: auto; /* Center the content horizontally */
+            box-sizing: border-box; /* Ensure padding is included in the width calculation */
         }
     </style>
 </head>

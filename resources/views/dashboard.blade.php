@@ -1,4 +1,4 @@
-<x-dashboard>
+<x-app-layout>
     {{-- <div class="relative w-full pt-8 mx-auto overflow-hidden bg-gray-100" style="max-width: calc(100% - 250px); margin-left: 250px;">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -12,11 +12,13 @@
         </div>
     </div> --}}
 
-    <div class="flex justify-center" style="max-width: calc(100% - 250px); margin-left: 250px;">
+<div>Service Requests</div>
+
+    <div class="flex justify-center">
         <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
 
-    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()" style="max-width: calc(100% - 250px); margin-left: 250px;">
+    <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full mx-auto flex justify-end">
             <div class="relative inline-block mb-4">
                 <select x-model="filter" class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
@@ -69,32 +71,34 @@
                                 <div class="font-semibold text-xl mb-2 text-custom-header">
                                     {{ $serviceRequest->title }}
                                 </div>
-                                <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined text-gray-500">work</span>
-                                    {{ $serviceRequest->job_type }}
-                                </div>
-                                <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined text-gray-500">request_quote</span>
-                                    Price: 
-                                    @if ($serviceRequest->min_price)
-                                        {{ $serviceRequest->min_price }} -
-                                    @endif
-                                    {{ $serviceRequest->max_price }}
-                                </div>
-
-                                <div class="mb-4 text-custom-default-text">
-                                    {{ $serviceRequest->description }}
-                                </div>
-                                <div class="flex items-center p-2">
-                                    Estimated Duration: {{ $serviceRequest->estimated_duration }} {{ 'hours'}}
-                                </div>
+                                
                                 <div class="flex items-center p-2">
                                     <span class="material-symbols-outlined text-red-500">location_on</span>
                                     {{ $serviceRequest->location }}
                                 </div>
 
-                                <div class="mb-4">
-                                    {{-- Request image here --}}
+                                <!-- Combine Project Type, Price, and Estimated Duration in one line -->
+                                <div class="flex items-center space-x-4 p-2 text-gray-700">
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-gray-500">work</span>
+                                        {{ $serviceRequest->job_type }}
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                        Price: 
+                                        @if ($serviceRequest->min_price)
+                                            {{ $serviceRequest->min_price }} -
+                                        @endif
+                                        {{ $serviceRequest->max_price }}
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-gray-500">schedule</span>
+                                        Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 text-custom-default-text">
+                                    {{ $serviceRequest->description }}
                                 </div>
 
                                 <div class="flex justify-between items-center">
@@ -129,6 +133,7 @@
                                             <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
                                             <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
                                         @endif
+                                        
 
                                         @if ($serviceRequest->status == 'completed')
                                             <!-- Display Report Link or Label -->
@@ -355,4 +360,4 @@
             }
         }
     </script>
-</x-dashboard>
+</x-app-layout>

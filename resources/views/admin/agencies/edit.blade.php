@@ -1,103 +1,54 @@
-@extends('layouts.admin_navigation')
+<x-dashboard>
+    <div class="max-w-lg mx-auto p-6 bg-gray-800 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4 text-white">Edit Agency</h2>
 
-@section('content')
-<div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Edit Agency</h2>
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-500 text-white rounded-lg">
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+        <form action="{{ route('agencies.update', $agency->id) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-    <form action="{{ route('agencies.update', $agency->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+            <div class="space-y-2">
+                <label for="name" class="block text-white font-medium">Name</label>
+                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $agency->name) }}">
+            </div>
 
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $agency->name) }}">
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $agency->email) }}">
-        </div>
-        
-        <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone', $agency->phone) }}">
-        </div>
-        
-        <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" name="address" id="address" class="form-control" value="{{ old('address', $agency->address) }}">
-        </div>
+            <div class="space-y-2">
+                <label for="email" class="block text-white font-medium">Email</label>
+                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $agency->email) }}">
+            </div>
 
-        <div class="form-group">
-            <label for="status">Status</label>
-            <select name="status" id="status" class="form-control">
-                <option value="active" {{ $agency->status == 'active' ? 'selected' : '' }}>Active</option>
-                <option value="inactive" {{ $agency->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
-            </select>
-        </div>
+            <div class="space-y-2">
+                <label for="phone" class="block text-white font-medium">Phone</label>
+                <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone', $agency->phone) }}">
+            </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Update Agency</button>
-    </form>
-</div>
+            <div class="space-y-2">
+                <label for="address" class="block text-white font-medium">Address</label>
+                <input type="text" name="address" id="address" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('address', $agency->address) }}">
+            </div>
 
-<style>
-    /* Basic styling for the form */
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+            <div class="space-y-2">
+                <label for="status" class="block text-white font-medium">Status</label>
+                <select name="status" id="status" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="active" {{ $agency->status == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ $agency->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
+            </div>
 
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    label {
-        font-weight: bold;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        border: none;
-    }
-
-    .alert {
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-        margin-bottom: 20px;
-    }
-</style>
-@endsection
+            <div>
+                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Update Agency
+                </button>
+            </div>
+        </form>
+    </div>
+</x-dashboard>
