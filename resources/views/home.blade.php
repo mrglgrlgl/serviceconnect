@@ -1,4 +1,4 @@
-<x-seekerhome>
+<x-app-layout>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -136,4 +136,4 @@
             window.location.href = '/direct-hire/create/' + providerId;
         }
     </script>
-</x-seekerhome>
+</x-app-layout>

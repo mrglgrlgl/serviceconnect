@@ -30,7 +30,7 @@
         }
 
         .content-container {
-            /* max-width: 1400px; Set a max width for the content container */
+            max-width: 1400px; /* Set a max width for the content container */
             width: 100%;
             padding: 40px 60px; /* Increase padding inside the content container */
             margin: auto; /* Center the content horizontally */
@@ -40,11 +40,11 @@
 </head>
     
     <body class="antialiased">
-        <div class="min-h-screen bg-custom-admin-bg">
+        <div class="min-h-screen bg-gray-100">
     
             {{-- Sidebar inclusion --}}
-
-            @include('layouts.admin_navigation')
+    
+            @include('layouts.agencyuser-navigation')
     
             {{-- Main Content Area --}}
             <main>
@@ -52,10 +52,8 @@
                     {{ $slot }}
                 </div>
             </main>
-    
         </div>
     </body>
-    
     </html>
 {{-- @extends('layouts.app')
 

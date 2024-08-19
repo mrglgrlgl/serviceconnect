@@ -37,6 +37,7 @@ export default {
             fontFamily: {
                 'open-sans': ['Open Sans', 'sans-serif'],
                 'nunito-sans': ['Nunito Sans', 'sans-serif'],
+                'poppins': ['Poppins Sans', 'sans-serif']
             },
             fontSize: {
                 'xs': '0.75rem', // Extra small         12px
@@ -50,6 +51,8 @@ export default {
             },
             colors: {
                 custom: {
+                    'admin-bg': '#1B2028',
+                    'admin-secondary': '#151A21',
                     'bg': '#FAFAFA',
                     'default-text': '#2F3033',
                     'light-blue': '#204860',

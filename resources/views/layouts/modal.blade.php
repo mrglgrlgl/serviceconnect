@@ -1,11 +1,11 @@
-<x-dashboard>
-    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full md:w-5/12 mx-auto">
+<x-app-layout>
+    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full max-w-lg mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue">
                 {{ __('Create Service Request') }}
             </div>
 
-            <div class="w-full md:w-7/12 space-y-6 mx-auto mt-4">
+            <div class="w-full space-y-6 mx-auto mt-4">
                 <form id="serviceRequestForm" action="{{ route('service-requests.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -111,11 +111,11 @@
 
 <div class="text-xl mt-8 text-gray-800"><strong>Price Range</strong></div>
 <div class="mb-3" id="minPriceContainer">
-    <label for="min_price" class="form-label">Minimum Price</label>
+    <label for="min_price" class="form-label">Minimum Expected Price</label>
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" />
 </div>
 <div class="mb-3" id="maxPriceContainer">
-    <label for="max_price" class="form-label">Maximum Price</label>
+    <label for="max_price" class="form-label">Maximum Expected Price</label>
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" />
 </div>
 
@@ -312,4 +312,4 @@
             document.getElementById('max_price').addEventListener('blur', validateMinMax);
         });
     </script>
-</x-dashboard>
+</x-app-layout>

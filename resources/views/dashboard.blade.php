@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="mt-4 mx-12">
-                                <div class="font-semibold text-xl mb-2 text-custom-header">
+                                <div class="font-semibold text-xl mb-2 text-gray-800">
                                     {{ $serviceRequest->title }}
                                 </div>
                                 

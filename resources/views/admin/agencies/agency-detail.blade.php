@@ -1,8 +1,8 @@
 <x-dashboard>
     <div class="max-w-4xl mx-auto p-4">
-        <h2 class="text-2xl font-bold mb-4">{{ $agency->name }} Details</h2>
+        <h2 class="text-2xl font-bold mb-4 text-white">{{ $agency->name }} Details</h2>
 
-        <div class="bg-gray-800 text-white rounded-lg shadow-lg p-5 mb-5">
+        <div class="bg-custom-admin-secondary text-white rounded-lg shadow-lg p-5 mb-5">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Agency Information</h3>
             </div>
@@ -19,14 +19,14 @@
                 </p>
             </div>
             <div class="mt-4">
-                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-block px-4 py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600">
-                    Edit Agency
+                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-block px-4 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600">
+                    <span class="material-icons-round mr-1">edit</span> Edit Agency
                 </a>
             </div>
         </div>
 
         <!-- Section for managing agency users -->
-        <div class="bg-gray-800 rounded-lg shadow-lg p-5 text-white">
+        <div class="bg-custom-admin-secondary rounded-lg shadow-lg p-5 text-white">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">Agency Users</h3>
                 <a href="{{ route('agencies.users.create', $agency->id) }}" class="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600">
@@ -44,14 +44,14 @@
                                     <strong>{{ $user->name }}</strong> ({{ $user->email }})
                                 </div>
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="px-3 py-2 bg-yellow-500 text-white font-bold rounded-md hover:bg-yellow-600">
-                                        Edit
+                                    <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="px-3 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600">
+                                        <span class="material-icons-round mr-1">edit</span>
                                     </a>
                                     <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="px-3 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600">
-                                            Delete
+                                            <span class="material-icons-round mr-1">delete</span>
                                         </button>
                                     </form>
                                 </div>
