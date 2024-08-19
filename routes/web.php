@@ -31,6 +31,7 @@ use App\Http\Controllers\Auth\AdminDashboardController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\CreateAgencyUserController;
 use App\Http\Controllers\Auth\AgencyUserController;
+use App\Http\Controllers\EmployeeController;
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -52,14 +53,30 @@ Route::post('agency/login', [AgencyUserController::class, 'login']);
 Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], function () {
+    
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('agency.employees');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('agency.employees.create');
+
+    // Store the new employee in the database
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('agency.employees.store');
+
+    // Show the form to edit an existing employee
+    Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('agency.employees.edit');
+
+    // Update an existing employee in the database
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('agency.employees.update');
+
+    // Delete an employee from the database
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('agency.employees.destroy');
+    
     Route::get('/home', function () {
-        // Point this to your home view
         return view('agencyuser.home');
     })->name('agency.home');  // Use agency.home instead of agency.dashboard
-    // Employee List
-    Route::get('/employees', function () {
-        return view('agencyuser.employee-list');
-    })->name('agency.employees');
+
+
+
+
+
 
     // Service Requests
     Route::get('/requests', function () {
