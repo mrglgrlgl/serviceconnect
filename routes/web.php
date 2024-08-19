@@ -56,6 +56,31 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], funct
         // Point this to your home view
         return view('agencyuser.home');
     })->name('agency.home');  // Use agency.home instead of agency.dashboard
+    // Employee List
+    Route::get('/employees', function () {
+        return view('agencyuser.employee-list');
+    })->name('agency.employees');
+
+    // Service Requests
+    Route::get('/requests', function () {
+        return view('agencyuser.service-requests');
+    })->name('agency.requests');
+
+    // Reports
+    Route::get('/reports', function () {
+        return view('agencyuser.reports');
+    })->name('agency.reports');
+
+    // Analytics
+    Route::get('/analytics', function () {
+        return view('agencyuser.analytics');
+    })->name('agency.analytics');
+
+    // Agency Settings
+    Route::get('/settings', function () {
+        return view('agencyuser.agency-settings');
+    })->name('agency.settings');
+
 });
 
 
