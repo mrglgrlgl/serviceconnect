@@ -1,6 +1,6 @@
 @props(['href', 'icon', 'active' => false])
 
-<a href="{{ $href }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ $active ? 'bg-blue-200 text-blue-700' : '' }}">
+<a href="{{ $href }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ $active ? 'bg-blue-200 text-blue-800' : '' }}">
     <span class="material-icons">{{ $icon }}</span>
     <span class="mx-2 text-sm font-medium">{{ $slot }}</span>
 </a>

@@ -1,28 +1,26 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Agency extends Model
+class Employee extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'agency_id',
         'name',
         'email',
         'phone',
-        'address',
-        'status',
+        'position',
+        'gender',
+        'birthdate',
+        'photo',
     ];
-    
-    public function users()
+
+    public function agency()
     {
-        return $this->hasMany(AgencyUser::class);
-    }
-    public function employees()
-    {
-        return $this->hasMany(Employee::class);
+        return $this->belongsTo(Agency::class);
     }
 }

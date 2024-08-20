@@ -53,6 +53,8 @@ export default {
                 custom: {
                     'admin-bg': '#1B2028',
                     'admin-secondary': '#151A21',
+                    'agency-bg': '#303333',
+                    'agency-secondary': '#2B5F6D',
                     'bg': '#FAFAFA',
                     'default-text': '#2F3033',
                     'light-blue': '#204860',

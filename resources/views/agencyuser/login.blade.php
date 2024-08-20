@@ -1,7 +1,4 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    {{-- <x-auth-session-status class="mb-4" :status="session('status')" /> --}}
-
     <div class="grid grid-cols-1 md:grid-cols-2 w-full mx-auto pb-6">
         <!-- Login Form on the Left -->
         <div class="md:col-span-1 order-1 md:order-1 p-16 border border-r-0 bg-white border-l-lg border-r-none border-gray-300">
@@ -45,9 +42,16 @@
 
                 <!-- Login button -->
                 <div class="mt-4">
-                    <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent bg-gradient-to-r from-sky-900 to-cyan-600">
+                    <x-primary-button class="h-12 w-full justify-center text-white text-xl border-transparent bg-gradient-to-r from-sky-900 to-cyan-600 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                         {{ __('Log in') }}
                     </x-primary-button>
+                </div>
+
+                <!-- Login as a Seeker instead -->
+                <div class="mt-4 text-center">
+                    <a href="{{ route('login') }}" class="text-sm text-cyan-600 hover:text-cyan-900 underline">
+                        {{ __('Login as a Seeker instead.') }}
+                    </a>
                 </div>
             </form>
         </div>
