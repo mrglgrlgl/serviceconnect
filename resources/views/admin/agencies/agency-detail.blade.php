@@ -46,7 +46,32 @@
             @endif
         </div>
     </div>
+
+
+    <div class="card">
+    <div class="card-header">
+        <h3>Agency Updates</h3>
+    </div>
+    <div class="card-body">
+        @if($agency->pendingUpdates && !$agency->pendingUpdates->isEmpty())
+            <ul>
+                @foreach($agency->pendingUpdates as $update)
+                    <li>
+                        <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->status }}
+                        <a href="{{ route('admin.agency.update.review', $update->id) }}" class="btn btn-info btn-sm">Review</a>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p>No pending updates.</p>
+        @endif
+    </div>
 </div>
+</div>
+
+
+
+
 
 <style>
     .container {
