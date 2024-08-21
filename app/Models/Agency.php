@@ -30,8 +30,10 @@ class Agency extends Model
     {
         return $this->hasMany(AgencyUpdate::class)->where('status', 'pending');
     }
+
     public function services()
     {
         return $this->hasMany(AgencyService::class);
     }
+  
 }

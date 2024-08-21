@@ -314,7 +314,7 @@ Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController:
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
 // routes/web.php
-Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
+Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
 Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 // Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
