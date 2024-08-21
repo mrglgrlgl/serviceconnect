@@ -28,6 +28,39 @@
                     <a href="{{ route('agency.settings.edit') }}" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">Edit Agency</a>
                 </div>
             @endif
+
+                    <!-- Services Section -->
+            <div class="mt-5">
+                <h3>Services Offered</h3>
+                <a href="{{ route('agencies.services.create', $agency->id) }}" class="btn btn-primary mb-3">Add New Service</a>
+
+                @if($agency->services->isEmpty())
+                    <p>No services found for this agency.</p>
+                @else
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Description</th>
+                                {{-- <th>Created By</th>
+                                <th>Actions</th> --}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($agency->services as $service)
+                                <tr>
+                                    <td>{{ $service->service_name }}</td>
+                                    <td>{{ $service->description }}</td>
+                                    {{-- <td>{{ $service->creator ? $service->creator->name : 'N/A' }}</td> --}}
+                                    <td>
+                                        <!-- Future actions like edit or delete can be added here -->
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
         @else
             <p style="color: #ff0000;">No agency data found.</p>
         @endif

@@ -10,35 +10,32 @@ use App\Models\ServiceRequest;
 use App\Notifications\BidPlacedNotification;
 use App\Notifications\BidConfirmed;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Auth; // Ensure this line is present
+
 
 class BidController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'service_request_id' => 'required|exists:service_requests,id',
-            'bid_amount' => 'required|numeric',
-            'bid_description' => 'required|string',
-            'agreed_to_terms' => 'accepted',
-        ]);
-
+        // Ensure 'agency_user' guard is used to get the authenticated user's ID
+        $bidderId = Auth::guard('agency_user')->id(); // Use id() to get the authenticated user ID
+    
         $bid = Bid::create([
             'service_request_id' => $request->service_request_id,
-            'bidder_id' => auth()->user()->id,
+            'bidder_id' => $bidderId, // Set bidder_id using the correct guard
             'bid_amount' => $request->bid_amount,
             'bid_description' => $request->bid_description,
             'status' => 'pending',
         ]);
-
+    
         // Increment number_of_bids
         $serviceRequest = ServiceRequest::findOrFail($request->service_request_id);
         $serviceRequest->increment('number_of_bids');
-
+    
         // Notify the seeker (service request owner)
-        $seeker = $serviceRequest->user;
-        $seeker->notify(new BidPlacedNotification($bid, $serviceRequest));
-
-        return redirect()->back()->with('success', 'Bid placed successfully.');
+        // Add your notification code here
+    
+        return response()->json(['success' => true, 'message' => 'Bid placed successfully']);
     }
 
     public function index($serviceRequestId)
@@ -50,29 +47,68 @@ class BidController extends Controller
         return response()->json($bids);
     }
 
-    public function confirm(Request $request, $bidId)
+    public function create($id)
     {
-        try {
-            $bid = Bid::findOrFail($bidId);
-            if ($bid->status == 'accepted') {
-                return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
-            }
-
-            $bid->update(['status' => 'accepted']);
-            $serviceRequest = $bid->serviceRequest;
-            $serviceRequest->update(['provider_id' => $bid->bidder_id, 'status' => 'in_progress']);
-
-            Notification::send($bid->bidder, new BidConfirmed($bid, $serviceRequest));
-            Bid::where('service_request_id', $bid->service_request_id)
-                ->where('id', '!=', $bidId)
-                ->update(['status' => 'rejected']);
-
-            return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
-        } catch (\Exception $e) {
-            \Log::error('Error confirming bid: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
-        }
+        \Log::info('Create method called with ID: ' . $id);
+        $serviceRequest = ServiceRequest::findOrFail($id);
+        return view('agencyuser.place-bid', compact('serviceRequest'));
     }
+    
+    
+    
+
+    public function show($id)
+    {
+        $serviceRequest = ServiceRequest::findOrFail($id);
+        return view('agencyuser.service-requests', compact('serviceRequest'));
+    }
+    // public function confirm(Request $request, $bidId)
+    // {
+    //     try {
+    //         $bid = Bid::findOrFail($bidId);
+    //         if ($bid->status == 'accepted') {
+    //             return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
+    //         }
+
+    //         $bid->update(['status' => 'accepted']);
+    //         $serviceRequest = $bid->serviceRequest;
+    //         $serviceRequest->update(['provider_id' => $bid->bidder_id, 'status' => 'in_progress']);
+
+    //         Notification::send($bid->bidder, new BidConfirmed($bid, $serviceRequest));
+    //         Bid::where('service_request_id', $bid->service_request_id)
+    //             ->where('id', '!=', $bidId)
+    //             ->update(['status' => 'rejected']);
+
+    //         return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
+    //     } catch (\Exception $e) {
+    //         \Log::error('Error confirming bid: ' . $e->getMessage());
+    //         return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+    //     }
+    // }
+    public function confirm(Request $request, $bidId)
+{
+    try {
+        $bid = Bid::findOrFail($bidId);
+        if ($bid->status == 'accepted') {
+            return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
+        }
+
+        $bid->update(['status' => 'accepted']);
+        $serviceRequest = $bid->serviceRequest;
+        $serviceRequest->update(['agency_user_id' => $bid->bidder_id, 'status' => 'in_progress']);  // Updated field
+
+        Notification::send($bid->bidder, new BidConfirmed($bid, $serviceRequest));
+        Bid::where('service_request_id', $bid->service_request_id)
+            ->where('id', '!=', $bidId)
+            ->update(['status' => 'rejected']);
+
+        return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
+    } catch (\Exception $e) {
+        \Log::error('Error confirming bid: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+    }
+}
+
 
     public function update(Request $request, $id)
     {

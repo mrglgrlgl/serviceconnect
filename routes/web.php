@@ -32,6 +32,7 @@ use App\Http\Controllers\Auth\AgencyUserController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AgencySettingsController;
 use App\Http\Controllers\AdminAgencyReviewController;
+use App\Http\Controllers\AgencyServiceController;
 
 
 // Admin User Authentication Routes
@@ -63,6 +64,14 @@ Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('age
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], function () {
 
+    Route::get('/bids/create/{id}', [BidController::class, 'create'])->name('bids.create');
+    Route::post('/place-bid', [BidController::class, 'store'])->name('bids.store');
+   Route::get('/placebid/{id}', [BidController::class, 'show'])->name('placebid');
+
+    Route::get('/{agency}/settings', [AgencyServiceController::class, 'index'])->name('agencyservice.settings');
+
+    Route::get('/{agency}/services/create', [AgencyServiceController::class, 'create'])->name('agencies.services.create');
+    Route::post('/{agency}/services', [AgencyServiceController::class, 'store'])->name('agencies.services.store');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('agency.employees');
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('agency.employees.create');
@@ -111,12 +120,7 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], funct
     Route::patch('/requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('agency.requests.update');
     Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('agency.requests.destroy');
 
-    // Bids
-    Route::post('/bids', [BidController::class, 'store'])->name('agency.bids.store');
-    Route::get('/requests/{serviceRequest}/bids', [BidController::class, 'index'])->name('agency.bids.index');
-    Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('agency.bids.confirm');
-    Route::patch('/bids/{bid}', [BidController::class, 'update'])->name('agency.bids.update');
-    Route::get('/bids/{bid}/edit', [BidController::class, 'edit'])->name('agency.bids.edit');
+    
 });
 
 
@@ -310,7 +314,7 @@ Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController:
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
 // routes/web.php
-Route::post('/bids', [BidController::class, 'store'])->name('bids.store');
+Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
 Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 // Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
