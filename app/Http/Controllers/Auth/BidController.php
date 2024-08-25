@@ -35,7 +35,10 @@ class BidController extends Controller
         // Notify the seeker (service request owner)
         // Add your notification code here
     
-        return response()->json(['success' => true, 'message' => 'Bid placed successfully']);
+        // return response()->json(['success' => true, 'message' => 'Bid placed successfully']);
+        //         return view('.serviagencyuserce-requests');
+                return redirect(agencyuser.service-requests);
+
     }
 
     public function index($serviceRequestId)

@@ -25,4 +25,10 @@ class AgencyService extends Model
     {
         return $this->belongsTo(AgencyUser::class, 'created_by');
     }
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_service_assignments', 'service_id', 'employee_id')
+                    ->withPivot('agency_id', 'assigned_at');
+    }
+    
 }

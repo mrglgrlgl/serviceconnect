@@ -18,6 +18,7 @@
         @csrf
         @method('PUT')
 
+        <!-- Employee Details Fields -->
         <div class="mb-4">
             <label for="name" class="block text-gray-700">Name</label>
             <input type="text" name="name" id="name" class="block mt-1 w-full" value="{{ old('name', $employee->name) }}">
@@ -53,9 +54,36 @@
                 <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" width="100" class="mt-2">
             @endif
         </div>
+
+        <!-- Bootstrap Dropdown for Assigning Services -->
+        <div class="mb-4">
+            <label for="services" class="block text-gray-700">Assign Services</label>
+            
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle mt-1 w-full text-left" type="button" id="servicesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Services
+                </button>
+                <ul class="dropdown-menu w-full" aria-labelledby="servicesDropdown">
+                    @foreach($agency->services as $service)
+                        <li>
+                            <label class="dropdown-item">
+                                <input type="checkbox" name="services[]" value="{{ $service->id }}"
+                                       {{ $employee->services->contains($service->id) ? 'checked' : '' }}>
+                                {{ $service->service_name }} - {{ $service->description }}
+                            </label>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
         <div>
             <button type="submit" class="btn btn-primary">Update Employee</button>
         </div>
     </form>
 </div>
+
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

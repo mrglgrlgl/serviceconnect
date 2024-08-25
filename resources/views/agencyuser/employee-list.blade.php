@@ -139,6 +139,7 @@
         }
     </style>
 
+
     <div class="container">
         <h1>Employee List</h1>
 
@@ -165,6 +166,7 @@
                             <th>Position</th>
                             <th>Gender</th>
                             <th>Birthdate</th>
+                            <th>Services</th> <!-- Add Services Column -->
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -184,6 +186,12 @@
                                 <td>{{ $employee->position }}</td>
                                 <td>{{ ucfirst($employee->gender) }}</td>
                                 <td>{{ $employee->birthdate }}</td>
+                               <td>
+    @foreach($employee->services as $service)
+        <span class="badge bg-info">{{ $service->service_name }}</span>
+    @endforeach
+</td>
+
                                 <td class="actions-container">
                                     <a href="{{ route('agency.employees.edit', $employee->id) }}" class="btn btn-warning">
                                         <i class="fas fa-edit"></i> Edit
@@ -202,5 +210,5 @@
                 </table>
             </div>
         @endif
-    </div>
+
 @endsection
