@@ -16,7 +16,7 @@
             @csrf
             @method('PUT')
 
-            <!-- Name and Email Fields -->
+            <!-- Employee Details Fields -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -26,10 +26,6 @@
                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" name="email" id="email" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value="{{ old('email', $employee->email) }}">
                 </div>
-            </div>
-
-            <!-- Phone and Position Fields -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
                     <input type="text" name="phone" id="phone" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value="{{ old('phone', $employee->phone) }}">
@@ -38,10 +34,6 @@
                     <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
                     <input type="text" name="position" id="position" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" value="{{ old('position', $employee->position) }}">
                 </div>
-            </div>
-
-            <!-- Gender and Birthdate Fields -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
                     <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
                     <select name="gender" id="gender" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -65,19 +57,19 @@
                 @endif
             </div>
 
-           <!-- Assign Services Section -->
-<div class="mt-6">
-    <label class="block text-sm font-medium text-gray-700">Assign Services</label>
-    <div class="mt-2">
-        @foreach($services as $service)
-            <div class="flex items-center mb-2">
-                <input type="checkbox" name="services[]" id="service-{{ $service->id }}" value="{{ $service->id }}" 
-                    {{ in_array($service->id, $employee->services->pluck('id')->toArray()) ? 'checked' : '' }} class="mr-2">
-                <label for="service-{{ $service->id }}" class="text-sm text-gray-600">{{ $service->service_name }}</label>
+            <!-- Assign Services Section -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700">Assign Services</label>
+                <div class="mt-2">
+                    @foreach($agency->services as $service)
+                        <div class="flex items-center mb-2">
+                            <input type="checkbox" name="services[]" id="service-{{ $service->id }}" value="{{ $service->id }}"
+                                {{ $employee->services->contains($service->id) ? 'checked' : '' }} class="mr-2">
+                            <label for="service-{{ $service->id }}" class="text-sm text-gray-600">{{ $service->service_name }} - {{ $service->description }}</label>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        @endforeach
-    </div>
-</div>
 
             <div class="text-center mt-6">
                 <button type="submit" class="bg-custom-light-blue text-white py-3 px-6 rounded-md font-semibold shadow-md hover:bg-blue-600 transition ease-in-out duration-300">
