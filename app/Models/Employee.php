@@ -23,4 +23,13 @@ class Employee extends Model
     {
         return $this->belongsTo(Agency::class);
     }
+    
+    public function services()
+    {
+        return $this->belongsToMany(AgencyService::class, 'employee_service_assignments', 'employee_id', 'service_id')
+                    ->withPivot('agency_id', 'assigned_at')
+                    ->withTimestamps();
+    }
+    
+
 }

@@ -15,6 +15,7 @@ class Agency extends Model
         'phone',
         'address',
         'status',
+        'logo_path',
     ];
     
     public function users()
@@ -24,5 +25,13 @@ class Agency extends Model
     public function employees()
     {
         return $this->hasMany(Employee::class);
+    }
+    public function pendingUpdates()
+    {
+        return $this->hasMany(AgencyUpdate::class)->where('status', 'pending');
+    }
+    public function services()
+    {
+        return $this->hasMany(AgencyService::class);
     }
 }

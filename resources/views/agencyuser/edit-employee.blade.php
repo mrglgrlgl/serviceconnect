@@ -65,6 +65,20 @@
                 @endif
             </div>
 
+           <!-- Assign Services Section -->
+<div class="mt-6">
+    <label class="block text-sm font-medium text-gray-700">Assign Services</label>
+    <div class="mt-2">
+        @foreach($services as $service)
+            <div class="flex items-center mb-2">
+                <input type="checkbox" name="services[]" id="service-{{ $service->id }}" value="{{ $service->id }}" 
+                    {{ in_array($service->id, $employee->services->pluck('id')->toArray()) ? 'checked' : '' }} class="mr-2">
+                <label for="service-{{ $service->id }}" class="text-sm text-gray-600">{{ $service->service_name }}</label>
+            </div>
+        @endforeach
+    </div>
+</div>
+
             <div class="text-center mt-6">
                 <button type="submit" class="bg-custom-light-blue text-white py-3 px-6 rounded-md font-semibold shadow-md hover:bg-blue-600 transition ease-in-out duration-300">
                     <span class="material-icons align-middle">save</span> Update Employee

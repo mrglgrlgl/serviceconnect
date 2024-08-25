@@ -42,6 +42,6 @@ class ReportController extends Controller
 public function index()
 {
     $reports = Report::with(['reportedBy', 'reportedUser', 'serviceRequest'])->get();
-    return view('authorizer.reports', compact('reports'));
+    return view('agencyuser.reports', compact('reports'));
 }
 }

@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Models\AgencyService;
 
 class EmployeeController extends Controller
 {
     public function index()
-    {
-        // Retrieve the agency ID of the currently logged-in user
-        $agency = auth()->user()->agency;
-
-        // Retrieve all employees belonging to the user's agency
-        $employees = Employee::where('agency_id', $agency->id)->get();
+{
+    // Retrieve the agency ID of the currently logged-in user
+    $agency = auth()->user()->agency;
     
-        // Pass the employees and agency to the view
-        return view('agencyuser.employee-list', compact('employees', 'agency'));
-    }
+    // Retrieve all employees belonging to the user's agency
+    $employees = Employee::where('agency_id', $agency->id)->with('services')->get();
+    
+    // Retrieve all services for the agency
+    $services = AgencyService::where('agency_id', $agency->id)->get();
+    
+    // Pass the employees, services, and agency to the view
+    return view('agencyuser.employee-list', compact('employees', 'services', 'agency'));
+}
+
+    
+    
 
     public function create()
     {
@@ -68,49 +75,69 @@ class EmployeeController extends Controller
     }
 
 
- public function edit(Employee $employee)
-{
-    // Ensure the employee belongs to the logged-in user's agency
-    // $this->authorize('view', $employee); // Remove this line if not using authorization
-
-    return view('agencyuser.edit-employee', compact('employee'));
-}
+    public function edit(Employee $employee)
+    {
+        // Ensure the employee belongs to the logged-in user's agency
+        $agency = auth()->user()->agency;
     
-public function update(Request $request, Employee $employee)
-{
-    // Removed authorization, assuming the user is already scoped to their own agency
+        // Retrieve the list of services for the agency
+        $services = AgencyService::where('agency_id', $agency->id)->get();
     
-    // Validate the request data
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:employees,email,' . $employee->id,
-        'phone' => 'nullable|string|max:15',
-        'position' => 'nullable|string|max:255',
-        'gender' => 'nullable|string|in:male,female,other',
-        'birthdate' => 'nullable|date',
-        'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    // Handle file upload if a photo is provided
-    if ($request->hasFile('photo')) {
-        $photoPath = $request->file('photo')->store('photos', 'public');
-    } else {
-        $photoPath = $employee->photo;
+        // Pass the employee, services, and agency to the view
+        return view('agencyuser.edit-employee', compact('employee', 'services', 'agency'));
     }
+    
+    
+    
+    public function update(Request $request, Employee $employee)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'phone' => 'required|string|max:20',
+            'position' => 'required|string|max:255',
+            'gender' => 'required|string|in:male,female,other',
+            'birthdate' => 'required|date',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+    
+        // Update employee details
+        $employee->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'position' => $request->position,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
+        ]);
+    
+        // Handle photo upload if provided
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos', 'public');
+            $employee->update(['photo' => $photoPath]);
+        }
+    
+        // Ensure $request->services is an array, even if it's empty
+        $services = $request->input('services', []);
+    
+        // Retrieve the agency ID of the currently logged-in user
+        $agencyId = auth()->user()->agency_id;
+    
+        // Sync services with the assigned_at timestamp and agency_id
+        $servicesWithTimestamps = [];
+        foreach ($services as $serviceId) {
+            $servicesWithTimestamps[$serviceId] = [
+                'assigned_at' => now(),
+                'agency_id' => $agencyId  // Ensure agency_id is included
+            ];
+        }
+        $employee->services()->sync($servicesWithTimestamps);
+    
+        return redirect()->route('agency.employees')->with('success', 'Employee updated successfully.');
+    }
+    
 
-    // Update the employee
-    $employee->update([
-        'name' => $request->name,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'position' => $request->position,
-        'gender' => $request->gender,
-        'birthdate' => $request->birthdate,
-        'photo' => $photoPath,
-    ]);
-
-    return redirect()->route('agency.employees')->with('success', 'Employee updated successfully.');
-}
 public function destroy(Employee $employee)
 {
     $employee->delete();
@@ -120,4 +147,3 @@ public function destroy(Employee $employee)
 
 
 }
-

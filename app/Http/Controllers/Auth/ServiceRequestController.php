@@ -13,70 +13,118 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Category;
 // use Illuminate\Support\Facades;
+use Illuminate\Support\Facades\DB;
 
 
 class ServiceRequestController extends Controller
 {
-
     public function retrieveByUserRole()
     {
         $user = Auth::user();
     
-        // Ensure the user is authenticated and has a role
+        // Check if the user is authenticated
         if (!$user) {
-            return redirect()->route('login');
+            return redirect()->route('login')->withErrors('You must be logged in to access this page.');
         }
     
-        // Determine if the user is a provider
-        if ($user->role == 2) {
-            $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
-            $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
+        // Retrieve service requests relevant to the authenticated user
+        $serviceRequests = ServiceRequest::where(function ($query) use ($user) {
+            $query->where('status', 'open')
+                  ->orWhere(function ($query) use ($user) {
+                      $query->where('provider_id', $user->id)
+                            ->where('is_direct_hire', true);
+                  });
+        })
+        ->with(['bids', 'user', 'images']) // Eager load necessary relationships
+        ->get();
     
-            // Retrieve service requests for the provider's category and direct hire requests for the provider
-            $serviceRequests = ServiceRequest::where(function ($query) use ($providerCategory, $user) {
-                $query->whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
-                      ->orWhere(function ($query) use ($user) {
-                          $query->where('provider_id', $user->id)
-                                ->where('is_direct_hire', true);
-                      });
-            })
-            ->with('images') // Eager load images
+        // Handle potential conflicts with in-progress requests
+        $conflictingRequests = [];
+        $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
+            ->where('status', 'in_progress')
             ->get();
     
-            // Get the count of certifications
-            $certificationsCount = $user->certifications()->count();
+        $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
     
-            // Find in-progress requests
-            $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
-                ->where('status', 'in_progress')
-                ->get();
-    
-            $conflictingRequests = [];
-            $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
-            $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
-
-            // Check for conflicts
-            foreach ($serviceRequests as $serviceRequest) {
-                foreach ($inProgressRequests as $inProgressRequest) {
-                    if ($serviceRequest->id !== $inProgressRequest->id &&
-                        (
-                            ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
-                            ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
-                        )) {
-                        $conflictingRequests[$serviceRequest->id] = true;
-                        break;
-                    }
+        // Check for conflicting service requests
+        foreach ($serviceRequests as $serviceRequest) {
+            foreach ($inProgressRequests as $inProgressRequest) {
+                if ($serviceRequest->id !== $inProgressRequest->id &&
+                    (
+                        ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
+                        ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
+                    )) {
+                    $conflictingRequests[$serviceRequest->id] = true;
+                    break;
                 }
             }
-        } else {
-            $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
-            $certificationsCount = 0; // Default value or handle accordingly
-            $conflictingRequests = []; // Default value or handle accordingly
         }
     
         // Pass data to the view
-        return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests','psaJobs'));
+        return view('agencyuser.service-requests', compact('serviceRequests', 'conflictingRequests', 'psaJobs'));
     }
+    
+
+    
+    // public function retrieveByUserRole()
+    // {
+    //     $user = Auth::user();
+    
+    //     // Ensure the user is authenticated and has a role
+    //     if (!$user) {
+    //         return redirect()->route('login');
+    //     }
+    
+    //     // Determine if the user is a provider
+    //     if ($user->role == 2) {
+    //         $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
+    //         $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
+    
+    //         // Retrieve service requests for the provider's category and direct hire requests for the provider
+    //         $serviceRequests = ServiceRequest::where(function ($query) use ($providerCategory, $user) {
+    //             $query->whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
+    //                   ->orWhere(function ($query) use ($user) {
+    //                       $query->where('provider_id', $user->id)
+    //                             ->where('is_direct_hire', true);
+    //                   });
+    //         })
+    //         ->with('images') // Eager load images
+    //         ->get();
+    
+    //         // Get the count of certifications
+    //         $certificationsCount = $user->certifications()->count();
+    
+    //         // Find in-progress requests
+    //         $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
+    //             ->where('status', 'in_progress')
+    //             ->get();
+    
+    //         $conflictingRequests = [];
+    //         $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
+    //         $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
+
+    //         // Check for conflicts
+    //         foreach ($serviceRequests as $serviceRequest) {
+    //             foreach ($inProgressRequests as $inProgressRequest) {
+    //                 if ($serviceRequest->id !== $inProgressRequest->id &&
+    //                     (
+    //                         ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
+    //                         ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
+    //                     )) {
+    //                     $conflictingRequests[$serviceRequest->id] = true;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //         $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
+    //         $certificationsCount = 0; // Default value or handle accordingly
+    //         $conflictingRequests = []; // Default value or handle accordingly
+    //     }
+    
+    //     // Pass data to the view
+    //     return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests','psaJobs'));
+    // }
     
 
     

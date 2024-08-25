@@ -1,11 +1,9 @@
 <?php
-// use App\Http\Controllers\RequestController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AddressController;
-// use App\Http\Controllers\Auth\BecomeProviderController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\ServiceRequestController;
@@ -32,6 +30,10 @@ use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\CreateAgencyUserController;
 use App\Http\Controllers\Auth\AgencyUserController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AgencySettingsController;
+use App\Http\Controllers\AdminAgencyReviewController;
+use App\Http\Controllers\AgencyServiceController;
+
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -45,6 +47,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], functio
     Route::resource('agencies.users', CreateAgencyUserController::class)->scoped([
         'user' => 'id',    ]);
 
+
+        Route::get('/agency-updates', [AdminAgencyReviewController::class, 'index'])->name('admin.agency.updates');
+        Route::get('/agency-updates/{id}/review', [AdminAgencyReviewController::class, 'review'])->name('admin.agency.update.review');
+        Route::post('/agency-updates/{id}/approve', [AdminAgencyReviewController::class, 'approve'])->name('admin.agency.update.approve');
+    Route::post('/agency-updates/{id}/reject', [AdminAgencyReviewController::class, 'reject'])->name('admin.agency.update.reject');
 });
 // Add these to your routes/web.php
 
@@ -52,8 +59,20 @@ Route::get('agency/login', [AgencyUserController::class, 'showLoginForm'])->name
 Route::post('agency/login', [AgencyUserController::class, 'login']);
 Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
+
+
+
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], function () {
-    
+
+    Route::get('/bids/create/{id}', [BidController::class, 'create'])->name('bids.create');
+    Route::post('/place-bid', [BidController::class, 'store'])->name('bids.store');
+   Route::get('/placebid/{id}', [BidController::class, 'show'])->name('placebid');
+
+    Route::get('/{agency}/settings', [AgencyServiceController::class, 'index'])->name('agencyservice.settings');
+
+    Route::get('/{agency}/services/create', [AgencyServiceController::class, 'create'])->name('agencies.services.create');
+    Route::post('/{agency}/services', [AgencyServiceController::class, 'store'])->name('agencies.services.store');
+
     Route::get('/employees', [EmployeeController::class, 'index'])->name('agency.employees');
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('agency.employees.create');
 
@@ -73,11 +92,6 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], funct
         return view('agencyuser.home');
     })->name('agency.home');  // Use agency.home instead of agency.dashboard
 
-
-
-
-
-
     // Service Requests
     Route::get('/requests', function () {
         return view('agencyuser.service-requests');
@@ -94,10 +108,19 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], funct
     })->name('agency.analytics');
 
     // Agency Settings
-    Route::get('/settings', function () {
-        return view('agencyuser.agency-settings');
-    })->name('agency.settings');
+    Route::get('/settings', [AgencySettingsController::class, 'showSettings'])->name('agency.settings');
+    Route::get('/settings/edit', [AgencySettingsController::class, 'editSettings'])->name('agency.settings.edit');
+    Route::put('/settings', [AgencySettingsController::class, 'updateSettings'])->name('agency.settings.update');
+    
 
+
+    Route::get('/requests', [ServiceRequestController::class, 'retrieveByUserRole'])->name('agency.requests');
+    Route::post('/requests', [ServiceRequestController::class, 'store'])->name('agency.requests.store');
+    Route::get('/requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('agency.requests.edit');
+    Route::patch('/requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('agency.requests.update');
+    Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('agency.requests.destroy');
+
+    
 });
 
 
@@ -112,22 +135,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
     Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
 
-       Route::get('/authorizer/reports', [ReportController::class, 'index'])->name('authorizer.reports');
+ 
 
 });
 
 Route::get('/view-profile/{providerId}', [ViewProfileController::class, 'show'])->name('view-profile');
 
-// Route::middleware(['auth', 'verified',])->group(function () {
-//     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
-// });
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-// Route to show the provider's profile
-// Route::get('/provider/profile', [ViewProfileController::class, 'edit'])->name('provider.profile.edit');
 
-// // Route to update the provider's profile
-// Route::post('/provider/profile/update', [ViewProfileController::class, 'update'])->name('provider.profile.update');
 Route::view('/terms', 'terms')->name('terms');
 
 
@@ -147,9 +163,6 @@ Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::c
 
 Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
 
-// Removed duplicate definitions
-// Route::get('/provider-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'providerChannel'])->name('provider-channel');
-// Route::get('/seeker-channel/{serviceRequestId}', [App\Http\Controllers\ChannelController::class, 'seekerChannel'])->name('seeker-channel');
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
@@ -177,20 +190,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/provider-search', [SearchController::class, 'search'])->name('provider.search');
 });
-// Route::group(['middleware' => ['auth', 'seeker']], function() {
-//     // Route::get('/seeker/dashboard', [SeekerController::class, 'dashboard'])->name('seeker.dashboard');
-//     // Other seeker routes
-// });
 
-// Route::group(['middleware' => ['auth', 'provider']], function() {
-//     Route::get('/provider/dashboard', [ProviderController::class, 'dashboard'])->name('provider.dashboard');
-//     // Other provider routes
-// });
-
-// Route::group(['middleware' => ['auth', 'authorizer']], function() {
-//     Route::get('/authorizer/dashboard', [AuthorizerController::class, 'dashboard'])->name('authorizer.dashboard');
-//     // Other authorizer routes
-// });
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::get('/', function (){
@@ -223,20 +223,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
 });
-// Route::get('/register', function () {
-//     return view('auth.register');
-// })->name('register');
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified','normal'])->name('dashboard');
-
-// Route::get('/provider/dashboard', function () {
-//     return view('provider.dashboard');
-// })->middleware(['auth', 'verified','provider'])->name('provider.dashboard');
-
-// Route::get('/authorizer/dashboard', function () {
-//     return view('authorizer.dashboard');
-// })->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
 
 Route::get('/home', function () {
     return view('home');
@@ -246,23 +232,13 @@ Route::get('/chat', function () {
     return view('chat'); 
 })->name('chat');
 
-// Route::get('/become-provider', function () {
-//     return view('auth.multistep.become_provider');
-// })->name('become-provider');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
 
-    // Route::get('/profile/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('user.profile.destroy');
 
-    // Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
-    // Route::post('/becomeprovider', [RequestController::class, 'store'])->name('becomeprovider');
-
-// Route::post('/requests', [RequestController::class, 'store'])->name('requests.store');
-// Route::post('/becomeprovider', [BecomeProviderController::class, 'store'])->name('becomeprovider.store');
 
 Route::get('provider-documents/{filename}', function ($filename) {
     $path = storage_path('app/provider/documents/' . $filename);
@@ -280,26 +256,11 @@ Route::get('provider-documents/{filename}', function ($filename) {
     return $response;
 })->name('provider.documents');
 // // Example web.php route definitions
-// Route::post('/requests/{requestList}/accept', [RequestController::class, 'accept'])->name('requests.accept');
-// Route::post('/requests/{requestList}/decline', [RequestController::class, 'decline'])->name('requests.decline');
 
 
     Route::get('/address/create/{userId}', [AddressController::class, 'create'])->name('address.create');
     Route::post('/address/store', [AddressController::class, 'store'])->name('address.store');
  
-    // Route::get('/authorizer/dashboard', [RequestController::class, 'index'])->middleware(['auth', 'verified','authorizer'])->name('authorizer.dashboard');
-
-    // For approved and pending requests
-    // Route::get('/authorizer/dashboard', [RequestController::class, 'dashboard'])->name('authorizer.dashboard');
-// Route::post('/requests/{request}/accept', [RequestController::class, 'accept'])->name('requests.accept');
-//become provider
-// Route::get('/become-provider', [BecomeProviderController::class, 'index'])->name('become-provider');
-// Route::post('/save-step1', [BecomeProviderController::class, 'saveStep1'])->name('save-step1');
-// Route::get('/bp_step2', [BecomeProviderController::class, 'showStep2Form'])->name('bp_step2');
-
-// Route::post('/save-step2', [BecomeProviderController::class, 'saveStep2'])->name('save-step2');
-// Route::get('/bp_step3', [BecomeProviderController::class, 'showStep3Form'])->name('bp_step3');
-// Route::post('/save-step3', [BecomeProviderController::class, 'saveStep3'])->name('save-step3');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile/view', [App\Http\Controllers\Auth\ProviderProfileController::class, 'show'])->name('profile.view');
@@ -318,9 +279,6 @@ Route::get('/certifications', [ProviderProfileController::class, 'showCertificat
 Route::post('/certifications', [ProviderProfileController::class, 'saveCertifications'])->name('certifications.save');
 // Route for handling the form submission
 
-// Route::post('/save-profile', [ProviderProfileController::class, 'saveProfileCreate'])->name('save-profile');
-// Route::get('/verify/certifications', [ProviderProfileController::class, 'showCertificationsForm'])->name('auth.verify.profile.certifications');
-// Route::post('/verify/certifications', [ProviderProfileController::class, 'saveCertifications']);
 
 // Store service requests
 Route::get('service-requests/create', [ServiceRequestController::class, 'create'])->name('service-requests.create');
@@ -344,11 +302,6 @@ Route::get('/provider/myrequests', [ServiceRequestController::class, 'myRequests
 
 
 Route::get('/service-requests', [ServiceRequestController::class, 'index'])->name('service-requests.index');
-// Route::post('/service-requests', [ServiceRequestController::class, 'store'])->name('service-requests.store');
-// Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('service-requests.edit');
-// Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('service-requests.edit');
-// Route::patch('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('service-requests.update');
-// Route::get('/service-requests/{id}/edit', 'ServiceRequestController@edit')->name('service-requests.edit');
 
 Route::patch('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('service-requests.update');
 Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('service-requests.edit');
@@ -358,7 +311,6 @@ Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController:
 
 
 
-// Route::delete('/service-requests/{id}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
 // routes/web.php
@@ -370,8 +322,6 @@ Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bid
 Route::patch('bids/{id}', [BidController::class, 'update'])->name('bids.update');
 Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bidders-profile');
 
-// Route::patch('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
-// Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bids.update');
 
 
 Route::get('/chat', function () {return view('chat');})->name('chat');
@@ -380,15 +330,6 @@ Route::get('/api/providers/{bidderId}', [BidController::class, 'getProviderProfi
 Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
 
 
-// Route for confirming a bid
-// Route for seekers
-// Route::get('/seeker-channel/{serviceRequest}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
-
-// Route for providers
-
-// Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-
-// Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 
 }); 
 Route::get('/profile/complete', [BidController::class, 'complete'])->name('profile.complete');

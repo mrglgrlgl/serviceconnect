@@ -26,6 +26,7 @@
                                 <th class="p-4 text-center">Position</th>
                                 <th class="p-4 text-center">Gender</th>
                                 <th class="p-4 text-center">Birthdate</th>
+                                <th class="p-4 text-center">Services</th> <!-- New column -->
                                 <th class="p-4 text-center">Actions</th>
                             </tr>
                         </thead>
@@ -45,6 +46,17 @@
                                     <td class="p-4 text-center">{{ $employee->position }}</td>
                                     <td class="p-4 text-center">{{ ucfirst($employee->gender) }}</td>
                                     <td class="p-4 text-center">{{ $employee->birthdate }}</td>
+                                    <td class="p-4 text-center">
+                                        @if($employee->services->isEmpty())
+                                            <span class="text-gray-500">No services</span>
+                                        @else
+                                            <ul class="list-disc list-inside pl-5">
+                                                @foreach($employee->services as $service)
+                                                    <li>{{ $service->name }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </td>
                                     <td class="p-4 text-center">
                                         <div class="flex justify-center space-x-2">
                                             <a href="{{ route('agency.employees.edit', $employee->id) }}" class="border-2 border-gray-600 text-gray-600 py-2 px-4 rounded-md font-semibold shadow-sm hover:bg-gray-600 hover:text-white hover:shadow-lg transition ease-in-out duration-300">
