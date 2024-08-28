@@ -30,7 +30,7 @@
     <div class="flex flex-col justify-between flex-1 mt-6">
         <nav class="-mx-3 space-y-6 ">
             <div class="space-y-3 ">
-                <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Admin</label>
+                <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Agency User</label>
 
                 <x-nav-link href="{{ route('agency.home') }}" icon="home" :active="request()->routeIs('agency.home')">
                     Home

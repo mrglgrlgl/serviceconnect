@@ -35,6 +35,11 @@ class Channel extends Model
         return $this->belongsTo(User::class, 'provider_id');
     }
 
+    public function agencyuser()
+    {
+        return $this->belongsTo(AgencyUser::class, 'provider_id'); // Correct relationship
+    }
+
     public function seeker()
     {
         return $this->belongsTo(User::class, 'seeker_id');
@@ -44,5 +49,7 @@ class Channel extends Model
     {
         return $this->belongsTo(Bid::class, 'bid_id');
     }
+
+
 }
 

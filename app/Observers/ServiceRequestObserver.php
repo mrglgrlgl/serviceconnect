@@ -21,6 +21,7 @@ class ServiceRequestObserver
      */
     public function updated(ServiceRequest $serviceRequest)
     {
+
         Log::info('ServiceRequestObserver updated method triggered', ['service_request_id' => $serviceRequest->id]);
 
         if ($serviceRequest->isDirty('status')) {

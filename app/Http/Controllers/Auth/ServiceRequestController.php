@@ -371,12 +371,84 @@ public function destroy($service_request = null)
     return view('layouts.modaledit', compact('serviceRequest'));
 }
 
-public function myRequests()
-{
-    $serviceRequests = ServiceRequest::whereHas('bids', function ($query) {
-        $query->where('bidder_id', auth()->user()->id);
-    })->get();
+// public function myRequests()
+// {
+//     $serviceRequests = ServiceRequest::whereHas('bids', function ($query) {
+//         $query->where('bidder_id', auth()->user()->id);
+//     })->get();
 
-    return view('provider.myrequests', compact('serviceRequests'));
+//     return view('provider.myrequests', compact('serviceRequests'));
+// }
+public function myRequests(Request $request)
+{
+    $filter = $request->input('filter', 'all');
+    $query = ServiceRequest::whereHas('bids', function ($query) {
+        $query->where('bidder_id', auth()->user()->id);
+    });
+
+    // Apply filter
+    switch ($filter) {
+        case 'sent_bids':
+            $query->whereHas('bids', function ($query) {
+                $query->where('status', 'open');
+            });
+            break;
+        case 'in_progress':
+            $query->where('status', 'in_progress');
+            break;
+        case 'completed':
+            $query->where('status', 'completed');
+            break;
+        case 'direct_hire':
+            $query->where('is_direct_hire', true);
+            break;
+    }
+
+    $serviceRequests = $query->get();
+
+    return view('provider.myrequests', compact('serviceRequests', 'filter'));
 }
+public function filterServiceRequests(Request $request)
+{
+    $filter = $request->input('filter', 'all'); // Get the filter option from the request, default to 'all'
+
+    $serviceRequests = ServiceRequest::query();
+
+    switch ($filter) {
+        case 'sent_bids':
+            // Show service requests where the current user has sent a bid and the request is still open
+            $serviceRequests->whereHas('bids', function ($query) {
+                $query->where('bidder_id', auth()->user()->id);
+            })->where('status', 'open');
+            break;
+
+        case 'in_progress':
+            // Show service requests where the current user's bid has been accepted and the status is 'in_progress'
+            $serviceRequests->whereHas('bids', function ($query) {
+                $query->where('bidder_id', auth()->user()->id)
+                      ->where('status', 'accepted');
+            })->where('status', 'in_progress');
+            break;
+
+        case 'completed':
+            // Show service requests that have been completed
+            $serviceRequests->where('status', 'completed');
+            break;
+
+        case 'direct_hire':
+            // Show direct hire requests
+            $serviceRequests->where('is_direct_hire', true);
+            break;
+
+        case 'all':
+        default:
+            // Show all service requests
+            break;
+    }
+
+    $serviceRequests = $serviceRequests->get(); // Retrieve the filtered service requests
+
+    return view('agencyuser.service-requests', compact('serviceRequests'));
+}
+
 }

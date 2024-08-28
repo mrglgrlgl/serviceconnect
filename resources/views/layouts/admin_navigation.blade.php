@@ -31,8 +31,7 @@
     <div class="flex flex-col justify-between flex-1 mt-6">
         <nav class="-mx-3 space-y-6 ">
             <div class="space-y-3 ">
-                <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Admin</label>
-
+shit
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700">
                     <span class="material-icons-round">home</span>
                     <span class="mx-2 text-sm font-medium">Home</span>

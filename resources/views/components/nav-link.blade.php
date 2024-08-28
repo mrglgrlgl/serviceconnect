@@ -1,14 +1,13 @@
 @props(['href', 'icon', 'active' => false])
-
-<a href="{{ $href }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ $active ? 'bg-blue-200 text-blue-800' : '' }}">
+ <a href="{{ $href }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ $active ? 'bg-blue-200 text-blue-800' : '' }}">
     <span class="material-icons">{{ $icon }}</span>
     <span class="mx-2 text-sm font-medium">{{ $slot }}</span>
-</a>
+</a> 
 
 {{-- @php
 $user = Auth::user();
 if ($user) {
-    $borderColor = $user->role == '3' ? 'border-custom-lightest-blue' : 'border-custom-light-blue';
+    $borderColor = $user->role == '3'e ? 'border-custom-lightest-blue' : 'border-custom-light-blue';
     $hoverBorderColor = $user->role == '3' ? 'hover:border-custom-lightestblue-accent' : 'hover:border-custom-light-blue';
     $hoverTextColor = $user->role == '3' ? 'hover:text-cyan-600' : 'hover:text-custom-light-blue';
     $textColor = $user->role == '3' ? 'text-custom-lightest-blue' : 'text-custom-light-blue';

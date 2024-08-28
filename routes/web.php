@@ -62,11 +62,31 @@ Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('age
 
 
 
-Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], function () {
+Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
+
+
+    Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
+    Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
+    // Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
+    // Agency user-specific actions for the channel
+    Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
+
+    Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
+    Route::post('/channel/{channel}/start-task', [ChannelController::class, 'startTask'])->name('channel.startTask');
+    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
+
+    // Agency user channel view
+
+    Route::get('/provider/filter-requests', [ServicerequestController::class, 'filterServiceRequests'])->name('provider.filterRequests');
+
 
     Route::get('/bids/create/{id}', [BidController::class, 'create'])->name('bids.create');
     Route::post('/place-bid', [BidController::class, 'store'])->name('bids.store');
    Route::get('/placebid/{id}', [BidController::class, 'show'])->name('placebid');
+   Route::get('/service-requests', [ServiceRequestController::class, 'retrieveByUserRole'])->name('agencyuser.service-requests');
+
+
 
     Route::get('/{agency}/settings', [AgencyServiceController::class, 'index'])->name('agencyservice.settings');
 
@@ -115,10 +135,10 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_user']], funct
 
 
     Route::get('/requests', [ServiceRequestController::class, 'retrieveByUserRole'])->name('agency.requests');
-    Route::post('/requests', [ServiceRequestController::class, 'store'])->name('agency.requests.store');
-    Route::get('/requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('agency.requests.edit');
-    Route::patch('/requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('agency.requests.update');
-    Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('agency.requests.destroy');
+    // Route::post('/requests', [ServiceRequestController::class, 'store'])->name('agency.requests.store');
+    // Route::get('/requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('agency.requests.edit');
+    // Route::patch('/requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('agency.requests.update');
+    // Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('agency.requests.destroy');
 
     
 });
@@ -157,28 +177,28 @@ Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating
 Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
 
 // Outside the auth middleware group
-Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
+// Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
 Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
 // Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
 
-Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
+// Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
+    // Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
 
 
-    Route::post('/channel/{channel}/set-arrived', [App\Http\Controllers\ChannelController::class, 'setArrived'])->name('channel.setArrived');
+    // Route::post('/channel/{channel}/set-arrived', [App\Http\Controllers\ChannelController::class, 'setArrived'])->name('channel.setArrived');
     Route::post('/channel/{channel}/confirm-arrival', [App\Http\Controllers\ChannelController::class, 'confirmArrival'])->name('channel.confirmArrival');
-    Route::post('/channel/{channel}/start-task', [App\Http\Controllers\ChannelController::class, 'startTask'])->name('channel.startTask');
-    Route::post('/channel/{channel}/complete-task', [App\Http\Controllers\ChannelController::class, 'completeTask'])->name('channel.completeTask');
-    Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
+    // Route::post('/channel/{channel}/start-task', [App\Http\Controllers\ChannelController::class, 'startTask'])->name('channel.startTask');
+    // Route::post('/channel/{channel}/complete-task', [App\Http\Controllers\ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    // Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
     Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
     
     Route::post('/channel/{channel}/confirm-task-start', [App\Http\Controllers\ChannelController::class, 'confirmTaskStart'])->name('channel.confirmTaskStart');
-    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    // Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
     Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
-    Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
+    // Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
 });
 
 // Route::post('/channel/{channel}/inform-seeker', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');

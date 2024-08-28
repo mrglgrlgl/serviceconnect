@@ -8,6 +8,8 @@ use App\Models\Channel;
 use App\Models\Rating;
 use App\Models\Bid;
 use App\Models\User;
+use App\Models\Agency;
+use App\Models\AgencyUser;
 use App\Models\ProviderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,88 +17,62 @@ use Illuminate\Support\Facades\Log;
 
 class ChannelController extends Controller
 {
-    // public function seekerChannel($serviceRequestId)
-    // {
-    //     $user = Auth::user();
 
-    //     if ($user->role != 3) {
-    //         abort(403, 'Unauthorized action.');
-    //     }
 
-    //     try {
-    //         $channel = Channel::where('service_request_id', $serviceRequestId)
-    //             ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
-    //             ->firstOrFail();
-
-    //         $ratings = Rating::where('provider_id', $channel->provider_id)->get();
-    //         $averageRating = $ratings->count() > 0
-    //             ? $ratings->avg(function ($rating) {
-    //                 return ($rating->quality_of_service + $rating->communication + $rating->professionalism + $rating->cleanliness_tidiness + $rating->value_for_money) / 5;
-    //             })
-    //             : null;
-
-    //         return view('seekerChannel', compact('channel', 'averageRating'));
-
-    //     } catch (\Exception $e) {
-    //         Log::error('Error retrieving channel or calculating average rating: ' . $e->getMessage());
-    //         abort(404, 'Channel not found.');
-    //     }
-    // }
-
+    // In ChannelController.php
     public function seekerChannel($serviceRequestId)
     {
         $user = Auth::user();
-
+    
         // Ensure the user has the correct role
         if ($user->role != 3) { // Assuming role 3 is the seeker role
             abort(403, 'Unauthorized action.');
         }
-
+    
         try {
-            // Retrieve the channel with associated service request, bid, provider, and seeker
+            // Retrieve the channel with associated service request, agency user, and agency details
             $channel = Channel::where('service_request_id', $serviceRequestId)
-                ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
+                ->with([
+                    'serviceRequest',
+                    'agencyuser', // Eager-load the agency user
+                    'agencyuser.agency', // Eager-load the agency associated with the agency user
+                    'seeker',
+                    'bid'
+                ])
                 ->firstOrFail();
-
-
-                $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
-
-
+    
+            $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
         } catch (\Exception $e) {
             Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
-
-        return view('seekerChannel', compact('channel','serviceRequestImages'));
+    
+        return view('seekerChannel', compact('channel', 'serviceRequestImages'));
     }
+    
+    
 
-    public function providerChannel($serviceRequestId)
+
+    public function agencyChannel($serviceRequestId)
     {
-        $user = Auth::user();
-
-        // Ensure the user has the correct role
-        if ($user->role != 2) { // Assuming role 2 is the provider role
-            abort(403, 'Unauthorized action.');
-        }
-
+        $agencyUser = Auth::guard('agency_users')->user(); // Use the correct guard for AgencyUser
+    
         try {
-            // Retrieve the channel where the provider is involved
             $channel = Channel::where('service_request_id', $serviceRequestId)
-                              ->where('provider_id', $user->id)
+                              ->where('provider_id', $agencyUser->id)
                               ->with(['serviceRequest', 'bid', 'seeker'])
                               ->firstOrFail();
         } catch (\Exception $e) {
             Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
-
-        // Retrieve the service request and seeker
+    
         $serviceRequest = $channel->serviceRequest;
         $seeker = $channel->seeker;
-
-        // Return the view with the retrieved data
-        return view('provider.providerChannel', compact('serviceRequest', 'channel', 'seeker'));
+    
+        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker'));
     }
+    
     
 
     
@@ -232,31 +208,7 @@ public function confirmTaskCompletion(Channel $channel)
 
 }
 
-// public function confirmPayment(Channel $channel)
-// {
-//     try {
-//         $user = Auth::user();
 
-//         if ($user->role != 2) { // Assuming role 2 is the provider role
-//             return response()->json(['message' => 'Unauthorized action.'], 403);
-//         }
-
-//         $channel->is_paid = 'true';
-//         $channel->status = 'completed'; // Set the status to completed
-//         $channel->save();
-
-//          $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined
-//         if ($serviceRequest) {
-//             $serviceRequest->status = 'completed';
-//             $serviceRequest->save();
-//         }
-
-//         return response()->json(['message' => 'Payment confirmed.']);
-//     } catch (\Exception $e) {
-//         Log::error('Error confirming payment: ' . $e->getMessage(), ['exception' => $e]);
-//         return response()->json(['message' => 'Error confirming payment.'], 500);
-//     }
-// }
 
 
 public function editBid(Request $request, $bidId)

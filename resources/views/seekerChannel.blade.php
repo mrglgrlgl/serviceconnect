@@ -71,34 +71,45 @@
                                     </div>
                                 </div>
 
-                                <div class="md:col-span-2 md:ml-auto w-full">
-                                    <div class="border rounded-md p-4">
-                                        <div class="border-b pb-2 ">
-                                            <h3 class="text-xl text-custom-header">Provider Details</h3>
-                                        </div>
-                                        <div class="mt-4">
-                                            <div class="flex items-center text-xl pb-4">
-                                                {{ $channel->provider->name }}
-                                                <span class="ml-2 text-yellow-500">
-                                                    {{-- @if (isset($averageRating))
-                                                        {{ number_format($averageRating, 2) }} / 5
-                                                    @else
-                                                        No ratings yet
-                                                    @endif --}}
-                                                </span>
-                                            </div>
-                                            <div class="flex items-center mt-2 pl-4">
-                                                <span class="material-icons text-gray-400 mr-2">mail</span>
-                                                <span>{{ $channel->provider->email }}</span>
-                                            </div>
-                                            <div class="flex items-center mt-2 pl-4">
-                                                <span class="material-icons mr-2 text-gray-400">call</span>
-                                                <span>{{ optional($channel->provider->providerDetails)->contact_number }}</span>
-                                            </div>
-                                      
-                                        </div>
-                                    </div>
-                                </div>
+<div class="md:col-span-2 md:ml-auto w-full">
+    <div class="border rounded-md p-4">
+        <div class="border-b pb-2">
+            <h3 class="text-xl text-custom-header">Provider Details</h3>
+        </div>
+        <div class="mt-4">
+            @if ($channel->agencyuser)
+                @php
+                    $agency = $channel->agencyuser->agency; // Get the agency associated with the provider
+                @endphp
+
+                @if ($agency)
+                    <div class="flex items-center text-xl pb-4">
+                        @if ($agency->logo_path)
+                            <img src="{{ asset('storage/' . $agency->logo_path) }}" alt="{{ $agency->name }}" class="w-16 h-16 object-cover rounded-full">
+                        @else
+                            <span class="text-gray-400">No logo available</span>
+                        @endif
+                        <span class="ml-4">{{ $agency->name }}</span>
+                    </div>
+                    <div class="flex items-center mt-2 pl-4">
+                        <span class="material-icons text-gray-400 mr-2">mail</span>
+                        <span>{{ $agency->email }}</span>
+                    </div>
+                    <div class="flex items-center mt-2 pl-4">
+                        <span class="material-icons mr-2 text-gray-400">call</span>
+                        <span>{{ $agency->phone }}</span>
+                    </div>
+                @else
+                    <p>Agency details not available.</p>
+                @endif
+            @else
+                <p>Provider details not available.</p>
+            @endif
+        </div>
+    </div>
+</div>
+
+
                             </div>
                               <div class="border-b pb-4 mb-4">
         <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>

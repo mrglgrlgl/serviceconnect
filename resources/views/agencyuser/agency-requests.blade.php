@@ -1,6 +1,6 @@
 <x-agency-dashboard>
     <div class="py-12">
-        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
+        {{-- <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
             <!-- Navigation Links -->
             <div class="flex justify-center text-center w-full mb-6">
                 <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -14,7 +14,7 @@
                         {{ __('Analytics') }}
                     </x-nav-link>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="flex justify-center">
                 <div class="border-t w-full text-center border-custom-cat-border"></div>

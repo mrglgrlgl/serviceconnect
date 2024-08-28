@@ -1,6 +1,4 @@
-@extends('layouts.agencyuser-navigation')
-
-@section('content')
+<x-agency-dashboard>
 <div class="container">
     <h1>Place Your Bid</h1>
     
@@ -28,4 +26,4 @@
         <button type="submit" class="btn btn-primary">Submit Bid</button>
     </form>
 </div>
-@endsection
+</x-agency-dashboard>

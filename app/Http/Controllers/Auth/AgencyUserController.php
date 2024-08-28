@@ -18,7 +18,7 @@ class AgencyUserController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('agency_user')->attempt($credentials)) {
+        if (Auth::guard('agency_users')->attempt($credentials)) {
             return redirect()->route('agency.home');  // Redirect to agency.home
         }
 
@@ -29,7 +29,7 @@ class AgencyUserController extends Controller
 
     public function logout()
     {
-        Auth::guard('agency_user')->logout();
+        Auth::guard('agency_users')->logout();
         return redirect()->route('agency.login');
     }
 }

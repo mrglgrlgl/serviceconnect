@@ -47,15 +47,15 @@
                                     <td class="p-4 text-center">{{ ucfirst($employee->gender) }}</td>
                                     <td class="p-4 text-center">{{ $employee->birthdate }}</td>
                                     <td class="p-4 text-center">
-                                        @if($employee->services->isEmpty())
-                                            <span class="text-gray-500">No services</span>
-                                        @else
-                                            <ul class="list-disc list-inside pl-5">
-                                                @foreach($employee->services as $service)
-                                                    <li>{{ $service->name }}</li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
+                                     @if($employee->services->isEmpty())
+        <span class="text-gray-500">No services</span>
+    @else
+        <ul class="list-disc list-inside pl-5">
+            @foreach($employee->services as $service)
+                <li>{{ $service->service_name }}</li>
+            @endforeach
+        </ul>
+    @endif
                                     </td>
                                     <td class="p-4 text-center">
                                         <div class="flex justify-center space-x-2">
