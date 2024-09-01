@@ -1,4 +1,4 @@
-@extends('layouts.agency-dashboard')
+@extends('layouts.dashboard')
 
 @section('content')
     <div class="max-w-lg mx-auto p-6 bg-custom-admin-secondary rounded-lg shadow-lg">

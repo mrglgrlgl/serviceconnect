@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="mt-4 px-8 py-8 bg-white shadow-md sm:rounded-lg w-full max-w-lg mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue">
@@ -312,4 +314,4 @@
             document.getElementById('max_price').addEventListener('blur', validateMinMax);
         });
     </script>
-</x-app-layout>
+@endsection

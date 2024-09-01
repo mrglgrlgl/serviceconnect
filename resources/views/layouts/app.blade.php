@@ -54,7 +54,7 @@
         {{-- Main Content Area --}}
         <main>
             <div class="content-container">
-                {{ $slot }}
+                @yield('content')
             </div>
         </main>
 

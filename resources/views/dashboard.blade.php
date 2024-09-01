@@ -14,11 +14,13 @@
         </div>
     </div> --}}
 
-<div>Service Requests</div>
+
 
     <div class="flex justify-center">
         <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
+
+    
 
     <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full mx-auto flex justify-end">

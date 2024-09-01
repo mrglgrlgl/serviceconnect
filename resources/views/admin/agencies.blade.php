@@ -1,4 +1,4 @@
-@extends('layouts.agency-dashboard')
+@extends('layouts.dashboard')
 
 @section('content')
     <div class="max-w-8xl mx-auto p-4">
@@ -51,7 +51,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="inline-flex items-center bg-red-500 text-white px-4 py-2 rounded font-bold hover:bg-red-600">
-                                        <span class="material-icons-round mr-1">delete</span> Delete
+                                        <span class="material-icons-round mr-1">delete</span>
                                     </button>
                                 </form>
                             </td>
