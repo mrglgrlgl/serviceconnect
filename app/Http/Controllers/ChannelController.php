@@ -2,9 +2,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServiceRequest;
+use App\Models\ServiceRequestImages;
+
 use App\Models\Channel;
+use App\Models\Rating;
 use App\Models\Bid;
 use App\Models\User;
+use App\Models\Agency;
+use App\Models\AgencyUser;
 use App\Models\ProviderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,49 +19,60 @@ class ChannelController extends Controller
 {
 
 
+    // In ChannelController.php
     public function seekerChannel($serviceRequestId)
     {
         $user = Auth::user();
-
+    
         // Ensure the user has the correct role
         if ($user->role != 3) { // Assuming role 3 is the seeker role
             abort(403, 'Unauthorized action.');
         }
-
+    
         try {
-            // Retrieve the channel with associated service request, bid, provider, and seeker
+            // Retrieve the channel with associated service request, agency user, and agency details
             $channel = Channel::where('service_request_id', $serviceRequestId)
-                ->with(['serviceRequest', 'provider.providerDetails', 'seeker', 'bid'])
+                ->with([
+                    'serviceRequest',
+                    'agencyuser', // Eager-load the agency user
+                    'agencyuser.agency', // Eager-load the agency associated with the agency user
+                    'seeker',
+                    'bid'
+                ])
                 ->firstOrFail();
+    
+            $serviceRequestImages = ServiceRequestImages::where('service_request_id', $serviceRequestId)->get();
         } catch (\Exception $e) {
-            \Log::error('Channel not found: ' . $e->getMessage());
+            Log::error('Channel not found: ' . $e->getMessage());
             abort(404, 'Channel not found.');
         }
-
-        return view('seekerChannel', compact('channel'));
+    
+        return view('seekerChannel', compact('channel', 'serviceRequestImages'));
     }
-    public function providerChannel($serviceRequestId)
-{
-    $user = Auth::user();
+    
+    
 
-    // Ensure the user has the correct role
-    if ($user->role != 2) { // Assuming role 2 is the provider role
-        abort(403, 'Unauthorized action.');
+
+    public function agencyChannel($serviceRequestId)
+    {
+        $agencyUser = Auth::guard('agency_users')->user(); // Use the correct guard for AgencyUser
+    
+        try {
+            $channel = Channel::where('service_request_id', $serviceRequestId)
+                              ->where('provider_id', $agencyUser->id)
+                              ->with(['serviceRequest', 'bid', 'seeker'])
+                              ->firstOrFail();
+        } catch (\Exception $e) {
+            Log::error('Channel not found: ' . $e->getMessage());
+            abort(404, 'Channel not found.');
+        }
+    
+        $serviceRequest = $channel->serviceRequest;
+        $seeker = $channel->seeker;
+    
+        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker'));
     }
-
-    try {
-        // Retrieve the channel with associated service request, bid, provider, and seeker
-        $channel = Channel::where('service_request_id', $serviceRequestId)
-            ->with(['serviceRequest', 'provider', 'seeker', 'bid'])
-            ->firstOrFail();
-    } catch (\Exception $e) {
-        Log::error('Channel not found: ' . $e->getMessage());
-        abort(404, 'Channel not found.');
-    }
-
-    return view('provider.providerChannel', compact('channel'));
-}
-
+    
     
 
     
@@ -192,66 +208,44 @@ public function confirmTaskCompletion(Channel $channel)
 
 }
 
-public function confirmPayment(Channel $channel)
+
+
+
+public function editBid(Request $request, $bidId)
 {
+    $user = Auth::user();
+
+    // Ensure the user has the correct role
+    if ($user->role != 2) { // Assuming role 2 is the provider role
+        abort(403, 'Unauthorized action.');
+    }
+
+    // Validate the request
+    $request->validate([
+        'bid_amount' => 'required|numeric',
+        'bid_description' => 'required|string',
+    ]);
+
     try {
-        $user = Auth::user();
+        // Retrieve the bid
+        $bid = Bid::findOrFail($bidId);
 
-        if ($user->role != 2) { // Assuming role 2 is the provider role
-            return response()->json(['message' => 'Unauthorized action.'], 403);
+        // Check if the bid belongs to the authenticated provider
+        if ($bid->provider_id !== $user->id) {
+            abort(403, 'Unauthorized action.');
         }
 
-        $channel->is_paid = 'true';
-        $channel->status = 'completed'; // Set the status to completed
-        $channel->save();
+        // Update the bid details
+        $bid->bid_amount = $request->input('bid_amount');
+        $bid->bid_description = $request->input('bid_description');
+        $bid->save();
 
-         $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined
-        if ($serviceRequest) {
-            $serviceRequest->status = 'completed';
-            $serviceRequest->save();
-        }
-
-        return response()->json(['message' => 'Payment confirmed.']);
+        return response()->json(['message' => 'Bid updated successfully.']);
     } catch (\Exception $e) {
-        Log::error('Error confirming payment: ' . $e->getMessage(), ['exception' => $e]);
-        return response()->json(['message' => 'Error confirming payment.'], 500);
+        Log::error('Error updating bid: ' . $e->getMessage());
+        return response()->json(['message' => 'Error updating bid.'], 500);
     }
 }
-
-    
 }
-
-
-
-// public function startTask($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->start_time = now();
-//     $channel->status = 'in_progress';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Task started successfully']);
-// }
-
-// public function completeTask($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->completion_time = now();
-//     $channel->status = 'completed';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Task completed successfully']);
-// }
-
-// public function confirmPayment($channelId)
-// {
-//     $channel = Channel::findOrFail($channelId);
-//     $channel->amount_paid = $channel->bid->bid_amount;
-//     $channel->status = 'completed';
-//     $channel->save();
-
-//     return response()->json(['message' => 'Payment confirmed successfully']);
-// }
-
 
 

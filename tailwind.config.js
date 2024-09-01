@@ -35,8 +35,9 @@ export default {
                 '192': '48rem',
             },
             fontFamily: {
-                // 'open-sans': ['Open Sans', 'sans-serif'],
-                // 'nunito-sans': ['Nunito Sans', 'sans-serif'],
+                'open-sans': ['Open Sans', 'sans-serif'],
+                'nunito-sans': ['Nunito Sans', 'sans-serif'],
+                'poppins': ['Poppins Sans', 'sans-serif']
             },
             fontSize: {
                 'xs': '0.75rem', // Extra small         12px
@@ -47,14 +48,13 @@ export default {
                 '2xl': '1.5rem', // 2 times large       24px  orig-1.5rem
                 '3xl': '1.875rem', // 3 times large //header 30px   1.875rem
                 '4xl': '2.25rem', // 4 times large      36px        2.25rem
-                '5xl': '3rem', // 5 times large         48px        3rem
-                '6xl': '4rem', // 6 times large         60px
-                '7xl': '5rem', // 7 times large         72px
-                '8xl': '6rem', // 8 times large         96px
-                '9xl': '7rem', // 9 times large         128px
             },
             colors: {
                 custom: {
+                    'admin-bg': '#1B2028',
+                    'admin-secondary': '#151A21',
+                    'agency-bg': '#303333',
+                    'agency-secondary': '#2B5F6D',
                     'bg': '#FAFAFA',
                     'default-text': '#2F3033',
                     'light-blue': '#204860',
@@ -62,8 +62,8 @@ export default {
                     'lightest-blue': '#43a0b7',
                     'lightestblue-accent': '#31A6C5',
                     'desat-light': '#e9edf0',
-                    'header': '#333333',
-                    'dark-text': '#111111',
+                    // 'header': '#333333',
+                    // 'dark-text': '#111111',
                     'light-text': '#666666', 
                     'nav-bg': '#EBEDEF', 
                     'yellow': '#F8A619',

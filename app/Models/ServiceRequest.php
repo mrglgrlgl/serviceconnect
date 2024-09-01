@@ -9,25 +9,22 @@ class ServiceRequest extends Model
 
     protected $fillable = [
         'category',
-        'subcategory',
         'title',
         'description',
         'location',
+        'start_date',
+        'end_date',
         'start_time',
         'end_time',
-        'attach_media',
-        'attach_media2',
-        'attach_media3',
-        'attach_media4',
-        'provider_id',
-        'user_id',
-        'status',
-        'skill_tags',
         'provider_gender',
         'job_type',
-        'hourly_rate',
-        'expected_price',
+        'min_price',
+        'max_price',
         'estimated_duration',
+        'status',
+        'user_id',
+        'provider_id',
+        'is_direct_hire',
     ];
 
     public function user()
@@ -49,19 +46,25 @@ class ServiceRequest extends Model
     {
         return $this->bids()->where('status', 'accepted')->exists();
     }
+    public function isCompleted() {
+        // You could have a more complex logic here based on other attributes like `reviewed` or `closed`
+        return $this->status === 'completed'; // Assuming 'completed' is a status indicating the request is done
+    }
+    public function images()
+    {
+        return $this->hasMany(ServiceRequestImages::class, 'service_request_id');
+    }
+    public function reports()
+{
+    return $this->hasMany(Report::class, 'service_request_id');
+}
+    
+public function agencyUser()
+{
+    return $this->belongsTo(AgencyUser::class, 'provider_id');
 }
 
 
-// FIX try for time update
-// public function getStartTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
+}
 
-// // Accessor for end_time
-// public function getEndTimeAttribute($value)
-// {
-//     return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
-// }
-// }
 

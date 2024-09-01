@@ -43,4 +43,9 @@ class Rating extends Model
     {
         return $this->belongsTo(User::class, 'rated_for_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'rated_by_id');
+    }
 }

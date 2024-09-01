@@ -1,14 +1,14 @@
-<x-dashboard>
-    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full md:w-5/12 mx-auto">
+<x-app-layout>
+    <div class="mt-4 px-8 py-8 bg-white shadow-md sm:rounded-lg w-full max-w-lg mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue">
                 {{ __('Create Service Request') }}
             </div>
 
-            <div class="w-full md:w-7/12 space-y-6 mx-auto mt-4">
-                <form action="{{ route('service-requests.store') }}" method="POST" enctype="multipart/form-data">
+            <div class="w-full space-y-6 mx-auto mt-4">
+                <form id="serviceRequestForm" action="{{ route('service-requests.store') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
-
                     <div class="border-t my-4 w-full pb-6"></div>
 
                     <div class="mb-4">
@@ -22,45 +22,56 @@
 
                     <div class="mb-4">
                         <label for="title" class="block text-base text-custom-default-text">Title</label>
-                        <x-text-input type="text" id="title" name="title" required class="mt-1 block w-full sm:text-sm rounded-md" />
+                        <x-text-input type="text" id="title" name="title" required
+                            class="mt-1 block w-full sm:text-sm rounded-md" />
                     </div>
 
                     <div>
-                        <x-input-label for="description" class="text-base text-custom-default-text">Description</x-input-label>
-                        <textarea class="mt-1 block w-full form-control rounded border border-gray-300 shadow-sm resize-none focus:ring-custom-light-blue md:h-48 p-2" id="description" name="description" rows="4" required></textarea>
+                        <x-input-label for="description"
+                            class="text-base text-custom-default-text">Description</x-input-label>
+                        <textarea
+                            class="mt-1 block w-full form-control rounded border border-gray-300 shadow-sm resize-none focus:ring-custom-light-blue md:h-48 p-2"
+                            id="description" name="description" rows="4" required></textarea>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-8">
                         <label for="location" class="block text-base text-custom-default-text">Location</label>
-                        <x-text-input type="text" id="location" name="location" required class="mt-1 block w-full" />
+                        <x-text-input type="text" id="location" name="location" required
+                            class="mt-1 block w-full" />
                     </div>
 
+                    <div class="text-xl font-semibold text-gray-800">Schedule of service</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
                         <div>
                             <label for="start_date" class="block text-base text-custom-default-text">Start Date</label>
-                            <x-text-input type="date" id="start_date" name="start_date" required class="mt-1 block w-full sm:text-sm rounded-md" />
+                            <x-text-input type="date" id="start_date" name="start_date" required
+                                class="mt-1 block w-full sm:text-sm rounded-md" />
                         </div>
                         <div>
-                            <label for="end_date" class="block text-base text-custom-default-text">End Time</label>
-                            <x-text-input type="date" id="end_date" name="end_date" required class="mt-1 block w-full sm:text-sm rounded-md" />
+                            <label for="end_date" class="block text-base text-custom-default-text">End Date</label>
+                            <x-text-input type="date" id="end_date" name="end_date" required
+                                class="mt-1 block w-full sm:text-sm rounded-md" />
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4 mb-8">
                         <div>
                             <label for="start_time" class="form-label">Start Time</label>
-                            <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="start_time" name="start_time" required />
+                            <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="start_time"
+                                name="start_time" required />
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div>
                             <label for="end_time" class="form-label">End Time</label>
-                            <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="end_time" name="end_time" required />
+                            <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="end_time"
+                                name="end_time" required />
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="skill_tags" class="form-label">Skill Tags</label>
-                        <x-text-input type="text" class="mt-1 block w-full sm:text-sm rounded-md" id="skill_tags" name="skill_tags" required />
-                    </div>
+                        <x-text-input type="text" class="mt-1 block w-full sm:text-sm rounded-md" id="skill_tags"
+                            name="skill_tags" required />
+                    </div> --}}
 
                     <div class="mb-3">
                         <label for="provider_gender" class="form-label">Preferred Provider Gender</label>
@@ -70,55 +81,235 @@
                             <option value="female">Female</option>
                         </x-selection>
                     </div>
-
                     <div class="mb-3">
                         <label for="job_type" class="form-label">Job Type</label>
-                        <x-selection class="form-select" id="job_type" name="job_type" required>
-                            <option value="project_based">Project Based</option>
+                        <x-selection class="form-select" id="job_type" name="job_type">
                             <option value="hourly_rate">Hourly Rate</option>
+                            <option value="project_based">Project Based</option>
                         </x-selection>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="hourly_rate" class="form-label">Hourly Rate</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="hourly_rate" name="hourly_rate" value="0.00" required />
-                    </div>
+                    <!-- Price Range -->
+                    {{-- <div class="mb-3 grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="min_price" class="form-label">Minimum Price</label>
+                            <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" required />
+                        </div>
+                        <div>
+                            <label for="max_price" class="form-label">Maximum Price</label>
+                            <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" required />
+                        </div>
+                    </div> --}}
 
-                    <div class="mb-3">
-                        <label for="expected_price" class="form-label">Expected Price</label>
-                        <x-text-input type="number" step="0.01" class="mt-1 block w-full sm:text-sm rounded-md" id="expected_price" name="expected_price" value="0.00" required />
-                    </div>
+       {{-- <div>
+        <div class="text-lg pt-4 text-gray-800 font-semibold"> Price Range (hourly rate)</div>
+    <label for="price_type" class="form-label">Price Type</label>
+    <x-selection class="form-select" id="price_type" name="price_type">
+        <option value="range">Price Range</option>
+    </x-selection>
+</div> --}}
 
-                    <div class="mb-3">
+<div class="text-xl mt-8 text-gray-800"><strong>Price Range</strong></div>
+<div class="mb-3" id="minPriceContainer">
+    <label for="min_price" class="form-label">Minimum Expected Price</label>
+    <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" />
+</div>
+<div class="mb-3" id="maxPriceContainer">
+    <label for="max_price" class="form-label">Maximum Expected Price</label>
+    <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" />
+</div>
+
+                    <div class="mb-8">
                         <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
-                        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="estimated_duration" name="estimated_duration" value="0" required />
+                        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md"
+                            id="estimated_duration" name="estimated_duration" value="" required />
                     </div>
 
-                    <div class="mb-3">
-                        <label for="attach_media" class="form-label">Attach Image <span class="text-red-500">*</span></label>
-                        <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media" name="attach_media" required />
+                    <!-- Attach Images -->
+                    <div class="file-upload-container">
+                        <label class="form-label text-lg text-gray-800"><strong>Attach Task Photos</strong> (At least 1 required)</label>
+                        <div class="upload-wrapper">
+                            <div class="file-upload-box">
+                                <input type="file" id="attach_media1" name="attach_media1" accept="image/*"
+                                    onchange="previewImage(event, 1)" />
+                                <div id="preview1" class="image-preview"></div>
+                            </div>
+                            @error('attach_media1')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                            <div class="file-upload-box">
+                                <input type="file" id="attach_media2" name="attach_media2" accept="image/*"
+                                    onchange="previewImage(event, 2)" />
+                                <div id="preview2" class="image-preview"></div>
+                            </div>
+                            @error('attach_media2')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                            <div class="file-upload-box">
+                                <input type="file" id="attach_media3" name="attach_media3" accept="image/*"
+                                    onchange="previewImage(event, 3)" />
+                                <div id="preview3" class="image-preview"></div>
+                            </div>
+                            <div class="file-upload-box">
+                                <input type="file" id="attach_media4" name="attach_media4" accept="image/*"
+                                    onchange="previewImage(event, 4)" />
+                                <div id="preview4" class="image-preview"></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="attach_media2" class="form-label">Attach Image 2</label>
-                        <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media2" name="attach_media2" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="attach_media3" class="form-label">Attach Image 3</label>
-                        <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media3" name="attach_media3" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="attach_media4" class="form-label">Attach Image 4</label>
-                        <x-text-input type="file" class="mt-1 block w-full sm:text-sm rounded-md" id="attach_media4" name="attach_media4" />
+                    <!-- Terms and Conditions Checkbox -->
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="agreed_to_terms" value="1" required
+                                class="mr-2">
+                            <span class="text-sm text-gray-700">By creating the service request I agree to the
+                                <a href="/terms" target="_blank" class="text-blue-500 underline">terms and
+                                    conditions</a>.</span>
+                        </label>
                     </div>
 
                     <div class="flex justify-center">
-                        <x-primary-button type="submit" class="md:mt-6 text-white rounded-md btn-lg">Create Service Request</x-primary-button>
+                        <x-primary-button type="submit" class="md:mt-6 text-white rounded-md btn-lg">Create
+                            Service Request</x-primary-button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</x-dashboard>
+
+    <style>
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .upload-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-upload-box {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            width: 100px;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .file-upload-box input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category');
+            const minPriceInput = document.getElementById('min_price');
+            const jobTypeSelect = document.getElementById('job_type');
+            const rateWarning = document.createElement('div');
+            rateWarning.id = 'rateWarning';
+            rateWarning.style.color = 'red';
+            rateWarning.style.display = 'none';
+            minPriceInput.parentNode.appendChild(rateWarning);
+
+            // Ensure $psaJobs is passed and correctly converted to JSON
+            const psaRates = @json($psaJobs);
+
+            categorySelect.addEventListener('change', checkRate);
+            minPriceInput.addEventListener('input', checkRate);
+            jobTypeSelect.addEventListener('change', checkRate);
+
+            function checkRate() {
+                const selectedCategory = categorySelect.value.trim();
+                const enteredRate = parseFloat(minPriceInput.value) || 0;
+                const jobType = jobTypeSelect.value;
+                const referenceRate = parseFloat(psaRates[selectedCategory]) || 0;
+
+                if (jobType === 'hourly_rate' && enteredRate > referenceRate) {
+                    rateWarning.innerText =
+                        `The entered minimum hourly rate is higher by ${(enteredRate - referenceRate).toFixed(2)} PHP than the average occupational wage per hour (${referenceRate} PHP) for ${selectedCategory}.`;
+                    rateWarning.style.display = 'block';
+                } else {
+                    rateWarning.style.display = 'none';
+                }
+            }
+        });
+
+        function previewImage(event, boxId) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var previewBox = document.getElementById('preview' + boxId);
+                    previewBox.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview" />';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function validateDates() {
+            var today = new Date().toISOString().split('T')[0];
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+
+            if (startDate < today) {
+                alert("Start date cannot be in the past.");
+                document.getElementById('start_date').value = today;
+            }
+            if (endDate && endDate < startDate) {
+                alert("End date cannot be before the start date. The web app does not support time travel.");
+                document.getElementById('end_date').value = startDate;
+            }
+        }
+
+        function validateTimes() {
+            var startTime = document.getElementById('start_time').value;
+            var endTime = document.getElementById('end_time').value;
+            if (startTime == endTime) {
+                alert("Cannot be the same time");
+                document.getElementById('end_time').value = '';
+            }
+        }
+
+        function validateMinMax() {
+            var minPrice = parseFloat(document.getElementById('min_price').value);
+            var maxPrice = parseFloat(document.getElementById('max_price').value);
+            if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice > maxPrice) {
+                alert("Minimum Price cannot be greater than Maximum Price.");
+                document.getElementById('max_price').value = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('start_date').addEventListener('change', validateDates);
+            document.getElementById('end_date').addEventListener('change', validateDates);
+            document.getElementById('start_time').addEventListener('change', validateTimes);
+            document.getElementById('end_time').addEventListener('change', validateTimes);
+            document.getElementById('min_price').addEventListener('blur', validateMinMax);
+            document.getElementById('max_price').addEventListener('blur', validateMinMax);
+        });
+    </script>
+</x-app-layout>

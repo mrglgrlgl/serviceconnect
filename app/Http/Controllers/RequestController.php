@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\ProviderDetail;
 use App\Models\RequestList;
+use App\Models\Category;
+use App\Models\PsaJob;
+use App\Models\PhilId;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Log;
 
@@ -11,10 +14,10 @@ class RequestController extends Controller
 {
     public function index()
     {
-        $requests = RequestList::with(['user', 'providerDetail'])->get();
-
+        // Fetch users with their PhilId and associated requests
+        $users = User::with(['philId', 'serviceRequests.providerDetail'])->get();
     
-        return view('authorizer.dashboard', compact('requests'));
+        return view('', compact('users'));
     }
     
 
@@ -94,4 +97,27 @@ class RequestController extends Controller
         // Redirect or return a response
         return redirect()->route('authorizer.dashboard')->with('success', 'Request declined successfully.');
     }
+
+    public function dashboard()
+    {
+        $pendingRequests = RequestList::with(['user', 'providerDetail'])->where('status', 'pending')->get();
+        $approvedRequests = RequestList::with(['user', 'providerDetail'])->where('status', 'approved')->get();
+
+        Log::info('Pending Requests: ', $pendingRequests->toArray());
+        Log::info('Approved Requests: ', $approvedRequests->toArray());
+
+        return view('authorizer.dashboard', compact('pendingRequests', 'approvedRequests'));
+    }
+
+    public function create()
+{
+    // Fetch all categories
+    $categories = Category::all();
+
+    // Fetch average hourly rates from PSA Jobs, keyed by job title
+    $psaJobs = PsaJob::pluck('Average_Occupational_Wage_per_Hour', 'Job_Title')->toArray();
+
+    // Pass categories and PSA job rates to the view
+    return view('profilecreate', compact('categories', 'psaJobs'));
+}
 }

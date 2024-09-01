@@ -16,6 +16,7 @@ class Bid extends Model
         'bid_amount',
         'bid_description',
         'status',
+        'agreed_to_terms',
     ];
 
     public function serviceRequest()
@@ -23,9 +24,13 @@ class Bid extends Model
         return $this->belongsTo(ServiceRequest::class);
     }
 
+    // public function bidder()
+    // {
+    //     return $this->belongsTo(User::class, 'bidder_id');
+    // }
     public function bidder()
     {
-        return $this->belongsTo(User::class, 'bidder_id');
+        return $this->belongsTo(AgencyUser::class, 'bidder_id');
     }
     
 }

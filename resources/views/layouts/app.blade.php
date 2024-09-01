@@ -12,18 +12,37 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v3.x.x/dist/alpine.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v3.x.x/dist/cdn.min.js" defer></script>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        main {
+            margin-left: 250px; /* Sidebar width */
+            padding: 40px 60px; /* Increase top/bottom padding to 40px and left/right to 60px */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box; /* Ensure padding is included in the width calculation */
+        }
+
+        .content-container {
+            max-width: 1400px; /* Set a max width for the content container */
+            width: 100%;
+            padding: 40px 60px; /* Increase padding inside the content container */
+            margin: auto; /* Center the content horizontally */
+            box-sizing: border-box; /* Ensure padding is included in the width calculation */
+        }
+    </style>
 </head>
 
 <body class="antialiased">
     <div class="min-h-screen bg-gray-100">
 
-        {{-- Check what type of user --}}
+        {{-- Sidebar inclusion --}}
         @if(Auth::check())
             @if(Auth::user()->role == 1)
                 @include('layouts.auth-navigation')
@@ -32,27 +51,11 @@
             @endif
         @endif
 
-                @isset($profilepic)
-                <div class=shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $profilepic }}
-                    </div>
-                    </>
-                    @endisset
-{{-- 
-<div class="">
-{{ $tabble }}
-</div> --}}
-
-        @if(Auth::check() && Auth::user()->role == 1)
-        <div>
-            {{ $tabble ?? '' }}
-        </div>
-        @endif
-
-
+        {{-- Main Content Area --}}
         <main>
-            {{ $slot }}
+            <div class="content-container">
+                {{ $slot }}
+            </div>
         </main>
 
     </div>

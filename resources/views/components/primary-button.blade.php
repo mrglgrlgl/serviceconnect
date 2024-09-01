@@ -2,7 +2,7 @@
 @props(['href' => null, 'route' => null])
 
 @php
-    $classes = 'inline-flex items-center px-4 py-2 bg-custom-light-blue border rounded-full font-semibold tracking-widest hover:bg-custom-light-blue focus:bg-gray-700 active:bg-custom-light-blue focus:outline-none transition ease-in-out duration-150';
+    $classes = 'inline-flex items-center px-4 py-2 bg-custom-light-blue border rounded-md font-semibold tracking-widest hover:bg-custom-light-blue focus:bg-gray-700 active:bg-custom-light-blue focus:outline-none transition ease-in-out duration-150';
 
     if ($href || $route) {
         $classes .= ' text-white';

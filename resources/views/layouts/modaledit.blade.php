@@ -1,11 +1,11 @@
-<x-dashboard>
-    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full md:w-5/12 mx-auto">
+<x-app-layout>
+    <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full max-w-lg mx-auto">
         <div class="flex flex-col items-center">
             <div class="text-2xl font-bold text-custom-light-blue">
                 {{ __('Edit Service Request') }}
             </div>
 
-            <div class="w-full md:w-7/12 space-y-6 mx-auto mt-4">
+            <div class="w-full space-y-6 mx-auto mt-4">
                 <form action="{{ route('service-requests.update', $serviceRequest->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
@@ -28,7 +28,7 @@
 
                     <div class="mb-4">
                         <x-input-label for="description" class="text-base text-custom-default-text">Description</x-input-label>
-                        <x-text-input id="description" name="description" :value="$serviceRequest->description" class="mt-1 block w-full sm:text-sm border resize-none border-gray-300 shadow-sm focus:ring-custom-light-blue md:h-48 p-2" />
+                        <textarea id="description" name="description" class="mt-1 block w-full sm:text-sm border resize-none border-gray-300 shadow-sm focus:ring-custom-light-blue md:h-48 p-2">{{ old('description', $serviceRequest->description) }}</textarea>
                     </div>
 
                     <div class="mb-4">
@@ -50,11 +50,22 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label for="start_time" class="form-label">Start Time</label>
+
+                            <label for="start_time" class="block text-base text-custom-default-text">Start Time</label>
+                            <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="start_time" 
+                            
+                            :value="old('start_time')" class="mt-1 block w-full sm:text-sm rounded-md"
+                                name="start_time" required />
+
+                             @error('start_time')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+
+                            {{-- <label for="start_time" class="form-label">Start Time</label>
                             <x-text-input type="time" id="start_time" name="start_time" :value="old('start_time', \Carbon\Carbon::parse($serviceRequest->start_time)->format('H:i'))" class="mt-1 block w-full sm:text-sm rounded-md" />
                             @error('start_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                            @enderror --}}
                         </div>
                         
                         <div>
@@ -124,4 +135,4 @@
             </div>
         </div>
     </div>
-</x-dashboard>
+</x-app-layout>

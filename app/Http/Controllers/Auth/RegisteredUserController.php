@@ -43,6 +43,8 @@ class RegisteredUserController extends Controller
             'birth_date_month' => ['integer', 'max:12'],
             'birth_date_day' => ['required', 'integer', 'max:31'],
             'birth_date_year' => ['required', 'integer', 'max:9999'],
+            'address' => ['required', 'string', 'max:255'],
+
         ]);
 
         $birth_date = $request->input('birth_date_year') . '-' . str_pad($request->input('birth_date_month'), 2, '0', STR_PAD_LEFT) . '-' . str_pad($request->input('birth_date_day'), 2, '0', STR_PAD_LEFT);
@@ -50,10 +52,12 @@ class RegisteredUserController extends Controller
         $userData = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
-            'cell_no' => $request->cell_no,
+            'cell_no' => '63' . ltrim($request->cell_no, '0'), // Add '63' prefix and remove leading zero if present
             'password' => Hash::make($request->password),
             'gender' => $request->input('gender'),
             'birth_date' => $birth_date,
+            'address' => $request->address, // Save the address
+
         ];
 
         // Check if the user's role is set in the session
@@ -72,7 +76,12 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // Redirect to the address form after successful registration
-        return redirect()->route('address.create', ['userId' => $user->id]);
+        // return redirect()->route('home', ['userId' => $user->id]);
+        if ($user->role == 2) {
+            return redirect()->route('provider.dashboard');
+        } else {
+            return redirect()->route('home');
+        }
     }
 
     public function registerAs(Request $request)

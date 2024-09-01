@@ -9,23 +9,18 @@ class ProviderDetail extends Model
 {
     protected $table = 'provider_details';
     protected $fillable = [
-        'request_id', 
-        'status', 
-        'profilePicture', 
-        'work_email', 
+        'work_email',
         'contact_number',
         'serviceCategory', 
-        'subcategory', 
         'have_tools', 
         'years_of_experience',
-        'description', 
-        'government_id_front', 
-        'government_id_back',
-        'nbi_clearance', 
-        'tesda_certification', 
-        'other_credentials',
-        
+        'description',
+        'availability_days',
+        // 'availability_time',
+        'provider_id',
+        // Additional fields as necessary
     ];
+    
     public function requestList()
     {
         return $this->belongsTo(RequestList::class, 'request_id', 'id');
@@ -39,5 +34,8 @@ public function serviceRequests()
 {
     return $this->hasMany(ServiceRequest::class, 'provider_id', 'id');
 }
-
+public function ratings()
+{
+    return $this->hasMany(Rating::class, 'rated_for_id', 'user_id');
+}
 }

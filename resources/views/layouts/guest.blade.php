@@ -11,6 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,19 +20,15 @@
 
 <body class="font-sans text-gray-900 antialiased">
     <div class="min-h-screen flex flex-col sm:justify-center items-center sm:pt-0 bg-gray-100">
-    @if(Route::currentRouteName() == 'login')
-                <div class="w-full max-w-4xl">
-                        {{ $slot }}
+        <div class="w-full max-w-4xl">
+            <main>
+                <div class="content-container">
+                    @yield('content')
                 </div>
-    @elseif(Route::currentRouteName() == 'register')
-    <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
-        {{ $slot }}
+            </main>
+        </div>
     </div>
-    @else
-                <div class="mt-3 px-6 py-6 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                    {{ $slot }}
-                </div>
-    @endif
+
 </body>
 
 </html>
