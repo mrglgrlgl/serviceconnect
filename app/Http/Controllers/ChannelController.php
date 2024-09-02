@@ -7,6 +7,8 @@ use App\Models\ServiceRequestImages;
 use App\Models\Channel;
 use App\Models\Rating;
 use App\Models\Bid;
+use App\Models\Employee;
+use App\Models\EmployeeTaskAssignment;
 use App\Models\User;
 use App\Models\Agency;
 use App\Models\AgencyUser;
@@ -55,9 +57,11 @@ class ChannelController extends Controller
 
     public function agencyChannel($serviceRequestId)
     {
-        $agencyUser = Auth::guard('agency_users')->user(); // Use the correct guard for AgencyUser
+
+        $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
     
         try {
+            // Fetch the channel based on service request ID and provider ID
             $channel = Channel::where('service_request_id', $serviceRequestId)
                               ->where('provider_id', $agencyUser->id)
                               ->with(['serviceRequest', 'bid', 'seeker'])
@@ -70,8 +74,24 @@ class ChannelController extends Controller
         $serviceRequest = $channel->serviceRequest;
         $seeker = $channel->seeker;
     
-        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker'));
+        // Fetch all available employees
+        $employees = Employee::all(); // Fetch all employees; modify as needed to filter or sort
+    
+        // Fetch assigned employees for the specific channel
+        $assignedEmployeeIds = EmployeeTaskAssignment::where('channel_id', $channel->id)
+                                                     ->pluck('employee_id');
+        $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
+    
+        // Pass agency ID to the view
+        $agencyId = $agencyUser->agency_id; // Adjust this according to your schema
+    
+        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker', 'employees', 'assignedEmployees', 'agencyId'));
     }
+    
+
+    
+
+
     
     
 

@@ -21,4 +21,9 @@ class AgencyUser extends Authenticatable
     {
         return $this->belongsTo(Agency::class);
     }
+
+    public function taskAssignments()
+{
+    return $this->hasMany(EmployeeTaskAssignment::class, 'assigned_by');
+}
 }

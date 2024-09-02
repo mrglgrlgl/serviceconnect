@@ -33,6 +33,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AgencySettingsController;
 use App\Http\Controllers\AdminAgencyReviewController;
 use App\Http\Controllers\AgencyServiceController;
+use App\Http\Controllers\EmployeeTaskAssignmentController;
 
 
 // Admin User Authentication Routes
@@ -63,8 +64,18 @@ Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('age
 
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
+    Route::post('agency/remove-employee/{id}', [EmployeeTaskAssignmentController::class, 'remove'])->name('agency.remove.employee');
+// Route::post('agency/remove-employee/{id}', [EmployeeTaskAssignmentController::class, 'remove'])->name('remove.employee');
 
+// Route to show the assignment page
+Route::post('/agency/assign/employees/{channel_id}', [EmployeeTaskAssignmentController::class, 'assign'])->name('assign.employees');
 
+Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentController::class, 'showAssignmentPage'])->name('show.assignment.page');
+
+// Route to handle form submission
+    Route::post('/complete-assignment/{id}', [EmployeeTaskAssignmentController::class, 'complete'])->name('complete.assignment');
+    // Route::post('/remove-employee/{id}', [EmployeeTaskAssignmentController::class, 'remove'])->name('remove.employee');
+    
     Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
     Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
     // Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');

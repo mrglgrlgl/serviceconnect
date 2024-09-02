@@ -107,6 +107,44 @@
                                 </div>
                             </div> --}}
 
+
+<div class="bg-white rounded-lg border p-6 mt-6">
+    <div class="border-b pb-4 mb-4">
+        <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
+
+        <!-- Example Button to Open Modal -->
+        <button onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+            Assign Employees
+        </button>
+    </div>
+
+    <ul class="list-none p-0">
+        @forelse ($assignedEmployees as $employee)
+            <li class="flex justify-between items-center py-2 border-b border-gray-300">
+                <!-- Employee Image -->
+                <div class="flex items-center space-x-4">
+                    @if($employee->photo)
+                        <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                    @else
+                        <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                    @endif
+                    <span class="text-lg font-medium">{{ $employee->name }}</span>
+                </div>
+
+                <!-- Unassign Form -->
+<form method="POST" action="{{ route('agency.remove.employee', $assignment->id) }}">
+    @csrf
+    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+        Remove
+    </button>
+</form>
+            </li>
+        @empty
+            <li class="py-2 text-gray-500">No employees assigned yet.</li>
+        @endforelse
+    </ul>
+</div>
+
                             <div class="bg-white rounded-lg border p-6 mt-6">
     <div class="border-b pb-4 mb-4">
         <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
@@ -126,39 +164,7 @@
         <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
     </div>
     @endif
-    {{-- <button onclick="toggleEditForm()" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded mt-4">Edit Bid</button>
 
-    <!-- Edit Form -->
-    <div id="editForm" class="hidden mt-4">
-        <form action="{{ route('bids.update', $channel->bid->id) }}" method="POST">
-            @csrf
-            @method('PATCH')
-            <div class="mb-4">
-                <label for="bid_amount" class="block text-gray-700">Bid Amount:</label>
-                <input type="number" name="bid_amount" id="bid_amount" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $channel->bid->bid_amount }}" required>
-            </div>
-            <div class="mb-4">
-                <label for="bid_description" class="block text-gray-700">Bid Description:</label>
-                <textarea name="bid_description" id="bid_description" rows="4" class="w-full p-2 border border-gray-300 rounded-md" required>{{ $channel->bid->bid_description }}</textarea>
-            </div>
-            <div class="flex justify-end">
-                <button type="button" onclick="toggleEditForm()" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2">Cancel</button>
-                <button type="submit" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded">Save</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function toggleEditForm() {
-        var editForm = document.getElementById('editForm');
-        if (editForm.classList.contains('hidden')) {
-            editForm.classList.remove('hidden');
-        } else {
-            editForm.classList.add('hidden');
-        }
-    }
-</script> --}}
 
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
@@ -203,28 +209,10 @@
             </div>
         </div>
     </div>
-{{-- 
-    <!-- Payment Confirmation Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" id="providerPaymentModal"
-        style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto p-6">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h5 class="text-xl font-semibold">Confirm Payment Received</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
-                    onclick="closeModal('providerPaymentModal')">&times;</button>
-            </div>
-            <div>
-                <p><strong>Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                <p class="text-custom-500">Confirm you have received the payment.</p>
-            </div>
-            <div class="flex justify-end pt-4">
-                <button type="button" class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2"
-                    onclick="closeModal('providerPaymentModal')">Close</button>
-                <button type="button" class="bg-custom-light-blue hover:bg-cyan-700 text-white py-2 px-4 rounded"
-                    onclick="confirmProviderPayment()">Confirm Payment</button>
-            </div>
-        </div> --}}
     </div>
+
+
+
 
     <!-- Rating Modal -->
     <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
@@ -296,6 +284,31 @@
                 </div>
             @endif
         </div>
+
+<div class="bg-white rounded-lg border p-6 mt-6">
+    <div class="border-b pb-4 mb-4">
+        <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
+    </div>
+    <ul>
+        @forelse ($assignedEmployees as $employee)
+            <li class="flex items-center py-2 border-b border-gray-300">
+                @if($employee->photo)
+                    <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-12 h-12 rounded-full object-cover mr-4">
+                @else
+                    <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-12 h-12 rounded-full object-cover mr-4">
+                @endif
+                <span>{{ $employee->name }}</span>
+            </li>
+        @empty
+            <li>No employees assigned.</li>
+        @endforelse
+    </ul>
+</div>
+
+
+
+
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.3.0/dist/custom-forms.min.js"></script>
@@ -373,5 +386,18 @@
                 openRatingModal();
             }
         });
+
+
+          function toggleEmployeeForm() {
+        const form = document.getElementById('employee-form');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+          }
     </script>
+
+
+
 </x-agency-dashboard>
