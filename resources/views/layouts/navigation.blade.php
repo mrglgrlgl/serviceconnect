@@ -66,18 +66,18 @@
         <div class="flex flex-col justify-between flex-1 mt-6">
             <nav class="-mx-3 space-y-6">
                 <div class="space-y-3">
-                    <label class="px-3 text-xs text-gray-500 uppercase">Service Requests</label>
+                    <label class="px-3 text-xs text-gray-500 uppercase">Service</label>
                     
                     <x-nav-link href="{{ route('home') }}" icon="home" :active="request()->routeIs('home')">
                         Home
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('service-requests.create') }}" icon="add" :active="request()->routeIs('service-requests.create')">
-                        Create Service Request
+                        Create Request
                     </x-nav-link>
 
                     <x-nav-link href="{{ route('dashboard') }}" icon="view_list" :active="request()->routeIs('dashboard')">
-                        View Service Requests
+                        View My Requests
                     </x-nav-link>
 
                 </div>

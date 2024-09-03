@@ -30,10 +30,10 @@ class Channel extends Model
         return $this->belongsTo(ServiceRequest::class, 'service_request_id');
     }
 
-    public function provider()
-    {
-        return $this->belongsTo(User::class, 'provider_id');
-    }
+    // public function provider()
+    // {
+    //     return $this->belongsTo(User::class, 'provider_id');
+    // }
 
     public function agencyuser()
     {
@@ -49,7 +49,15 @@ class Channel extends Model
     {
         return $this->belongsTo(Bid::class, 'bid_id');
     }
-
+    
+    public function taskAssignments()
+    {
+        return $this->hasMany(EmployeeTaskAssignment::class);
+    }
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_task_assignment');
+    }
 
 }
 

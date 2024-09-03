@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="py-12 font-open-sans">
+    <div class="p-12 font-open-sans">
         <div class="w-full mx-auto">
             <div class="container mx-auto">
                 <div class="flex flex-wrap">
@@ -36,15 +36,49 @@
                                 </div>
                             @endif
 
-                            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4">
+                            <div class="border bg-white rounded-lg p-6 mt-6 flex justify-between">
+                                <div class="">
+                                    <h3 class="text-2xl font-semibold">Task Actions</h3>
+                                </div>
+                                <div class="space-y-4">
+                                    @if ($channel->is_on_the_way == 'pending')
+                                        <button onclick="confirmArrival()"
+                                            class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Confirm
+                                            Provider Arrival</button>
+                                    @elseif ($channel->is_task_started === 'true')
+                                        <p class="text-gray-500">Task is currently in progress. Wait for the provider to
+                                            send a task completion notification.</p>
+                                    @elseif ($channel->is_arrived === 'true')
+                                        <p class="text-gray-500">Waiting for provider to start the task.</p>
+                                    @elseif ($channel->is_task_started === 'true')
+                                        @if ($channel->is_task_completed === 'pending')
+                                            <p class="text-green-500">Waiting for seeker to confirm task completion</p>
+                                        @elseif ($channel->is_task_completed === 'true')
+                                            <p class="text-green-500">Task is completed.</p>
+                                        @else
+                                            <button onclick="completeTask()"
+                                                class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete
+                                                Task</button>
+                                        @endif
+                                    @else
+                                        <p class="text-gray-500">Waiting for the provider to arrive.</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-5 pl-4 gap-8 pt-4">
                                 <div class="md:col-span-3">
-                                    <div class="flex items-center text-xl pt-4">
+                                    <div class="flex items-center pt-4">
                                         <x-category :category="$channel->serviceRequest->category" class="mr-2" />
-                                        <span> - {{ $channel->serviceRequest->title }}</span>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <span
+                                            class="text-2xl text-custom-header font-semibold pl-7">{{ $channel->serviceRequest->title }}</span>
                                     </div>
                                     <div class="mt-2">
                                         <div class="flex items-center pl-6">
-                                            <span class="material-icons mr-1 text-gray-500">location_on</span>
+                                            <span class="material-icons mr-1 text-red-500">location_on</span>
                                             <span>{{ $channel->serviceRequest->location }}</span>
                                         </div>
                                         <div class="mt-2 pl-6">
@@ -73,95 +107,96 @@
                                     </div>
                                 </div>
 
-<div class="md:col-span-2 md:ml-auto w-full">
-    <div class="border rounded-md p-4">
-        <div class="border-b pb-2">
-            <h3 class="text-xl text-custom-header">Provider Details</h3>
-        </div>
-        <div class="mt-4">
-            @if ($channel->agencyuser)
-                @php
-                    $agency = $channel->agencyuser->agency; // Get the agency associated with the provider
-                @endphp
+                                <div class="md:col-span-2 md:ml-auto w-full bg-gray-50">
+                                    <div class="border rounded-md p-4">
+                                        <div class="border-b pb-2">
+                                            <h3 class="text-xl text-custom-header">Provider Details</h3>
+                                        </div>
+                                        <div class="mt-4">
+                                            @if ($channel->agencyuser)
+                                                @php
+                                                    $agency = $channel->agencyuser->agency; // Get the agency associated with the provider
+                                                @endphp
 
-                @if ($agency)
-                    <div class="flex items-center text-xl pb-4">
-                        @if ($agency->logo_path)
-                            <img src="{{ asset('storage/' . $agency->logo_path) }}" alt="{{ $agency->name }}" class="w-16 h-16 object-cover rounded-full">
-                        @else
-                            <span class="text-gray-400">No logo available</span>
-                        @endif
-                        <span class="ml-4">{{ $agency->name }}</span>
-                    </div>
-                    <div class="flex items-center mt-2 pl-4">
-                        <span class="material-icons text-gray-400 mr-2">mail</span>
-                        <span>{{ $agency->email }}</span>
-                    </div>
-                    <div class="flex items-center mt-2 pl-4">
-                        <span class="material-icons mr-2 text-gray-400">call</span>
-                        <span>{{ $agency->phone }}</span>
-                    </div>
-                @else
-                    <p>Agency details not available.</p>
-                @endif
-            @else
-                <p>Provider details not available.</p>
-            @endif
-        </div>
-    </div>
-</div>
-
-
+                                                @if ($agency)
+                                                    <div class="flex items-center text-xl pb-4">
+                                                        @if ($agency->logo_path)
+                                                            <img src="{{ asset('storage/' . $agency->logo_path) }}"
+                                                                alt="{{ $agency->name }}"
+                                                                class="w-16 h-16 object-cover rounded-full">
+                                                        @else
+                                                            <span class="text-gray-400">No logo available</span>
+                                                        @endif
+                                                        <span class="ml-4">{{ $agency->name }}</span>
+                                                    </div>
+                                                    <div class="flex items-center mt-2 pl-4">
+                                                        <span class="material-icons text-gray-400 mr-2">mail</span>
+                                                        <span>{{ $agency->email }}</span>
+                                                    </div>
+                                                    <div class="flex items-center mt-2 pl-4">
+                                                        <span class="material-icons mr-2 text-gray-400">call</span>
+                                                        <span>{{ $agency->phone }}</span>
+                                                    </div>
+                                                @else
+                                                    <p>Agency details not available.</p>
+                                                @endif
+                                            @else
+                                                <p>Provider details not available.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                              <div class="border-b pb-4 mb-4">
-        <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
-    </div>
-    <div class="text-gray-800">
 
-     <p>{{ $channel->bid->job_type }}</p>
-            @if ($channel->serviceRequest->job_type == 'hourly_rate' )
-
-        <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
-        <span>{{ $channel->serviceRequest->estimated_duration }}</span>
-
-        <p><strong>Total Amount:</strong> {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}</p>
-            @else
-            <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-        <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
-    </div>
-    @endif
-                        </div>
-
-                        <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                            <div class="border-b pb-4 mb-4">
-                                <h3 class="text-2xl font-semibold">Task Actions</h3>
+                        <div class="flex justify-end pt-4">
+                            <!-- Bid Details Section -->
+                            <div class="bg-gray-50 rounded-lg border p-6 mt-6 w-2/5 text-gray-700">
+                                <div class="border-b pb-4 mb-4">
+                                    <div class="flex items-center space-x-2 text-2xl">
+                                        <span class="material-icons text-2xl">sell</span>
+                                <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
                             </div>
-                            <div class="space-y-4">
-                                @if ($channel->is_on_the_way == 'pending')
-                                    <button onclick="confirmArrival()"
-                                        class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Confirm
-                                        Provider Arrival</button>
-                                @elseif ($channel->is_task_started === 'true')
-                                    <p class="text-gray-500">Task is currently in progress. Wait for the provider to
-                                        send a task completion notification.</p>
-                                @elseif ($channel->is_arrived === 'true')
-                                    <p class="text-gray-500">Waiting for provider to start the task.</p>
-                                @elseif ($channel->is_task_started === 'true')
-                                    @if ($channel->is_task_completed === 'pending')
-                                        <p class="text-green-500">Waiting for seeker to confirm task completion</p>
-                                    @elseif ($channel->is_task_completed === 'true')
-                                        <p class="text-green-500">Task is completed.</p>
-                                    @else
-                                        <button onclick="completeTask()"
-                                            class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete
-                                            Task</button>
-                                    @endif
-                                @else
-                                    <p class="text-gray-500">Waiting for the provider to arrive.</p>
-                                @endif
+
+                            <div class="text-gray-800 pl-4">
+                                <p>{{ $channel->bid->job_type }}</p>
+                                @if ($channel->serviceRequest->job_type == 'hourly_rate')
+                                <p class="flex items-center space-x-2">
+                                    <span class="material-symbols-outlined">description</span>
+                                    <strong>Description:</strong> {{ $channel->bid->bid_description }}
+                                </p>
+                            
+                                <p class="flex items-center space-x-2">
+                                    <span class="material-icons text-md">schedule</span>
+                                    <strong>Estimated Duration:</strong>
+                                    <span>{{ $channel->serviceRequest->estimated_duration }} hours</span>
+                                </p>
+                            
+                                <div class="border-b pb-4 mb-4">
+                                    <p class="flex items-center space-x-2">
+                                        <span class="material-symbols-outlined">checkbook</span>
+                                        <strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}
+                                    </p>
+                                </div>
+                            
+                                <div class="bg-yellow-100 py-4 rounded-md flex items-center space-x-2 pl-2">
+                                    <span class="material-icons text-yellow-800">payments</span>
+                                    <p class="text-yellow-800">
+                                        <strong>Total Amount:</strong>
+                                        {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
+                                    </p>
+                                </div>
+                            @else
+                                <p class="flex items-center space-x-2">
+                                    <span class="material-symbols-outlined">checkbook</span>
+                                    <strong>Amount:</strong> {{ $channel->bid->bid_amount }}
+                                </p>
+                                <p class="flex items-center space-x-2">
+                                    <span class="material-symbols-outlined text-custom-header">description</span>
+                                    <strong>Description:</strong> {{ $channel->bid->bid_description }}
+                                </p>
+                            @endif
                             </div>
-                        </div>
+
 
                     </div>
                 </div>
@@ -169,6 +204,7 @@
         </div>
     </div>
     </div>
+    {{-- End Bid Details --}}
 
     <!-- Modals for Arrival, Task Start, Task Completion, and Rating -->
     <!-- Modals similar to what you provided earlier -->
@@ -309,83 +345,82 @@
             @endif
         </div>
     </div>
-</x-app-layout>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if ('{{ $channel->is_task_completed }}' === 'true') {
-            document.getElementById('seekerRatingModal').style.display = 'flex';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if ('{{ $channel->is_task_completed }}' === 'true') {
+                document.getElementById('seekerRatingModal').style.display = 'flex';
+            }
+
+            if ('{{ $channel->is_arrived }}' === 'pending') {
+                document.getElementById('arrivalModal').style.display = 'block';
+            }
+
+            if ('{{ $channel->is_task_started }}' === 'pending') {
+                document.getElementById('startTaskModal').style.display = 'block';
+            }
+
+            if ('{{ $channel->is_task_completed }}' === 'pending') {
+                document.getElementById('completeTaskModal').style.display = 'block';
+            }
+        });
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         }
 
-        if ('{{ $channel->is_arrived }}' === 'pending') {
-            document.getElementById('arrivalModal').style.display = 'block';
+        function confirmArrival() {
+            axios.post('{{ route('channel.confirmArrival', $channel->id) }}', {}, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => {
+                    alert(response.data.message);
+                    closeModal('arrivalModal');
+                    location.reload(); // Reload the page to update the status
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
 
-        if ('{{ $channel->is_task_started }}' === 'pending') {
-            document.getElementById('startTaskModal').style.display = 'block';
+        function confirmTaskStart() {
+            axios.post('{{ route('channel.confirmTaskStart', $channel->id) }}', {}, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => {
+                    alert(response.data.message);
+                    closeModal('startTaskModal');
+                    location.reload(); // Reload the page to update the status
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
 
-        if ('{{ $channel->is_task_completed }}' === 'pending') {
-            document.getElementById('completeTaskModal').style.display = 'block';
+        function confirmTaskCompletion() {
+            axios.post('{{ route('channel.confirmTaskCompletion', $channel->id) }}', {}, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => {
+                    alert(response.data.message);
+                    closeModal('completeTaskModal');
+                    location.reload(); // Reload the page to update the status
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
-    });
 
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-    }
-
-    function confirmArrival() {
-        axios.post('{{ route('channel.confirmArrival', $channel->id) }}', {}, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                alert(response.data.message);
-                closeModal('arrivalModal');
-                location.reload(); // Reload the page to update the status
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    function confirmTaskStart() {
-        axios.post('{{ route('channel.confirmTaskStart', $channel->id) }}', {}, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                alert(response.data.message);
-                closeModal('startTaskModal');
-                location.reload(); // Reload the page to update the status
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    function confirmTaskCompletion() {
-        axios.post('{{ route('channel.confirmTaskCompletion', $channel->id) }}', {}, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => {
-                alert(response.data.message);
-                closeModal('completeTaskModal');
-                location.reload(); // Reload the page to update the status
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    function highlightSelected(label) {
-        const group = label.parentElement.querySelectorAll('.rating-label');
-        group.forEach(l => l.classList.remove('bg-custom-lightest-blue', 'text-white'));
-        label.classList.add('bg-custom-lightest-blue', 'text-white');
-    }
-</script>
+        function highlightSelected(label) {
+            const group = label.parentElement.querySelectorAll('.rating-label');
+            group.forEach(l => l.classList.remove('bg-custom-lightest-blue', 'text-white'));
+            label.classList.add('bg-custom-lightest-blue', 'text-white');
+        }
+    </script>
 @endsection

@@ -19,7 +19,7 @@
                 <!-- Bid Description -->
                 <div class="mt-4">
                     <x-input-label for="bid_description" :value="__('Bid Description')" />
-                    <textarea name="bid_description" id="bid_description" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md" rows="3" required></textarea>
+                    <textarea name="bid_description" id="bid_description" class="border block mt-1 w-full px-3 py-2 border-gray-300 rounded-md" rows="3" required></textarea>
                     <x-input-error :messages="$errors->get('bid_description')" class="mt-2" />
                 </div>
                 

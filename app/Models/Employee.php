@@ -16,6 +16,7 @@ class Employee extends Model
         'position',
         'gender',
         'birthdate',
+        'availability',
         'photo',
     ];
 
@@ -30,6 +31,16 @@ class Employee extends Model
                     ->withPivot('agency_id', 'assigned_at')
                     ->withTimestamps();
     }
-    
+    public function taskAssignments()
+{
+    return $this->hasMany(EmployeeTaskAssignment::class);
+}
+public function channels()
+{
+    // Define the relationship, assuming a many-to-many relationship
+    return $this->belongsToMany(Channel::class, 'employee_channel', 'employee_id', 'channel_id');
+}
+
+
 
 }

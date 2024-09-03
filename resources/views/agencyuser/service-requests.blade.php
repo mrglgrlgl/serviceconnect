@@ -1,22 +1,21 @@
 @extends('layouts.agency-dashboard')
 
 @section('content')
-    <div class="px-12 pb-12">
+    <div class="font-poppins px-12 pb-12">
         <div class="w-full mx-auto">
 
 
-            <div class="flex justify-center">
+            {{-- <div class="flex justify-center">
                 <div class="border-t w-full text-center border-custom-cat-border"></div>
-            </div>
+            </div> --}}
 
-
-            <div class="flex items-center justify-between">
-                <h1 class="text-3xl">
+            <div class="flex items-center justify-between pb-8">
+                <h1 class="text-3xl font-semibold">
                     Service Requests
                 </h1>
             
                 <div class="pt-6 pb-6 bg-gray-100">
-                    <div class="w-full mx-auto flex justify-end pb-4">
+                    <div class="w-full mx-auto flex justify-end">
                         <div class="relative inline-block">
                             <form id="filterForm" action="{{ route('provider.filterRequests') }}" method="GET">
                                 <select name="filter" id="filter"
@@ -79,17 +78,17 @@
                         </div>
                     @endif
             
-                    <div class="flex items-start px-8">
+                    <div class="flex items-start px-8 ">
                         <div class="flex-1">
                             <div class="flex text-gray-700 items-center space-x-4">
                                 <x-service-status :status="$serviceRequest->status" />
                                 <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined">work</span>
+                                    <span class="material-icons">work</span>
                                     {{ $serviceRequest->job_type }}
                                 </div>
             
                                 <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                    <span class="material-icons text-gray-500">request_quote</span>
                                     Price:
                                     @if ($serviceRequest->min_price)
                                         {{ $serviceRequest->min_price }} -
@@ -103,7 +102,7 @@
                             </div>
             
                             <div class="flex items-center p-2">
-                                <span class="material-symbols-outlined mr-1 text-red-500">location_on</span>
+                                <span class="material-icons mr-1 text-red-500">location_on</span>
                                 {{ $serviceRequest->location }}
                             </div>
                             <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
@@ -114,7 +113,7 @@
                         @if ($userBid)
                             @if ($userBid->status == 'accepted')
                                 <span class="text-green-500 font-semibold">Bid Accepted</span>
-                                <a class="transform transition-transform duration-300 hover:scale-105 hover:shadow-xl" href="{{ route('channel.agency', ['serviceRequestId' => $serviceRequest->id]) }}"
+                                <a class="border-2 border-custom-light-blue bg-gray-50 text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl" href="{{ route('channel.agency', ['serviceRequestId' => $serviceRequest->id]) }}"
                                     class="text-blue-500 underline">View Channel</a>
                             @elseif ($userBid->status == 'rejected')
                                 <span class="text-red-500 font-semibold">Bid Closed</span>
@@ -122,7 +121,7 @@
                                 <span class="text-gray-500 font-semibold">Bid Sent</span>
                                 <a href="#"
                                     class="border-2 border-custom-light-blue bg-white text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-                                    <span class="material-symbols-outlined">visibility</span>
+                                    <span class="material-icons">visibility</span>
                                     View Bid
                                 </a>
                             @endif

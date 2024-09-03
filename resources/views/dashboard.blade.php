@@ -77,18 +77,18 @@
                                 </div>
                                 
                                 <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined text-red-500">location_on</span>
+                                    <span class="material-icons text-red-500">location_on</span>
                                     {{ $serviceRequest->location }}
                                 </div>
 
                                 <!-- Combine Project Type, Price, and Estimated Duration in one line -->
                                 <div class="flex items-center space-x-4 p-2 text-gray-700">
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">work</span>
+                                        <span class="material-icons text-gray-500">work</span>
                                         {{ $serviceRequest->job_type }}
                                     </div>
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                        <span class="material-icons text-gray-500">request_quote</span>
                                         Price: 
                                         @if ($serviceRequest->min_price)
                                             {{ $serviceRequest->min_price }} -
@@ -96,7 +96,7 @@
                                         {{ $serviceRequest->max_price }}
                                     </div>
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">schedule</span>
+                                        <span class="material-icons text-gray-500">schedule</span>
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@
                                     @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
                                         <div class="flex items-center space-x-2">
                                             <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
-                                                <span class="material-symbols-outlined">
+                                                <span class="material-icons">
                                                     edit
                                                 </span>
                                             </a>
@@ -117,7 +117,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this service request?')">
-                                                    <span class="material-symbols-outlined">
+                                                    <span class="material-icons">
                                                         delete
                                                     </span>
                                                 </button>
@@ -221,11 +221,11 @@
                             <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
                         </div>
                         <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
+                            <span class="material-icons text-gray-600 mr-2">mail</span>
                             <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
                         </div>
                         <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
+                            <span class="material-icons text-gray-600 mr-2">call</span>
                             <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
                         </div>
                     </div>

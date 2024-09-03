@@ -62,7 +62,7 @@ export default {
                     'lightest-blue': '#43a0b7',
                     'lightestblue-accent': '#31A6C5',
                     'desat-light': '#e9edf0',
-                    // 'header': '#333333',
+                    'header': '#333333',
                     // 'dark-text': '#111111',
                     'light-text': '#666666', 
                     'nav-bg': '#EBEDEF', 

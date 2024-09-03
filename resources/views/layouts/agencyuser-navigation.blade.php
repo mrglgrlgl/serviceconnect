@@ -22,15 +22,15 @@
         </style>
 <body>
 
-<aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l font-open-sans text-xl">
+<aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l text-xl">
     <a href="{{ route('dashboard') }}">
         <img class="w-auto h-7" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
     </a>
 
     <div class="flex flex-col justify-between flex-1 mt-6">
-        <nav class="-mx-3 space-y-6 ">
-            <div class="space-y-3 ">
-                <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Agency User</label>
+        <nav class="-mx-3 space-y-6">
+            <div class="space-y-3">
+                <label class="px-3 text-sm text-gray-500 uppercase dark:text-gray-400">Agency User</label>
 
                 <x-nav-link href="{{ route('agency.home') }}" icon="home" :active="request()->routeIs('agency.home')">
                     Home
