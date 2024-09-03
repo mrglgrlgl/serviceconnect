@@ -108,37 +108,48 @@ class EmployeeTaskAssignmentController extends Controller
     // }
 
     // Method to remove an employee from a task
-public function remove($id)
-{
-    // Log the ID for debugging
-    Log::info('Removing assignment with ID: ' . $id);
-
-    // Find the task assignment or fail
-    $assignment = EmployeeTaskAssignment::findOrFail($id);
-
-    // Update the task assignment using the update method
-    $assignment->update([
-        'status' => 'removed',
-        'completed_at' => now(),
-    ]);
-
-    // Ensure the employee exists before updating
-    if ($assignment->employee) {
-        $assignment->employee->update(['status' => 'available']);
-    } else {
-        return response()->json([
-            'message' => 'Employee not found for this assignment.'
-        ], 404);
+    public function updateEmployeeStatus(Request $request, $channelId)
+    {
+        $employeeId = $request->input('employee_id');
+        $status = $request->input('status');
+    
+        // Validate the status input
+        $validStatuses = ['assigned', 'completed', 'removed'];
+        if (!in_array($status, $validStatuses)) {
+            return redirect()->back()->withErrors('Invalid status.');
+        }
+    
+        // Find the channel
+        $channel = Channel::find($channelId);
+    
+        if (!$channel) {
+            return redirect()->back()->withErrors('Channel not found.');
+        }
+    
+        // Update the status in the employee_task_assignment table
+        $assignment = EmployeeTaskAssignment::where('channel_id', $channelId)
+                                            ->where('employee_id', $employeeId)
+                                            ->first();
+    
+        if (!$assignment) {
+            return redirect()->back()->withErrors('Employee not found in the channel.');
+        }
+    
+        // Update the status and other fields
+        $assignment->status = $status;
+        if ($status === 'completed') {
+            $assignment->completed_at = now();
+        } elseif ($status === 'assigned') {
+            $assignment->completed_at = null; // Clear the completed_at if reassigning
+        }
+        $assignment->save();
+    
+        return redirect()->back()->with('success', 'Employee status updated.');
     }
-
-    return response()->json([
-        'message' => 'Employee unassigned successfully.',
-        'assignment' => $assignment
-    ]);
-}
-
     
 
+    
+   
     
 
 

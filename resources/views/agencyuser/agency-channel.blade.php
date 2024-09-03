@@ -111,6 +111,12 @@
 <div class="bg-white rounded-lg border p-6 mt-6">
     <div class="border-b pb-4 mb-4">
         <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
+@if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">{{ session('success') }}</span>
+    </div>
+@endif
 
         <!-- Example Button to Open Modal -->
         <button onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
@@ -131,19 +137,23 @@
                     <span class="text-lg font-medium">{{ $employee->name }}</span>
                 </div>
 
-                <!-- Unassign Form -->
-<form method="POST" action="{{ route('agency.remove.employee', $assignment->id) }}">
-    @csrf
-    <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-        Remove
-    </button>
-</form>
+                <!-- Unassign Button -->
+                <div>
+                    <form action="{{ route('unassign.employee', ['channel' => $channel->id, 'employee' => $employee->id]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+                            Unassign
+                        </button>
+                    </form>
+                </div>
             </li>
         @empty
             <li class="py-2 text-gray-500">No employees assigned yet.</li>
         @endforelse
     </ul>
 </div>
+
 
                             <div class="bg-white rounded-lg border p-6 mt-6">
     <div class="border-b pb-4 mb-4">

@@ -79,8 +79,9 @@ class ChannelController extends Controller
     
         // Fetch assigned employees for the specific channel
         $assignedEmployeeIds = EmployeeTaskAssignment::where('channel_id', $channel->id)
-                                                     ->pluck('employee_id');
-        $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
+        ->where('status', 'assigned') // Filter by 'assigned' status
+        ->pluck('employee_id');
+$assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
     
         // Pass agency ID to the view
         $agencyId = $agencyUser->agency_id; // Adjust this according to your schema
@@ -88,8 +89,51 @@ class ChannelController extends Controller
         return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker', 'employees', 'assignedEmployees', 'agencyId'));
     }
     
-
+   
     
+    public function unassignEmployee(Request $request, $channelId, $employeeId)
+{
+    // Debugging statements
+    // dd('Channel ID:', $channelId, 'Employee ID:', $employeeId);
+
+    try {
+        // Find the assignment entry
+        $assignment = EmployeeTaskAssignment::where('channel_id', $channelId)
+                                           ->where('employee_id', $employeeId)
+                                           ->first();
+        
+        // Debugging statement to check if assignment is found
+        if (!$assignment) {
+            // dd('No assignment found for Channel ID:', $channelId, 'Employee ID:', $employeeId);
+        }
+
+        // Update the status to 'removed'
+        $assignment->status = 'removed';
+        $assignment->save();
+        $employee = Employee::find($employeeId);
+
+        if (!$employee) {
+            // If no employee is found, redirect with an error message
+            return redirect()->back()->with('error', 'Employee not found.');
+        }
+
+        // Update the employee's availability to 'available'
+        $employee->availability = 'available';
+        $employee->save();
+        // Debugging statement to confirm status update
+        // dd('Updated Assignment:', $assignment);
+
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Employee successfully unassigned.');
+    } catch (\Exception $e) {
+        // Log and handle the error
+        // dd('Error:', $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to unassign employee.');
+    }
+}
+
+
+
 
 
     

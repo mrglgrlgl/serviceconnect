@@ -54,6 +54,10 @@ class Channel extends Model
     {
         return $this->hasMany(EmployeeTaskAssignment::class);
     }
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_task_assignment');
+    }
 
 }
 

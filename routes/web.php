@@ -64,8 +64,10 @@ Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('age
 
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
-    Route::post('agency/remove-employee/{id}', [EmployeeTaskAssignmentController::class, 'remove'])->name('agency.remove.employee');
-// Route::post('agency/remove-employee/{id}', [EmployeeTaskAssignmentController::class, 'remove'])->name('remove.employee');
+
+
+    Route::put('/channel/{channel}/employee/{employee}', [ChannelController::class, 'unassignEmployee'])->name('unassign.employee');
+
 
 // Route to show the assignment page
 Route::post('/agency/assign/employees/{channel_id}', [EmployeeTaskAssignmentController::class, 'assign'])->name('assign.employees');
