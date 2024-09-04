@@ -189,7 +189,6 @@
     </div>
     </div>
 
-    <!-- Modals for Arrival, Task Start, Task Completion, and Rating -->
     <!-- Modals similar to what you provided earlier -->
 
     <!-- Arrival Confirmation Modal -->
@@ -271,7 +270,7 @@
             <form action="{{ route('submit.seeker.rating') }}" method="POST" class="space-y-6">
                 @csrf
                 <input type="hidden" name="channel_id" value="{{ $channel->id }}">
-                <input type="hidden" name="rated_for_id" value="{{ $channel->provider_id }}">
+                {{-- <input type="hidden" name="rated_for_id" value="{{ $channel->provider_id }}"> --}}
                 @php
                     $criteria = [
                         'quality_of_service' => 'Quality of Service',

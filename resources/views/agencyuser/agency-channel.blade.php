@@ -64,6 +64,11 @@
                                                 <strong>Description:</strong>
                                                 {{ $channel->serviceRequest->description }}
                                             </p>
+
+                                            <p class="mt-4 pl-6 text-custom-header">
+                                                <strong>Manpower:</strong>
+                                                {{ $channel->serviceRequest->manpower_number }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +230,7 @@
 
 
     <!-- Rating Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
+    {{-- <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
         style="display: none;">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
             <div class="border-b pb-4 mb-4 flex justify-between items-center">
@@ -293,9 +298,9 @@
                     {{ session('error') }}
                 </div>
             @endif
-        </div>
+        </div> --}}
 
-<div class="bg-white rounded-lg border p-6 mt-6">
+{{-- <div class="bg-white rounded-lg border p-6 mt-6">
     <div class="border-b pb-4 mb-4">
         <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
     </div>
@@ -313,7 +318,7 @@
             <li>No employees assigned.</li>
         @endforelse
     </ul>
-</div>
+</div> --}}
 
 
 
@@ -382,20 +387,7 @@
             label.classList.add('bg-custom-light-blue', 'text-white');
         }
 
-        // Modal display functions
-        function openRatingModal() {
-            document.getElementById('ratingModal').style.display = 'flex';
-        }
-
-        // Trigger the modal opening conditionally
-        document.addEventListener('DOMContentLoaded', function() {
-            var taskCompleted = '{{ $channel->is_task_completed }}';
-        
-
-            if (taskCompleted === 'true') {
-                openRatingModal();
-            }
-        });
+   
 
 
           function toggleEmployeeForm() {

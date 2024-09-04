@@ -88,6 +88,10 @@
                                         <div class="flex items-center p-2">
                                             Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
                                         </div>
+
+                                        <div class="flex items-center p-2">
+                                            Manpower: {{ $serviceRequest->manpower_number }} 
+                                        </div>
                                     </div>
 
                                     <div class="flex items-center p-2">

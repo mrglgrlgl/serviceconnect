@@ -187,7 +187,7 @@ public function create()
             'end_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
-            // 'skill_tags' => 'required|string|max:255',
+            'manpower_number' => 'nullable|integer',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
             // 'price_type' => 'required|in:fixed,range',
@@ -223,6 +223,7 @@ public function create()
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
                $serviceRequest->is_direct_hire = false;
+               $serviceRequest->manpower_number = $validatedData['manpower_number'];
                $serviceRequest->min_price = $validatedData['min_price'];
                $serviceRequest->max_price = $validatedData['max_price'];
                $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
@@ -408,6 +409,8 @@ public function myRequests(Request $request)
 
     return view('provider.myrequests', compact('serviceRequests', 'filter'));
 }
+
+
 public function filterServiceRequests(Request $request)
 {
     $filter = $request->input('filter', 'all'); // Get the filter option from the request, default to 'all'
