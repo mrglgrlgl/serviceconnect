@@ -156,7 +156,10 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     
 });
 
-
+// contact info
+Route::get('/contact-us', function () {
+    return view('contact-us');
+})->name('contact-us');
 
 
 Route::post('/report', [ReportController::class, 'store'])->name('report.store');

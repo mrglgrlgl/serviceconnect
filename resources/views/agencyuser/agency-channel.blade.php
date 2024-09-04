@@ -35,9 +35,9 @@
 
                             {{-- Task actions --}}
                             <div class="bg-custom-light-blue rounded-lg border p-4 flex justify-between">
-                                <div>
-                                    <h3 class="text-2xl font-semibold text-white">Task Actions:</h3>
-                                </div>
+
+                                    <h3 class="text-xl font-semibold text-white">Task Actions:</h3>
+
                                 <div class="space-y-4">
                                     @if ($channel->is_on_the_way == '1' && is_null($channel->is_arrived))
                                         <!-- Only show the "Notify Seeker Provider has Arrived" button -->
@@ -109,8 +109,7 @@
                                                 </div>
                                             </div>
                                             <p class="mt-4 pl-6 text-custom-header">
-                                                <strong>Description:</strong>
-                                                {{ $channel->serviceRequest->description }}
+                                                <strong>Description:</strong> {{ $channel->serviceRequest->description }}
                                             </p>
                                         </div>
                                     </div>
@@ -183,7 +182,7 @@
                                         <div class="border-b pb-4 mb-4">
                                             <p class="flex items-center space-x-2">
                                                 <span class="material-symbols-outlined">checkbook</span>
-                                                <strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}
+                                                <strong>Bid Amount: </strong> ₱{{ $channel->bid->bid_amount }}
                                             </p>
                                         </div>
                                     
@@ -191,7 +190,7 @@
                                             <span class="material-icons text-yellow-800">payments</span>
                                             <p class="text-yellow-800">
                                                 <strong>Total Amount:</strong>
-                                                {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
+                                                ₱{{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
                                             </p>
                                         </div>
                                     @else

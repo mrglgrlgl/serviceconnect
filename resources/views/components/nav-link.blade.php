@@ -1,8 +1,12 @@
 @props(['href', 'icon', 'active' => false])
 
-<a href="{{ $href }}" class="font-nunito-sans flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 text-md{{ $active ? 'bg-blue-200 text-blue-800' : '' }}">
+<a href="{{ $href }}" @class([
+    'font-nunito-sans flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg',
+    'hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 text-md',
+    'bg-blue-200 text-blue-800' => $active
+])>
     <span class="material-icons text-md">{{ $icon }}</span>
-    <span class="mx-2 text-md font-medium">{{ $slot }}</span>
+    <span class="mx-2 text-base font-medium">{{ $slot }}</span>
 </a>
 
 {{-- @php

@@ -10,14 +10,16 @@
     <style>
         aside {
             width: 250px;
-            position: fixed;
-            height: 100%;
-            overflow-y: auto;
-            top: 0;
-            left: 0;
-            background-color: #fff;
-            border-right: 1px solid #e5e7eb;
-            z-index: 1000;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Added */
         }
 
         main {
@@ -30,9 +32,8 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding-left: 1.25rem;
             margin-top: 1.5rem;
-            color: #2c5282; /* dark blue color for contrast */
+            color: #2793b1; /* dark blue color for contrast */
         }
 
         .profile-section .material-icons-round {
@@ -48,25 +49,26 @@
 
 <body>
     <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l font-open-sans text-xl">
-        <div class="flex items-center justify-center">
-            <a href="{{ route('dashboard') }}">
-                <img class="w-auto h-7" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
+        <div class="flex items-center pb-4">
+            <a href="{{ route('agency.home') }}" class="flex items-center">
+                <img class="h-16 w-auto mr-2" src="{{ asset('images/logo.png') }}" alt="Your Company">
+                <img class="h-14 w-auto" src="{{ asset('images/logo-text-2.png') }}" alt="Your Company">
             </a>
         </div>
 
         @php
         $user = Auth::user();
     @endphp
-
+{{-- 
         <div class="profile-section">
             <span class="material-icons-round text-4xl">account_circle</span>
             <span class="username">{{ Auth::user()->name }}</span>
-        </div>
+        </div> --}}
 
-        <div class="flex flex-col justify-between flex-1 mt-6">
+        <div class="flex-grow mt-6">
             <nav class="-mx-3 space-y-6">
                 <div class="space-y-3">
-                    <label class="px-3 text-xs text-gray-500 uppercase">Service</label>
+                    <label class="px-3 text-xs text-gray-500 uppercase">Service Requests</label>
                     
                     <x-nav-link href="{{ route('home') }}" icon="home" :active="request()->routeIs('home')">
                         Home
@@ -107,13 +109,20 @@
                            
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-lightest-blue">
-                            <span class="material-icons-round">logout</span> Log Out
+                        <button type="submit" class="flex w-full text-left text-sm text-red-600 hover:bg-red-50 rounded-lg px-3 py-4 items-center transition-colors duration-300 transform border-t pt-4 mt-8">
+                            <span class="material-icons-round mr-2">logout</span> Log Out
                         </button>
                     </form>
                 </div>
             </nav>
         </div>
+        <div class="profile-section">
+            <span class="material-icons-round text-4xl">account_circle</span>
+            <span class="username">{{ Auth::user()->name }}</span>
+        </div>
+    </aside>
+
+
     </aside>
 </body>
 

@@ -72,7 +72,9 @@
                 </x-primary-button>
                 <div class="border-t my-4 relative text-center"></div>
                 <div class="pb-2">
-                    <span class="text-xl font-semibold">Interested in applying as an agency? Contact us now!</span>
+                    <span class="text-xl font-semibold">Interested in applying as an agency? 
+                        <a href="{{ route('contact-us') }}" class="underline">Contact Us Now!</a>
+                    </span>
                 </div>
             </div>
         </div>

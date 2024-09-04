@@ -6,37 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
         aside {
             width: 250px;
-            position: fixed;
-            height: 100%;
-            overflow-y: auto;
-            top: 0;
-            left: 0;
-            background-color: #fff;
-            border-right: 1px solid #e5e7eb;
-            z-index: 1000;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Added */
+        }
+
+        main {
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            color: #204860; /* dark blue color for contrast */
+        }
+
+        .profile-section .material-icons-round {
+            font-size: 2rem;
+        }
+
+        .profile-section .username {
+            font-size: 1rem;
+            font-weight: 500;
         }
         </style>
 <body>
 
-<aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l text-xl">
-    <a href="{{ route('dashboard') }}">
-        <img class="w-auto h-7" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
-    </a>
+<aside class="flex flex-col w-64 h-screen px-5 py-8  overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l text-xl">
+    <div class="flex items-center pb-4">
+        <a href="{{ route('agency.home') }}" class="flex items-center">
+            <img class="h-16 w-auto mr-2" src="{{ asset('images/logo.png') }}" alt="Your Company">
+            <img class="h-14 w-auto" src="{{ asset('images/logo-text-2.png') }}" alt="Your Company">
+        </a>
+    </div>
+    
 
-    <div class="flex flex-col justify-between flex-1 mt-6">
+    <div class="flex-grow mt-6">
         <nav class="-mx-3 space-y-6">
             <div class="space-y-3">
-                <label class="px-3 text-sm text-gray-500 uppercase dark:text-gray-400">Agency User</label>
+                <label class="px-3 text-sm text-gray-500 uppercase dark:text-gray-400">Navigation</label>
 
                 <x-nav-link href="{{ route('agency.home') }}" icon="home" :active="request()->routeIs('agency.home')">
                     Home
                 </x-nav-link>
                 
-                <x-nav-link href="{{ route('agency.employees') }}" icon="groups" :active="request()->routeIs('agency.employees')">
+                <x-nav-link href="{{ route('agency.employees') }}" icon="groups" :active="request()->routeIs('agency.employees', 'agency.employees.edit', 'agency.settings', 'agency.employees.create')">
                     Employee List
                 </x-nav-link>
                 
@@ -68,129 +98,18 @@
                 <div class="space-y-3">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-lightest-blue">
-                            <span class="material-icons">logout</span> Log Out
+                        <button type="submit" class="flex w-full text-left text-sm text-red-600 hover:bg-red-50 rounded-lg px-3 py-4 items-center transition-colors duration-300 transform border-t pt-4 mt-8">
+                            <span class="material-icons-round mr-2">logout</span> Log Out
                         </button>
                     </form>
                 </div>
             </div>
         </nav>
     </div>
+    <div class="profile-section">
+        <span class="material-icons-round text-4xl">account_circle</span>
+        <span class="username">{{ Auth::user()->name }}</span>
+    </div>
 </aside>
 </body>
 </html>
-
-{{-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navbar</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <style>
-        aside {
-            width: 250px;
-            position: fixed;
-            height: 100%;
-            overflow-y: auto;
-            top: 0;
-            left: 0;
-            background-color: #fff;
-            border-right: 1px solid #e5e7eb;
-            z-index: 1000;
-        }
-/* 
-        main {
-            margin-left: 250px;
-            flex-grow: 1;
-            padding: 20px;
-        } */
-
-        .active-link {
-            background-color: #ebf8ff; /* lightest-blue */
-            color: #2c5282; /* dark blue for contrast */
-        }
-
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding-left: 1.25rem;
-            margin-top: 1.5rem;
-            color: #2c5282; /* dark blue color for contrast */
-        }
-
-        .profile-section .material-icons {
-            font-size: 2rem;
-        }
-
-        .profile-section .username {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-    </style>
-</head>
-
-<body>
-    <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:border-gray-800">
-        <div class="flex items-center justify-center">
-            @php
-                $user = Auth::user();
-            @endphp
-
-            <a href="{{ route('agency.home') }}">
-                <img class="w-auto h-7" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
-            </a>
-        </div>
-
-        <div class="profile-section">
-            <span class="material-icons text-4xl">account_circle</span>
-            <span class="username">{{ Auth::user()->name }}</span>
-        </div>
-
-        <nav class="mt-10 space-y-6">
-            <div class="space-y-3">
-                <label class="px-3 text-xs text-gray-500 uppercase">Admin</label>
-                <a href="{{ route('agency.home') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.home') ? 'active-link' : '' }}">
-                    <span class="material-icons">home</span>
-                    <span class="mx-2 text-sm font-medium">Home</span>
-                </a>
-                <a href="{{ route('agency.employees') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.employees') ? 'active-link' : '' }}">
-                    <span class="material-icons">groups</span>
-                    <span class="mx-2 text-sm font-medium">Employee List</span>
-                </a>
-                <a href="{{ route('agency.requests') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.requests') ? 'active-link' : '' }}">
-                    <span class="material-icons">assignment</span>
-                    <span class="mx-2 text-sm font-medium">Service Requests</span>
-                </a>
-                <a href="{{ route('agency.reports') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.reports') ? 'active-link' : '' }}">
-                    <span class="material-icons">bar_chart</span>
-                    <span class="mx-2 text-sm font-medium">Reports</span>
-                </a>
-                <a href="{{ route('agency.analytics') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.analytics') ? 'active-link' : '' }}">
-                    <span class="material-icons">analytics</span>
-                    <span class="mx-2 text-sm font-medium">Analytics</span>
-                </a>
-            </div>
-
-            <div class="space-y-3">
-                <label class="px-3 text-xs text-gray-500 uppercase">Customization</label>
-                <a href="{{ route('agency.settings') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300 {{ request()->routeIs('agency.settings') ? 'active-link' : '' }}">
-                    <span class="material-icons">settings</span>
-                    <span class="mx-2 text-sm font-medium">Agency Settings</span>
-                </a>
-                <form method="POST" action="{{ route('logout') }}" class="px-3">
-                    @csrf
-                    <button type="submit" class="flex items-center w-full px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-lightest-blue hover:text-gray-800 hover:bg-gray-300">
-                        <span class="material-icons">logout</span>
-                        <span class="mx-2 text-sm font-medium">Log Out</span>
-                    </button>
-                </form>
-            </div>
-        </nav>
-    </aside>
-</body>
-
-</html> --}}

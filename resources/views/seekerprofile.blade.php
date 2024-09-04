@@ -188,7 +188,7 @@
 
 
     </div>
-</x-app-layout>
+
 
 <script>
     function showModal() {

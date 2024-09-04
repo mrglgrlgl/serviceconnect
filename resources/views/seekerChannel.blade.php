@@ -38,7 +38,7 @@
 
                             <div class="border bg-white rounded-lg p-6 mt-6 flex justify-between">
                                 <div class="">
-                                    <h3 class="text-2xl font-semibold">Task Actions</h3>
+                                    <h3 class="text-xl font-semibold">Task Actions</h3>
                                 </div>
                                 <div class="space-y-4">
                                     @if ($channel->is_on_the_way == 'pending')
@@ -118,34 +118,55 @@
                                                     $agency = $channel->agencyuser->agency; // Get the agency associated with the provider
                                                 @endphp
 
-                                                @if ($agency)
-                                                    <div class="flex items-center text-xl pb-4">
-                                                        @if ($agency->logo_path)
-                                                            <img src="{{ asset('storage/' . $agency->logo_path) }}"
-                                                                alt="{{ $agency->name }}"
-                                                                class="w-16 h-16 object-cover rounded-full">
-                                                        @else
-                                                            <span class="text-gray-400">No logo available</span>
-                                                        @endif
-                                                        <span class="ml-4">{{ $agency->name }}</span>
-                                                    </div>
-                                                    <div class="flex items-center mt-2 pl-4">
-                                                        <span class="material-icons text-gray-400 mr-2">mail</span>
-                                                        <span>{{ $agency->email }}</span>
-                                                    </div>
-                                                    <div class="flex items-center mt-2 pl-4">
-                                                        <span class="material-icons mr-2 text-gray-400">call</span>
-                                                        <span>{{ $agency->phone }}</span>
-                                                    </div>
-                                                @else
-                                                    <p>Agency details not available.</p>
-                                                @endif
-                                            @else
-                                                <p>Provider details not available.</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
+                @if ($agency)
+                    <div class="flex items-center text-xl pb-4">
+                        @if ($agency->logo_path)
+                            <img src="{{ asset('storage/' . $agency->logo_path) }}" alt="{{ $agency->name }}" class="w-16 h-16 object-cover rounded-full">
+                        @else
+                            <span class="text-gray-400">No logo available</span>
+                        @endif
+                        <span class="ml-4">{{ $agency->name }}</span>
+                    </div>
+                    <div class="flex items-center mt-2 pl-4">
+                        <span class="material-icons text-gray-400 mr-2">mail</span>
+                        <span>{{ $agency->email }}</span>
+                    </div>
+                    <div class="flex items-center mt-2 pl-4">
+                        <span class="material-icons mr-2 text-gray-400">call</span>
+                        <span>{{ $agency->phone }}</span>
+                    </div>
+                @else
+                    <p>Agency details not available.</p>
+                @endif
+            @else
+                <p>Provider details not available.</p>
+            @endif
+            
+       <!-- Assigned Employees Section -->
+        <div class="border-t mt-4 pt-4">
+            <h3 class="text-xl text-custom-header">Assigned Employees</h3>
+            <ul class="mt-4">
+                @forelse ($assignedEmployees as $employee)
+                    <li class="flex justify-between items-center py-2 border-b border-gray-300">
+                        <div class="flex items-center space-x-4">
+                            @if($employee->photo)
+                                <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                            @else
+                                <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                            @endif
+                            <span class="text-lg font-medium">{{ $employee->name }}</span>
+                        </div>
+                        <span>{{ $employee->position }}</span>
+                    </li>
+                @empty
+                    <p>No employees assigned.</p>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+</div>
+
+
                             </div>
 
                         <div class="flex justify-end pt-4">
@@ -174,7 +195,7 @@
                                 <div class="border-b pb-4 mb-4">
                                     <p class="flex items-center space-x-2">
                                         <span class="material-symbols-outlined">checkbook</span>
-                                        <strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}
+                                        <strong>Bid Amount:</strong> ₱{{ $channel->bid->bid_amount }}
                                     </p>
                                 </div>
                             
@@ -182,7 +203,7 @@
                                     <span class="material-icons text-yellow-800">payments</span>
                                     <p class="text-yellow-800">
                                         <strong>Total Amount:</strong>
-                                        {{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
+                                        ₱{{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
                                     </p>
                                 </div>
                             @else
