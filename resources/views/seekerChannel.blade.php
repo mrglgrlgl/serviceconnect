@@ -105,6 +105,27 @@
             @else
                 <p>Provider details not available.</p>
             @endif
+            
+       <!-- Assigned Employees Section -->
+        <div class="border-t mt-4 pt-4">
+            <h3 class="text-xl text-custom-header">Assigned Employees</h3>
+            <ul class="mt-4">
+                @forelse ($assignedEmployees as $employee)
+                    <li class="flex justify-between items-center py-2 border-b border-gray-300">
+                        <div class="flex items-center space-x-4">
+                            @if($employee->photo)
+                                <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                            @else
+                                <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-16 h-16 rounded-md shadow-sm object-cover">
+                            @endif
+                            <span class="text-lg font-medium">{{ $employee->name }}</span>
+                        </div>
+                        <span>{{ $employee->position }}</span>
+                    </li>
+                @empty
+                    <p>No employees assigned.</p>
+                @endforelse
+            </ul>
         </div>
     </div>
 </div>
