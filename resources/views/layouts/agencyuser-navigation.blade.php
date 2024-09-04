@@ -93,8 +93,6 @@
     </svg>
     <span class="mx-2 text-sm font-medium">Settings</span>
 </a> --}}
-
-
                 <div class="space-y-3">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

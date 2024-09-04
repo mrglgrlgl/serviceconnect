@@ -94,7 +94,7 @@ class AnalyticsController extends Controller
         ));
     }
 
-    public function provideranalytics()
+    public function providerAnalytics()
     {
         $userId = Auth::id();
         if (!$userId) {
@@ -175,7 +175,7 @@ class AnalyticsController extends Controller
             ->orderBy('completed_services', 'DESC')
             ->first();
             
-        return view('provider.analytics', compact(
+        return view('agencyuser.analytics', compact(
             'completedServices',
             'performanceData',
             'customerSatisfactionData',

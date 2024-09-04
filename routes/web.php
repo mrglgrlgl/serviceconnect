@@ -135,31 +135,38 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
         return view('agencyuser.reports');
     })->name('agency.reports');
 
-    // Analytics
-    Route::get('/analytics', function () {
-        return view('agencyuser.analytics');
-    })->name('agency.analytics');
 
     // Agency Settings
     Route::get('/settings', [AgencySettingsController::class, 'showSettings'])->name('agency.settings');
     Route::get('/settings/edit', [AgencySettingsController::class, 'editSettings'])->name('agency.settings.edit');
     Route::put('/settings', [AgencySettingsController::class, 'updateSettings'])->name('agency.settings.update');
-    
+    Route::get('/analytics', [AnalyticsController::class, 'providerAnalytics'])->name('agency.analytics');
+
 
 
     Route::get('/requests', [ServiceRequestController::class, 'retrieveByUserRole'])->name('agency.requests');
+});
     // Route::post('/requests', [ServiceRequestController::class, 'store'])->name('agency.requests.store');
     // Route::get('/requests/{serviceRequest}/edit', [ServiceRequestController::class, 'edit'])->name('agency.requests.edit');
     // Route::patch('/requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('agency.requests.update');
     // Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('agency.requests.destroy');
 
     
-});
+
 
 // contact info
 Route::get('/contact-us', function () {
     return view('contact-us');
 })->name('contact-us');
+
+
+// Route::middleware('auth')->group(function () {
+//     // Other routes...
+
+//     // Agency analytics route
+//     Route::get('/agency/analytics', [AnalyticsController::class, 'agencyanalytics'])->name('agency.analytics');
+// });
+
 
 
 Route::post('/report', [ReportController::class, 'store'])->name('report.store');
@@ -378,9 +385,9 @@ Route::get('/analytics', [AnalyticsController::class, 'seekeranalytics'])
     ->name('analytics');
 
 // Define route for provider analytics with appropriate middleware
-Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])
-    ->middleware(['auth', 'verified'])
-    ->name('provider.analytics');
+// Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])
+//     ->middleware(['auth', 'verified'])
+//     ->name('provider.analytics');
 
 
 require __DIR__.'/auth.php';

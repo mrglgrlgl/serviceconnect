@@ -121,11 +121,20 @@
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" />
 </div>
 
-                    <div class="mb-8">
-                        <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
-                        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md"
-                            id="estimated_duration" name="estimated_duration" value="" required />
-                    </div>
+
+<!-- Manpower and Estimated Duration Section -->
+<div class="text-xl mt-8 text-gray-800"><strong>Manpower and Duration</strong></div>
+<div class="mb-4 flex gap-4">
+    <div class="flex-1">
+        <label for="manpower_number" class="form-label">Number of People Required</label>
+        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="manpower_number" name="manpower_number" required />
+    </div>
+
+    <div class="flex-1">
+        <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
+        <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="estimated_duration" name="estimated_duration" value="" required />
+    </div>
+</div>
 
                     <!-- Attach Images -->
                     <div class="file-upload-container">
