@@ -19,8 +19,6 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ProviderProfileController;
-use App\Http\Controllers\Auth\PhilIDController;
-use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DirectHireController;
@@ -34,7 +32,11 @@ use App\Http\Controllers\AgencySettingsController;
 use App\Http\Controllers\AdminAgencyReviewController;
 use App\Http\Controllers\AgencyServiceController;
 use App\Http\Controllers\EmployeeTaskAssignmentController;
+// use App\Http\Controllers\AgencyProfileController;
 
+
+
+Route::get('/profile/{agencyUserId}', [BidController::class, 'viewProfile'])->name('view-profile');
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -156,6 +158,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     
 });
 
+// routes/web.php
 
 
 
@@ -163,16 +166,15 @@ Route::post('/report', [ReportController::class, 'store'])->name('report.store')
 Route::get('/direct-hire/create/{providerId}', [DirectHireController::class, 'create'])->name('direct-hire.create');
 Route::post('/direct-hire/store', [DirectHireController::class, 'store'])->name('direct-hire.store');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
-    Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
-    Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
+//     Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
+//     Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
 
  
 
-});
+// });
 
-Route::get('/view-profile/{providerId}', [ViewProfileController::class, 'show'])->name('view-profile');
 
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -180,11 +182,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 Route::view('/terms', 'terms')->name('terms');
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/philid', [PhilIDController::class, 'index'])->name('philid.index');
-    Route::get('/philid/create', [PhilIDController::class, 'create'])->name('philid.create');
-    Route::post('/philid', [PhilIDController::class, 'store'])->name('philid.store');
-});
+
 
 Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating');
 Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
