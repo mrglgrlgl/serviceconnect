@@ -53,6 +53,7 @@
             </div>
         </div>
     </div>
+    dd($customerSatisfactionData);
     
 
                     {{-- <header class="flex justify-between items-center mb-4">
@@ -68,10 +69,10 @@
                     </div>
                 </header> --}}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Performance Chart
-        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    // Performance Chart
+                    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
         new Chart(performanceCtx, {
             type: 'bar',
             data: {
@@ -126,5 +127,5 @@
                 }
             }
         });
-    </script>
+                </script>
 @endsection
