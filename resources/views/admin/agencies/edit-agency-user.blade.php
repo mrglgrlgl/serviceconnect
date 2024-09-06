@@ -15,34 +15,44 @@
         @endif
 
         <form action="{{ route('agencies.users.update', [$agency->id, $user->id]) }}" method="POST" class="space-y-6">
-            @csrf
-            @method('PUT')
-            <div class="space-y-2">
-                <label for="name" class="block text-white font-medium">Name</label>
-                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $user->name) }}">
-            </div>
-
-            <div class="space-y-2">
-                <label for="email" class="block text-white font-medium">Email</label>
-                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $user->email) }}">
-            </div>
-
-            <div class="space-y-2">
-                <label for="password" class="block text-white font-medium">Password</label>
-                <input type="password" name="password" id="password" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                <small class="text-gray-400">Leave blank if you don't want to change the password</small>
-            </div>
-
-            <div class="space-y-2">
-                <label for="password_confirmation" class="block text-white font-medium">Confirm Password</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-            </div>
-
-            <div>
-                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    Update Agency User
-                </button>
-            </div>
-        </form>
+            <form action="{{ route('agencies.users.update', [$agency->id, $user->id]) }}" method="POST" class="space-y-6">
+                @csrf
+                @method('PUT')
+                <div class="space-y-2">
+                    <label for="name" class="block text-white font-medium">
+                        Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $user->name) }}" required>
+                </div>
+            
+                <div class="space-y-2">
+                    <label for="email" class="block text-white font-medium">
+                        Email <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $user->email) }}" required>
+                </div>
+            
+                <div class="space-y-2">
+                    <label for="password" class="block text-white font-medium">
+                        Password 
+                    </label>
+                    <input type="password" name="password" id="password" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <small class="text-gray-400">Leave blank if you don't want to change the password</small>
+                </div>
+            
+                <div class="space-y-2">
+                    <label for="password_confirmation" class="block text-white font-medium">
+                        Confirm Password 
+                    </label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+            
+                <div>
+                    <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Update Agency User
+                    </button>
+                </div>
+            </form>
+            
     </div>
 @endsection

@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-4">
+            {{-- <div class="flex items-center space-x-4">
                 <!-- Right-aligned navigation links -->
                 <div class="hidden space-x-8 sm:flex font-semibold">
                     <!-- Sign up link with dropdown -->
@@ -31,13 +31,13 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Login link -->
-                    <a href="{{ route('login') }}" class="inline-flex items-center px-2 pt-1 border-b-4 border-transparent text-gray-800 focus:outline-none transition duration-150 ease-in-out hover:border-gray-700 hover:text-gray-700">
+                    {{-- <a href="{{ route('login') }}" class="inline-flex items-center px-2 pt-1 border-b-4 border-transparent text-gray-800 focus:outline-none transition duration-150 ease-in-out hover:border-gray-700 hover:text-gray-700">
                         {{ __('Login') }}
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- Hamburger -->
                 <div class="-mr-2 flex items-center sm:hidden">
