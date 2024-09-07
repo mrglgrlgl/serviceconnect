@@ -13,31 +13,37 @@ use Illuminate\Support\Facades\Log;
 class EmployeeTaskAssignmentController extends Controller
 {
 
-    public function showAssignmentPage ($serviceRequestId)
-    {
-        $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
+    public function showAssignmentPage($serviceRequestId)
+{
+    $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
     
-        try {
-            $channel = Channel::where('service_request_id', $serviceRequestId)
-                              ->where('provider_id', $agencyUser->id)
-                              ->with(['serviceRequest', 'bid', 'seeker'])
-                              ->firstOrFail();
-        } catch (\Exception $e) {
-            Log::error('Channel not found: ' . $e->getMessage());
-            abort(404, 'Channel not found.');
-        }
-    
-        // Store channel ID in session
-        session(['current_channel_id' => $channel->id]);
-    
-        // Debug: Log the stored channel ID
-    
-        return view('agencyuser.employee-task', [
-            'channel' => $channel,
-            'agencyId' => $agencyUser->id,
-            'employees' => Employee::where('availability', 'available')->get()
-        ]);
+    try {
+        $channel = Channel::where('service_request_id', $serviceRequestId)
+                          ->where('provider_id', $agencyUser->id)
+                          ->with(['serviceRequest', 'bid', 'seeker'])
+                          ->firstOrFail();
+    } catch (\Exception $e) {
+        Log::error('Channel not found: ' . $e->getMessage());
+        abort(404, 'Channel not found.');
     }
+    
+    // Store channel ID in session
+    session(['current_channel_id' => $channel->id]);
+    
+    // Debug: Log the stored channel ID
+
+    // Retrieve employees filtered by the current agency
+    $employees = Employee::where('availability', 'available')
+                         ->where('agency_id', $agencyUser->agency_id) // Add this condition
+                         ->get();
+    
+    return view('agencyuser.employee-task', [
+        'channel' => $channel,
+        'agencyId' => $agencyUser->id,
+        'employees' => $employees
+    ]);
+}
+
     
     
 
