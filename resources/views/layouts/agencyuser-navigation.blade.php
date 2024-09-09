@@ -66,7 +66,7 @@
                     Home
                 </x-nav-link>
                 
-                <x-nav-link href="{{ route('agency.employees') }}" icon="groups" :active="request()->routeIs('agency.employees', 'agency.employees.edit', 'agency.settings', 'agency.employees.create')">
+                <x-nav-link href="{{ route('agency.employees') }}" icon="groups" :active="request()->routeIs('agency.employees', 'agency.employees.edit', 'agency.employees.create')">
                     Employee List
                 </x-nav-link>
                 
@@ -82,6 +82,9 @@
                     Analytics
                 </x-nav-link>
 
+                <x-nav-link href="{{ route('agency.settings') }}" icon="settings" :active="request()->routeIs('agency.settings')">
+                    Settings
+                </x-nav-link>
             {{-- <div class="space-y-3 ">
                 <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Customization</label>
 

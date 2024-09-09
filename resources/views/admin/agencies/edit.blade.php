@@ -17,40 +17,51 @@
         <form action="{{ route('agencies.update', $agency->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
-
+        
             <div class="space-y-2">
-                <label for="name" class="block text-white font-medium">Name</label>
-                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $agency->name) }}">
+                <label for="name" class="block text-white font-medium">
+                    Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $agency->name) }}" required>
             </div>
-
+        
             <div class="space-y-2">
-                <label for="email" class="block text-white font-medium">Email</label>
-                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $agency->email) }}">
+                <label for="email" class="block text-white font-medium">
+                    Email <span class="text-red-500">*</span>
+                </label>
+                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $agency->email) }}" required>
             </div>
-
+        
             <div class="space-y-2">
-                <label for="phone" class="block text-white font-medium">Phone</label>
-                <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone', $agency->phone) }}">
+                <label for="phone" class="block text-white font-medium">
+                    Phone <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone', $agency->phone) }}" required>
             </div>
-
+        
             <div class="space-y-2">
-                <label for="address" class="block text-white font-medium">Address</label>
-                <input type="text" name="address" id="address" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('address', $agency->address) }}">
+                <label for="address" class="block text-white font-medium">
+                    Address <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="address" id="address" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('address', $agency->address) }}" required>
             </div>
-
+        
             <div class="space-y-2">
-                <label for="status" class="block text-white font-medium">Status</label>
-                <select name="status" id="status" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <label for="status" class="block text-white font-medium">
+                    Status <span class="text-red-500">*</span>
+                </label>
+                <select name="status" id="status" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
                     <option value="active" {{ $agency->status == 'active' ? 'selected' : '' }}>Active</option>
                     <option value="inactive" {{ $agency->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-
+        
             <div>
                 <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Update Agency
                 </button>
             </div>
         </form>
+        
     </div>
 @endsection

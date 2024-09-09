@@ -64,12 +64,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], functio
 
 Route::get('agency/login', [AgencyUserController::class, 'showLoginForm'])->name('agency.login');
 Route::post('agency/login', [AgencyUserController::class, 'login']);
-Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 
 
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
+    Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 
     Route::put('/channel/{channel}/employee/{employee}', [ChannelController::class, 'unassignEmployee'])->name('unassign.employee');

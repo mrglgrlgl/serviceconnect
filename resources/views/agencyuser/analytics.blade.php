@@ -53,7 +53,6 @@
             </div>
         </div>
     </div>
-    dd($customerSatisfactionData);
     
 
                     {{-- <header class="flex justify-between items-center mb-4">

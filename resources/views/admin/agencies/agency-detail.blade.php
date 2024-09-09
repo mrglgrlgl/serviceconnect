@@ -84,9 +84,5 @@
         @endif
     </div>
 </div>
-</div>
-
-
-
-
-</x-dashboard>
+    </div>
+@endsection

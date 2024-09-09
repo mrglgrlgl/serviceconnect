@@ -14,7 +14,7 @@
                     <div class="border-t my-4 w-full pb-6"></div>
 
                     <div class="mb-4">
-                        <label for="category" class="block text-base text-custom-default-text">Category</label>
+                        <label for="category" class="block text-base text-custom-default-text">Category <span class="text-red-500">*</span></label>
                         <x-selection class="form-select" id="category" name="category">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->Job_Title }}">{{ $category->Job_Title }}</option>
@@ -23,34 +23,34 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="title" class="block text-base text-custom-default-text">Title</label>
+                        <label for="title" class="block text-base text-custom-default-text">Title  <span class="text-red-500">*</span></label>
                         <x-text-input type="text" id="title" name="title" required
                             class="mt-1 block w-full sm:text-sm rounded-md" />
                     </div>
 
                     <div>
                         <x-input-label for="description"
-                            class="text-base text-custom-default-text">Description</x-input-label>
+                            class="text-base text-custom-default-text">Description  <span class="text-red-500">*</span></x-input-label>
                         <textarea
                             class="mt-1 block w-full form-control rounded border border-gray-300 shadow-sm resize-none focus:ring-custom-light-blue md:h-48 p-2"
                             id="description" name="description" rows="4" required></textarea>
                     </div>
 
                     <div class="mb-8">
-                        <label for="location" class="block text-base text-custom-default-text">Location</label>
+                        <label for="location" class="block text-base text-custom-default-text">Location <span class="text-red-500">*</span></label>
                         <x-text-input type="text" id="location" name="location" required
                             class="mt-1 block w-full" />
                     </div>
 
-                    <div class="text-xl font-semibold text-gray-800">Schedule of service</div>
+                    <div class="text-xl font-semibold text-gray-800">Schedule of service <span class="text-red-500">*</span></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4">
                         <div>
-                            <label for="start_date" class="block text-base text-custom-default-text">Start Date</label>
+                            <label for="start_date" class="block text-base text-custom-default-text">Start Date <span class="text-red-500">*</span></label>
                             <x-text-input type="date" id="start_date" name="start_date" required
                                 class="mt-1 block w-full sm:text-sm rounded-md" />
                         </div>
                         <div>
-                            <label for="end_date" class="block text-base text-custom-default-text">End Date</label>
+                            <label for="end_date" class="block text-base text-custom-default-text">End Date <span class="text-red-500">*</span></label>
                             <x-text-input type="date" id="end_date" name="end_date" required
                                 class="mt-1 block w-full sm:text-sm rounded-md" />
                         </div>
@@ -58,23 +58,19 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-4 mb-8">
                         <div>
-                            <label for="start_time" class="form-label">Start Time</label>
+                            <label for="start_time" class="form-label">Start Time <span class="text-red-500">*</span></label>
                             <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="start_time"
                                 name="start_time" required />
                         </div>
                         <div>
-                            <label for="end_time" class="form-label">End Time</label>
+                            <label for="end_time" class="form-label">End Time <span class="text-red-500">*</span></label>
                             <x-text-input type="time" class="mt-1 block w-full sm:text-sm rounded-md" id="end_time"
                                 name="end_time" required />
                         </div>
                     </div>
 
-                    {{-- <div class="mb-3">
-                        <label for="skill_tags" class="form-label">Skill Tags</label>
-                        <x-text-input type="text" class="mt-1 block w-full sm:text-sm rounded-md" id="skill_tags"
-                            name="skill_tags" required />
-                    </div> --}}
-
+            
+ 
                     <div class="mb-3">
                         <label for="provider_gender" class="form-label">Preferred Provider Gender</label>
                         <x-selection class="form-select" id="provider_gender" name="provider_gender">
@@ -91,54 +87,34 @@
                         </x-selection>
                     </div>
 
-                    <!-- Price Range -->
-                    {{-- <div class="mb-3 grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="min_price" class="form-label">Minimum Price</label>
-                            <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" required />
-                        </div>
-                        <div>
-                            <label for="max_price" class="form-label">Maximum Price</label>
-                            <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" required />
-                        </div>
-                    </div> --}}
-
-       {{-- <div>
-        <div class="text-lg pt-4 text-gray-800 font-semibold"> Price Range (hourly rate)</div>
-    <label for="price_type" class="form-label">Price Type</label>
-    <x-selection class="form-select" id="price_type" name="price_type">
-        <option value="range">Price Range</option>
-    </x-selection>
-</div> --}}
-
-<div class="text-xl mt-8 text-gray-800"><strong>Price Range</strong></div>
+<div class="text-xl mt-8 text-gray-800"><strong>Price Range <span class="text-red-500">*</span></strong></div>
 <div class="mb-3" id="minPriceContainer">
-    <label for="min_price" class="form-label">Minimum Expected Price</label>
+    <label for="min_price" class="form-label">Minimum Expected Price <span class="text-red-500">*</span></label>
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="min_price" name="min_price" style="width: 100%;" />
 </div>
 <div class="mb-3" id="maxPriceContainer">
-    <label for="max_price" class="form-label">Maximum Expected Price</label>
+    <label for="max_price" class="form-label">Maximum Expected Price <span class="text-red-500">*</span></label>
     <x-text-input type="number" step="0.01" class="mt-1 block sm:text-sm rounded-md" id="max_price" name="max_price" style="width: 100%;" />
 </div>
 
 
 <!-- Manpower and Estimated Duration Section -->
-<div class="text-xl mt-8 text-gray-800"><strong>Manpower and Duration</strong></div>
+<div class="text-xl mt-8 text-gray-800"><strong>Manpower and Duration <span class="text-red-500">*</span></strong></div>
 <div class="mb-4 flex gap-4">
     <div class="flex-1">
-        <label for="manpower_number" class="form-label">Number of People Required</label>
+        <label for="manpower_number" class="form-label">Number of People Required <span class="text-red-500">*</span></label>
         <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="manpower_number" name="manpower_number" required />
     </div>
 
     <div class="flex-1">
-        <label for="estimated_duration" class="form-label">Estimated Duration (hours)</label>
+        <label for="estimated_duration" class="form-label">Estimated Duration (hours) <span class="text-red-500">*</span></label>
         <x-text-input type="number" class="mt-1 block w-full sm:text-sm rounded-md" id="estimated_duration" name="estimated_duration" value="" required />
     </div>
 </div>
 
                     <!-- Attach Images -->
                     <div class="file-upload-container">
-                        <label class="form-label text-lg text-gray-800"><strong>Attach Task Photos</strong> (At least 1 required)</label>
+                        <label class="form-label text-lg text-gray-800"><strong>Attach Task Photos <span class="text-red-500">*</span></strong> (At least 1 required)</label>
                         <div class="upload-wrapper">
                             <div class="file-upload-box">
                                 <input type="file" id="attach_media1" name="attach_media1" accept="image/*"
@@ -176,7 +152,7 @@
                                 class="mr-2">
                             <span class="text-sm text-gray-700">By creating the service request I agree to the
                                 <a href="/terms" target="_blank" class="text-blue-500 underline">terms and
-                                    conditions</a>.</span>
+                                    conditions</a>.</span> 
                         </label>
                     </div>
 

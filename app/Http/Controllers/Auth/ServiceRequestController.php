@@ -415,6 +415,8 @@ public function filterServiceRequests(Request $request)
 {
     $filter = $request->input('filter', 'all'); // Get the filter option from the request, default to 'all'
 
+    $currentUserId = auth()->user()->id; // Get the current authenticated user's ID
+
     $serviceRequests = ServiceRequest::query();
 
     switch ($filter) {
@@ -433,10 +435,11 @@ public function filterServiceRequests(Request $request)
             })->where('status', 'in_progress');
             break;
 
-        case 'completed':
-            // Show service requests that have been completed
-            $serviceRequests->where('status', 'completed');
-            break;
+            case 'completed':
+                // Show service requests that have been completed and belong to the current provider
+                $serviceRequests->where('status', 'completed')
+                                ->where('provider_id', $currentUserId);
+                break;
 
         case 'direct_hire':
             // Show direct hire requests
