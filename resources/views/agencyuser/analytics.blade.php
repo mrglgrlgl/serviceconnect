@@ -1,6 +1,34 @@
 @extends('layouts.agency-dashboard')
 
 @section('content')
+
+<div class="bg-background">
+    <!-- Filter Section -->
+    <div class="flex justify-between items-center mb-4">
+        <div>
+            <label for="month" class="mr-2">Month</label>
+            <select id="month" class="p-2 border rounded">
+                <option value="">Select Month</option>
+                @foreach(['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'] as $month)
+                    <option value="{{ $month }}">{{ $month }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="year" class="mr-2">Year</label>
+            <select id="year" class="p-2 border rounded">
+                <option value="">Select Year</option>
+                @for($i = date('Y'); $i >= 2010; $i--)
+                    <option value="{{ $i }}">{{ $i }}</option>
+                @endfor
+            </select>
+        </div>
+
+        <button id="applyFilter" class="p-2 bg-primary text-white rounded">Apply Filter</button>
+    </div>
+
+
 <div class="flex justify-center">
     <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
 </div>
@@ -74,6 +102,7 @@
         </div>
     </div>
 </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
     // Performance Chart (line graph)
@@ -201,5 +230,7 @@
             }]
         }
     });
+
+    
     </script>
 @endsection

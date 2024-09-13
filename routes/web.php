@@ -153,6 +153,8 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     Route::get('/settings/edit', [AgencySettingsController::class, 'editSettings'])->name('agency.settings.edit');
     Route::put('/settings', [AgencySettingsController::class, 'updateSettings'])->name('agency.settings.update');
     Route::get('/analytics', [AnalyticsController::class, 'providerAnalytics'])->name('agency.analytics');
+    Route::get('/analytics/filter', [AnalyticsController::class, 'filterCharts'])->name('filterCharts');
+
 
 
 
