@@ -11,7 +11,15 @@ class AnalyticsController extends Controller
     // public function seekeranalytics()
     // {
     //     $userId = Auth::id();
+    // public function seekeranalytics()
+    // {
+    //     $userId = Auth::id();
 
+    //     // Fetch services completed
+    //     $completedServices = DB::table('service_requests')
+    //         ->where('status', 'completed')
+    //         ->where('user_id', $userId)
+    //         ->count();
     //     // Fetch services completed
     //     $completedServices = DB::table('service_requests')
     //         ->where('status', 'completed')
@@ -30,7 +38,21 @@ class AnalyticsController extends Controller
     //             ->pluck('count', 'month')
     //             ->toArray()
     //     ];
+    //     // Fetch performance data
+    //     $performanceData = [
+    //         'labels' => ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+    //         'data' => DB::table('service_requests')
+    //             ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+    //             ->where('status', 'completed')
+    //             ->where('user_id', $userId)
+    //             ->groupBy('month')
+    //             ->orderBy('month')
+    //             ->pluck('count', 'month')
+    //             ->toArray()
+    //     ];
 
+    //     // Fill in missing months with 0
+    //     $performanceData['data'] = array_replace(array_fill(1, 12, 0), $performanceData['data']);
     //     // Fill in missing months with 0
     //     $performanceData['data'] = array_replace(array_fill(1, 12, 0), $performanceData['data']);
 
@@ -54,7 +76,24 @@ class AnalyticsController extends Controller
     //         ')
     //         ->first();
     //     $cancellationRate = $cancellationData->cancelled_requests / $cancellationData->total_requests * 100;
+    //     // Fetch cancellation rate
+    //     $cancellationData = DB::table('service_requests')
+    //         ->selectRaw('
+    //             COUNT(*) AS total_requests,
+    //             SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) AS cancelled_requests
+    //         ')
+    //         ->first();
+    //     $cancellationRate = $cancellationData->cancelled_requests / $cancellationData->total_requests * 100;
 
+    //     // Fetch completion rate
+    //     $completionData = DB::table('service_requests')
+    //         ->selectRaw('
+    //             COUNT(*) AS total_requests,
+    //             SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) AS completed_requests
+    //         ')
+    //         ->where('user_id', $userId)
+    //         ->first();
+    //     $completionRate = $completionData->completed_requests / $completionData->total_requests * 100;
     //     // Fetch completion rate
     //     $completionData = DB::table('service_requests')
     //         ->selectRaw('
@@ -73,7 +112,23 @@ class AnalyticsController extends Controller
     //         ->groupBy('category')
     //         ->orderBy('completed_services', 'DESC')
     //         ->first();
+    //     // Fetch most availed service
+    //     $mostAvailedService = DB::table('service_requests')
+    //         ->select('category', DB::raw('COUNT(*) AS completed_services'))
+    //         ->where('status', 'completed')
+    //         ->where('user_id', $userId)
+    //         ->groupBy('category')
+    //         ->orderBy('completed_services', 'DESC')
+    //         ->first();
 
+    //     // Fetch most loyal provider
+    //     $mostLoyalProvider = DB::table('service_requests')
+    //         ->join('users', 'service_requests.provider_id', '=', 'users.id')
+    //         ->select('users.name', DB::raw('COUNT(service_requests.id) AS completed_services'))
+    //         ->where('service_requests.status', 'completed')
+    //         ->groupBy('users.id', 'users.name')
+    //         ->orderBy('completed_services', 'DESC')
+    //         ->first();
     //     // Fetch most loyal provider
     //     $mostLoyalProvider = DB::table('service_requests')
     //         ->join('users', 'service_requests.provider_id', '=', 'users.id')
@@ -258,6 +313,7 @@ class AnalyticsController extends Controller
                 AVG(value_for_money) * 10 AS value_for_money
             ')
             ->where('agency_id', $agencyId)
+            ->where('agency_id', $agencyId)
             ->first();
     
         $customerSatisfactionData = $customerSatisfactionData ?? (object) [
@@ -274,6 +330,7 @@ class AnalyticsController extends Controller
                 COUNT(*) AS total_requests,
                 SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) AS cancelled_requests
             ')
+            ->where('provider_id', $userId)
             ->where('provider_id', $userId)
             ->first();
         $cancellationRate = $cancellationData->cancelled_requests / $cancellationData->total_requests * 100;

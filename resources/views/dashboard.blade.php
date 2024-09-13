@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@extends('layouts.app')
+
+@section('content')
     {{-- <div class="relative w-full pt-8 mx-auto overflow-hidden bg-gray-100" style="max-width: calc(100% - 250px); margin-left: 250px;">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -16,9 +19,12 @@
 
 
 
+
     <div class="flex justify-center">
         <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
+
+    
 
     
 
@@ -78,6 +84,7 @@
                                 
                                 <div class="flex items-center p-2">
                                     <span class="material-icons text-red-500">location_on</span>
+                                    <span class="material-icons text-red-500">location_on</span>
                                     {{ $serviceRequest->location }}
                                 </div>
 
@@ -85,9 +92,11 @@
                                 <div class="flex items-center space-x-4 p-2 text-gray-700">
                                     <div class="flex items-center">
                                         <span class="material-icons text-gray-500">work</span>
+                                        <span class="material-icons text-gray-500">work</span>
                                         {{ $serviceRequest->job_type }}
                                     </div>
                                     <div class="flex items-center">
+                                        <span class="material-icons text-gray-500">request_quote</span>
                                         <span class="material-icons text-gray-500">request_quote</span>
                                         Price: 
                                         @if ($serviceRequest->min_price)
@@ -96,6 +105,7 @@
                                         {{ $serviceRequest->max_price }}
                                     </div>
                                     <div class="flex items-center">
+                                        <span class="material-icons text-gray-500">schedule</span>
                                         <span class="material-icons text-gray-500">schedule</span>
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
                                     </div>
@@ -110,6 +120,7 @@
                                         <div class="flex items-center space-x-2">
                                             <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
                                                 <span class="material-icons">
+                                                <span class="material-icons">
                                                     edit
                                                 </span>
                                             </a>
@@ -117,6 +128,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this service request?')">
+                                                    <span class="material-icons">
                                                     <span class="material-icons">
                                                         delete
                                                     </span>
@@ -353,4 +365,5 @@
             }
         }
     </script>
+@endsection
 @endsection

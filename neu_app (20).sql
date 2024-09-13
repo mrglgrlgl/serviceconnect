@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 17, 2024 at 12:58 PM
+-- Generation Time: Sep 03, 2024 at 08:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,20 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `neu_app`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `addresses`
---
-
-CREATE TABLE `addresses` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -69,6 +55,7 @@ CREATE TABLE `agencies` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
+  `logo_path` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive','pending') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -78,9 +65,62 @@ CREATE TABLE `agencies` (
 -- Dumping data for table `agencies`
 --
 
-INSERT INTO `agencies` (`id`, `name`, `email`, `phone`, `address`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'RKJ', 'rkj@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', 'active', '2024-08-14 19:24:57', '2024-08-16 01:00:32'),
-(3, 'agency2', 'agency2@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', 'active', '2024-08-14 19:30:16', '2024-08-14 19:30:16');
+INSERT INTO `agencies` (`id`, `name`, `email`, `phone`, `address`, `logo_path`, `status`, `created_at`, `updated_at`) VALUES
+(2, 'RKJJ', 'rkj@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', 'logos/60FDRvGzSIn4ZEq50q3EQT4LMNRxIcqVCyGRA044.png', 'active', '2024-08-14 19:24:57', '2024-08-30 17:00:09'),
+(3, 'agency2', 'agency2@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', NULL, 'active', '2024-08-14 19:30:16', '2024-08-14 19:30:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `agency_services`
+--
+
+CREATE TABLE `agency_services` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `agency_id` bigint(20) UNSIGNED NOT NULL,
+  `service_name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `agency_services`
+--
+
+INSERT INTO `agency_services` (`id`, `agency_id`, `service_name`, `description`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Janitorial', 'We offer Janitorial Services', 1, '2024-08-20 17:55:41', '2024-08-20 17:55:41'),
+(2, 2, 'Repairs', 'we handle repairs', 1, '2024-08-24 06:15:42', '2024-08-24 06:15:42');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `agency_updates`
+--
+
+CREATE TABLE `agency_updates` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `agency_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `logo_path` varchar(255) DEFAULT NULL,
+  `submitted_by` bigint(20) UNSIGNED NOT NULL,
+  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `reviewed_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `agency_updates`
+--
+
+INSERT INTO `agency_updates` (`id`, `agency_id`, `name`, `email`, `phone`, `address`, `logo_path`, `submitted_by`, `status`, `reviewed_by`, `created_at`, `updated_at`) VALUES
+(1, 2, 'RKJ', 'rkj@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', NULL, 1, 'approved', 1, '2024-08-19 19:28:56', '2024-08-20 02:28:13'),
+(2, 2, 'RKJ', 'rkj@email.com', '09123456793', '123 Rizal Street, Barangay Villamonte, Bacolod City, Philippines', 'logos/AT4GDV4xmjOs4nWmvNzpuPqtBkzIEVWy7gs4FC0Q.jpg', 1, 'rejected', 1, '2024-08-20 02:39:49', '2024-08-20 02:40:19');
 
 -- --------------------------------------------------------
 
@@ -104,7 +144,8 @@ CREATE TABLE `agency_users` (
 --
 
 INSERT INTO `agency_users` (`id`, `agency_id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 2, 'agency user 6', 'agency1@mail.com', '$2y$12$vitJw5W/dMg7Otl8YeGx/.JuGSJ/sjujN1kVg.bW8ahSGXga/BUXO', NULL, '2024-08-16 00:43:39', '2024-08-16 06:10:31');
+(1, 2, 'agency user 6', 'agency1@mail.com', '$2y$12$bqsxPLPDT3WnOYJTMttg/evTfolq96GN8/Y29sGNyTywXP3p0WNam', NULL, '2024-08-16 00:43:39', '2024-08-17 10:16:29'),
+(2, 3, 'andre', 'andrea@mail.com', '$2y$12$qoA/WTvCWvTk5BWg8LG.UufMB9.f3dJPoQEV1.uAGHHnA95Y97iVW', NULL, '2024-08-18 06:05:26', '2024-08-18 06:05:26');
 
 -- --------------------------------------------------------
 
@@ -179,7 +220,38 @@ INSERT INTO `bid` (`id`, `service_request_id`, `bidder_id`, `bid_amount`, `bid_d
 (52, 11, 111, 12.00, 's', '2024-08-07 09:00:20', '2024-08-07 09:00:20', 'pending', 1),
 (55, 86, 109, 50.00, 'got it', '2024-08-07 23:29:58', '2024-08-07 23:55:42', 'accepted', 1),
 (56, 83, 109, 15000.00, 'yes', '2024-08-08 00:13:04', '2024-08-08 00:22:18', 'accepted', 1),
-(57, 88, 109, 90.00, 'yrd', '2024-08-08 01:24:18', '2024-08-08 01:24:34', 'accepted', 1);
+(57, 88, 109, 90.00, 'yrd', '2024-08-08 01:24:18', '2024-08-08 01:24:34', 'accepted', 1),
+(63, 11, 1, 123.00, 'asdfsd', '2024-08-20 20:07:33', '2024-08-20 20:07:33', 'pending', 0),
+(64, 90, 1, 12.00, 'asds', '2024-08-21 04:28:46', '2024-08-26 08:28:24', 'accepted', 0),
+(65, 90, 1, 12.00, 'asds', '2024-08-21 04:30:20', '2024-08-26 08:28:27', 'rejected', 0),
+(66, 90, 1, 12.00, 'asds', '2024-08-21 04:30:52', '2024-08-26 08:28:27', 'rejected', 0),
+(67, 90, 1, 12.00, 'asds', '2024-08-21 04:31:06', '2024-08-26 08:28:27', 'rejected', 0),
+(68, 90, 1, 12.00, 'asds', '2024-08-21 04:31:11', '2024-08-26 08:28:27', 'rejected', 0),
+(69, 90, 1, 12.00, 'asds', '2024-08-21 04:32:01', '2024-08-26 08:28:27', 'rejected', 0),
+(70, 90, 1, 123.00, 'sdas', '2024-08-21 04:32:05', '2024-08-26 08:28:27', 'rejected', 0),
+(71, 90, 1, 12.00, 'sdfsd', '2024-08-21 04:33:12', '2024-08-26 08:28:27', 'rejected', 0),
+(72, 90, 1, 12.00, 'sdfsd', '2024-08-21 04:50:08', '2024-08-26 08:28:27', 'rejected', 0),
+(73, 11, 1, 23.00, 'dasda', '2024-08-26 07:23:48', '2024-08-26 07:23:48', 'pending', 0),
+(74, 11, 1, 23.00, 'dasda', '2024-08-26 07:25:06', '2024-08-26 07:25:06', 'pending', 0),
+(75, 11, 1, 23.00, 'dasda', '2024-08-26 07:27:07', '2024-08-26 07:27:07', 'pending', 0),
+(76, 11, 1, 23.00, 'dasda', '2024-08-26 07:29:48', '2024-08-26 07:29:48', 'pending', 0),
+(77, 11, 1, 23.00, 'dasda', '2024-08-26 07:31:11', '2024-08-26 07:31:11', 'pending', 0),
+(78, 11, 1, 23.00, 'dasda', '2024-08-26 07:38:53', '2024-08-26 07:38:53', 'pending', 0),
+(79, 11, 1, 23.00, 'dasda', '2024-08-26 07:39:56', '2024-08-26 07:39:56', 'pending', 0),
+(80, 11, 1, 23.00, 'dasda', '2024-08-26 07:41:44', '2024-08-26 07:41:44', 'pending', 0),
+(81, 11, 1, 23.00, 'dasda', '2024-08-26 07:43:29', '2024-08-26 07:43:29', 'pending', 0),
+(82, 11, 1, 233.00, 'asdad', '2024-08-26 07:52:55', '2024-08-26 07:52:55', 'pending', 0),
+(83, 89, 1, 123.00, 'asddsa', '2024-08-26 22:14:19', '2024-08-26 22:15:39', 'accepted', 0),
+(84, 91, 1, 700.00, 'sdf', '2024-08-27 08:56:54', '2024-08-27 08:57:12', 'accepted', 0),
+(85, 92, 1, 900.00, 'Agency Channel Test', '2024-08-27 09:10:26', '2024-08-27 09:16:47', 'accepted', 0),
+(86, 93, 1, 123.00, 'Test channel agench', '2024-08-27 09:24:51', '2024-08-27 09:25:05', 'accepted', 0),
+(90, 133, 1, 0.00, 'CHannel creation test', '2024-08-27 19:32:06', '2024-08-27 19:32:06', 'pending', 0),
+(91, 133, 1, 0.00, 'CHannel creation test', '2024-08-27 19:33:08', '2024-08-27 19:33:08', 'pending', 0),
+(92, 133, 1, 0.00, 'CHannel creation test', '2024-08-27 19:33:15', '2024-08-27 19:33:56', 'accepted', 0),
+(93, 132, 1, 0.00, 'channel creation test', '2024-08-27 19:42:08', '2024-08-27 19:42:56', 'accepted', 0),
+(94, 131, 1, 69.00, 'channel creation test', '2024-08-27 21:59:42', '2024-08-27 22:00:22', 'accepted', 0),
+(95, 130, 1, 0.00, 'bid test', '2024-08-30 18:59:25', '2024-08-30 18:59:25', 'pending', 0),
+(96, 130, 2, 0.00, 'Sample bid', '2024-08-31 05:20:04', '2024-08-31 05:20:04', 'pending', 0);
 
 -- --------------------------------------------------------
 
@@ -264,32 +336,11 @@ CREATE TABLE `channel` (
 --
 
 INSERT INTO `channel` (`id`, `seeker_id`, `provider_id`, `service_request_id`, `bid_id`, `created_at`, `updated_at`, `status`, `is_on_the_way`, `is_arrived`, `is_task_started`, `is_task_completed`, `start_time`, `completion_time`, `is_paid`) VALUES
-(2, 75, 86, 21, 14, '2024-07-22 02:30:10', '2024-07-22 02:30:10', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 75, 86, 22, 15, '2024-07-23 06:00:00', '2024-07-24 09:59:56', 'completed', NULL, NULL, NULL, NULL, NULL, NULL, 'true'),
-(4, 75, 86, 23, 16, '2024-07-23 22:53:59', '2024-07-25 12:42:41', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 75, 86, 24, 17, '2024-07-25 02:37:35', '2024-07-25 04:48:07', 'pending', 1, 'true', 'true', 'true', '2024-07-25 12:47:49', '2024-07-25 12:48:07', ''),
-(6, 75, 86, 25, 18, '2024-07-25 04:51:29', '2024-07-25 04:52:24', 'completed', 1, 'true', 'true', 'true', '2024-07-25 12:52:09', '2024-07-25 12:52:19', 'true'),
-(7, 75, 86, 26, 19, '2024-07-25 05:07:17', '2024-07-25 05:09:32', 'completed', 1, 'true', 'true', 'true', '2024-07-25 13:08:20', '2024-07-25 13:09:15', 'true'),
-(9, 93, 94, 28, 21, '2024-07-26 01:35:06', '2024-07-26 01:41:01', 'in_progress', 1, 'pending', NULL, NULL, NULL, NULL, 'pending'),
-(10, 95, 98, 29, 22, '2024-07-26 06:41:10', '2024-07-26 06:45:17', 'completed', 1, 'true', 'true', 'true', '2024-07-26 14:44:53', '2024-07-26 14:45:09', 'true'),
-(11, 95, 98, 30, 23, '2024-07-26 07:05:43', '2024-07-26 07:09:33', 'completed', 1, 'true', 'true', 'true', '2024-07-26 15:07:53', '2024-07-26 15:08:07', 'true'),
-(12, 95, 98, 31, 24, '2024-07-26 07:13:27', '2024-07-26 07:18:01', 'completed', 1, 'true', 'true', 'true', '2024-07-26 15:17:43', '2024-07-26 15:17:52', 'true'),
-(13, 95, 98, 32, 25, '2024-07-26 07:23:23', '2024-07-26 07:26:43', 'completed', 1, 'true', 'true', 'true', '2024-07-26 15:26:28', '2024-07-26 15:26:36', 'true'),
-(14, 95, 98, 38, 26, '2024-07-27 04:04:30', '2024-07-27 04:05:29', 'completed', 1, 'true', 'true', 'true', '2024-07-27 12:05:03', '2024-07-27 12:05:22', 'true'),
-(15, 95, 98, 39, 27, '2024-07-27 07:16:46', '2024-07-27 07:18:04', 'completed', 1, 'true', 'true', 'true', '2024-07-27 15:17:45', '2024-07-27 15:17:59', 'true'),
-(16, 95, 98, 40, 28, '2024-07-27 08:14:32', '2024-08-06 21:55:17', 'completed', 1, 'true', 'true', 'true', '2024-08-07 05:54:49', '2024-08-07 05:54:59', 'true'),
-(17, 95, 102, 43, 29, '2024-07-30 07:18:29', '2024-07-30 08:16:51', 'completed', 1, 'true', 'true', 'true', '2024-07-30 16:16:37', '2024-07-30 16:16:44', 'true'),
-(18, 95, 98, 53, 36, '2024-07-31 00:10:59', '2024-07-31 00:10:59', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
-(19, 95, 86, 45, 31, '2024-07-31 05:02:30', '2024-07-31 05:02:30', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
-(20, 95, 98, 65, 38, '2024-07-31 21:39:10', '2024-07-31 21:39:10', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
-(21, 95, 86, 66, 45, '2024-07-31 23:25:21', '2024-08-05 23:20:58', 'in_progress', 1, 'true', 'true', NULL, '2024-08-06 07:20:58', NULL, 'pending'),
-(22, 95, 98, 75, 46, '2024-08-01 23:02:47', '2024-08-04 23:44:02', 'completed', 1, 'true', 'true', 'true', '2024-08-05 07:43:37', '2024-08-05 07:43:56', 'true'),
-(23, 95, 98, 50, 41, '2024-08-02 09:22:38', '2024-08-02 09:22:38', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
-(24, 95, 98, 76, 48, '2024-08-02 09:56:27', '2024-08-02 09:56:27', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
-(25, 110, 102, 82, 50, '2024-08-06 01:32:06', '2024-08-06 01:36:22', 'completed', 1, 'true', 'true', 'true', '2024-08-06 09:33:55', '2024-08-06 09:36:06', 'true'),
-(26, 116, 109, 86, 55, '2024-08-07 23:55:42', '2024-08-08 00:15:40', 'completed', 1, 'true', 'true', 'true', '2024-08-08 08:14:52', '2024-08-08 08:15:35', 'true'),
-(27, 116, 109, 83, 56, '2024-08-08 00:22:18', '2024-08-08 01:06:56', 'in_progress', 1, 'true', 'true', 'true', '2024-08-08 09:06:45', '2024-08-08 09:06:56', 'pending'),
-(28, 116, 109, 88, 57, '2024-08-08 01:24:34', '2024-08-08 01:24:34', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending');
+(29, 95, 1, 90, 64, '2024-08-26 08:28:24', '2024-08-27 17:54:57', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
+(30, 95, 1, 89, 83, '2024-08-26 22:15:40', '2024-08-27 17:54:55', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
+(31, 95, 1, 91, 84, '2024-08-27 08:57:12', '2024-08-27 17:54:51', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
+(42, 95, 1, 133, 8, '2024-08-27 20:11:35', '2024-08-27 20:11:35', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending'),
+(43, 95, 1, 131, 94, '2024-08-27 22:00:22', '2024-08-27 22:00:22', 'in_progress', NULL, NULL, NULL, NULL, NULL, NULL, 'pending');
 
 -- --------------------------------------------------------
 
@@ -306,6 +357,143 @@ CREATE TABLE `chats` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employees`
+--
+
+CREATE TABLE `employees` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `agency_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `position` varchar(255) DEFAULT NULL,
+  `gender` enum('male','female','other') DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `availability` enum('available','assigned','unavailable') NOT NULL DEFAULT 'available'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `employees`
+--
+
+INSERT INTO `employees` (`id`, `agency_id`, `name`, `email`, `phone`, `position`, `gender`, `birthdate`, `photo`, `created_at`, `updated_at`, `availability`) VALUES
+(2, 2, 'Employee', 'employee@email.com', '09991091104', 'Position', 'male', '2024-08-15', 'photos/XieLD68xZcEwF3cR6MtmQRJFBUj2IgfHqfiA4ZOn.jpg', '2024-08-18 06:44:57', '2024-09-02 18:04:10', 'available'),
+(4, 2, 'Employee 1', 'employee1@example.com', '555-555-5555', 'Position 1', 'female', '1991-08-24', NULL, '2024-08-24 06:24:58', '2024-09-02 18:03:53', 'available'),
+(5, 2, 'Employee 2', 'employee2@example.com', '555-555-5555', 'Position 2', 'male', '1997-08-24', NULL, '2024-08-24 06:24:58', '2024-08-24 06:24:58', 'available'),
+(6, 2, 'Employee 3', 'employee3@example.com', '555-555-5555', 'Position 3', 'female', '1999-08-24', NULL, '2024-08-24 06:24:58', '2024-08-24 06:24:58', 'available'),
+(7, 2, 'Employee 4', 'employee4@example.com', '555-555-5555', 'Position 4', 'male', '1988-08-24', NULL, '2024-08-24 06:24:58', '2024-09-01 19:55:00', 'assigned'),
+(8, 2, 'Employee 5', 'employee5@example.com', '555-555-5555', 'Position 5', 'female', '1996-08-24', NULL, '2024-08-24 06:24:58', '2024-08-24 06:24:58', 'available'),
+(9, 2, 'Employee 6', 'employee6@example.com', '555-555-5555', 'Position 6', 'male', '1987-08-24', NULL, '2024-08-24 06:24:58', '2024-08-24 06:24:58', 'available'),
+(10, 2, 'Employee 7', 'employee7@example.com', '555-555-5555', 'Position 7', 'female', '1991-08-24', NULL, '2024-08-24 06:24:58', '2024-08-24 06:24:58', 'available'),
+(11, 2, 'Employee 8', 'employee8@example.com', '555-555-5555', 'Position 8', 'male', '1995-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(12, 2, 'Employee 9', 'employee9@example.com', '555-555-5555', 'Position 9', 'female', '1984-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(13, 2, 'Employee 10', 'employee10@example.com', '555-555-5555', 'Position 10', 'male', '1997-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(14, 2, 'Employee 11', 'employee11@example.com', '555-555-5555', 'Position 11', 'female', '2004-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(15, 2, 'Employee 12', 'employee12@example.com', '555-555-5555', 'Position 12', 'male', '1992-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(16, 2, 'Employee 13', 'employee13@example.com', '555-555-5555', 'Position 13', 'female', '2004-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(17, 2, 'Employee 14', 'employee14@example.com', '555-555-5555', 'Position 14', 'male', '1986-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(18, 2, 'Employee 15', 'employee15@example.com', '555-555-5555', 'Position 15', 'female', '1991-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(19, 2, 'Employee 16', 'employee16@example.com', '555-555-5555', 'Position 16', 'male', '2000-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(20, 2, 'Employee 17', 'employee17@example.com', '555-555-5555', 'Position 17', 'female', '1999-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(21, 2, 'Employee 18', 'employee18@example.com', '555-555-5555', 'Position 18', 'male', '1995-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(22, 2, 'Employee 19', 'employee19@example.com', '555-555-5555', 'Position 19', 'female', '1998-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(23, 2, 'Employee 20', 'employee20@example.com', '555-555-5555', 'Position 20', 'male', '2003-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(24, 2, 'Employee 21', 'employee21@example.com', '555-555-5555', 'Position 21', 'female', '1988-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(25, 2, 'Employee 22', 'employee22@example.com', '555-555-5555', 'Position 22', 'male', '1988-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(26, 2, 'Employee 23', 'employee23@example.com', '555-555-5555', 'Position 23', 'female', '1992-08-24', NULL, '2024-08-24 06:24:59', '2024-08-24 06:24:59', 'available'),
+(27, 2, 'Employee 24', 'employee24@example.com', '555-555-5555', 'Position 24', 'male', '2002-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(28, 2, 'Employee 25', 'employee25@example.com', '555-555-5555', 'Position 25', 'female', '1985-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(29, 2, 'Employee 26', 'employee26@example.com', '555-555-5555', 'Position 26', 'male', '1997-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(30, 2, 'Employee 27', 'employee27@example.com', '555-555-5555', 'Position 27', 'female', '1985-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(31, 2, 'Employee 28', 'employee28@example.com', '555-555-5555', 'Position 28', 'male', '1986-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(32, 2, 'Employee 29', 'employee29@example.com', '555-555-5555', 'Position 29', 'female', '1985-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(33, 2, 'Employee 30', 'employee30@example.com', '555-555-5555', 'Position 30', 'male', '2004-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(34, 2, 'Employee 31', 'employee31@example.com', '555-555-5555', 'Position 31', 'female', '1984-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(35, 2, 'Employee 32', 'employee32@example.com', '555-555-5555', 'Position 32', 'male', '2000-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(36, 2, 'Employee 33', 'employee33@example.com', '555-555-5555', 'Position 33', 'female', '2001-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(37, 2, 'Employee 34', 'employee34@example.com', '555-555-5555', 'Position 34', 'male', '1991-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(38, 2, 'Employee 35', 'employee35@example.com', '555-555-5555', 'Position 35', 'female', '1996-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(39, 2, 'Employee 36', 'employee36@example.com', '555-555-5555', 'Position 36', 'male', '1993-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(40, 2, 'Employee 37', 'employee37@example.com', '555-555-5555', 'Position 37', 'female', '1996-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(41, 2, 'Employee 38', 'employee38@example.com', '555-555-5555', 'Position 38', 'male', '2003-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(42, 2, 'Employee 39', 'employee39@example.com', '555-555-5555', 'Position 39', 'female', '1994-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(43, 2, 'Employee 40', 'employee40@example.com', '555-555-5555', 'Position 40', 'male', '1992-08-24', NULL, '2024-08-24 06:25:00', '2024-08-24 06:25:00', 'available'),
+(44, 2, 'Employee 41', 'employee41@example.com', '555-555-5555', 'Position 41', 'female', '1996-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(45, 2, 'Employee 42', 'employee42@example.com', '555-555-5555', 'Position 42', 'male', '1992-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(46, 2, 'Employee 43', 'employee43@example.com', '555-555-5555', 'Position 43', 'female', '1987-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(47, 2, 'Employee 44', 'employee44@example.com', '555-555-5555', 'Position 44', 'male', '1991-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(48, 2, 'Employee 45', 'employee45@example.com', '555-555-5555', 'Position 45', 'female', '1985-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(49, 2, 'Employee 46', 'employee46@example.com', '555-555-5555', 'Position 46', 'male', '2003-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(50, 2, 'Employee 47', 'employee47@example.com', '555-555-5555', 'Position 47', 'female', '2004-08-24', NULL, '2024-08-24 06:25:01', '2024-08-24 06:25:01', 'available'),
+(51, 2, 'Employee 48', 'employee48@example.com', '555-555-5555', 'Position 48', 'male', '1986-08-24', NULL, '2024-08-24 06:25:01', '2024-09-01 21:50:29', 'assigned'),
+(52, 2, 'Employee 49', 'employee49@example.com', '555-555-5555', 'Position 49', 'female', '1994-08-24', NULL, '2024-08-24 06:25:01', '2024-09-01 20:06:31', 'assigned'),
+(54, 2, 'Employee 51', 'employee51@email.com', '09991091104', 'Position51', 'male', '2024-08-27', NULL, '2024-08-26 07:19:30', '2024-09-01 21:47:35', 'assigned'),
+(55, 2, 'andre amar', 'andre123@mail.com', '09991091104', 'sample Poistion', 'male', '2024-08-24', NULL, '2024-08-30 19:14:05', '2024-09-01 21:44:42', 'assigned'),
+(56, 2, 'Sam Amar', 'skat23661@gmail.com', '09991091104', 'sample Poistion', 'female', '2012-12-03', 'photos/69dI8KeIbhlWEOmYVSa7wXUg5WTkcv3xgCfm2UH4.png', '2024-09-02 05:19:40', '2024-09-02 06:03:37', 'assigned');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee_service_assignments`
+--
+
+CREATE TABLE `employee_service_assignments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `employee_id` bigint(20) UNSIGNED NOT NULL,
+  `service_id` bigint(20) UNSIGNED NOT NULL,
+  `agency_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `assigned_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `employee_service_assignments`
+--
+
+INSERT INTO `employee_service_assignments` (`id`, `employee_id`, `service_id`, `agency_id`, `assigned_at`, `created_at`, `updated_at`) VALUES
+(9, 4, 2, 2, '2024-08-24 06:25:28', '2024-08-24 06:25:28', '2024-08-24 06:25:28'),
+(10, 5, 1, 2, '2024-08-24 06:25:33', '2024-08-24 06:25:33', '2024-08-24 06:25:33'),
+(13, 2, 1, 2, '2024-08-30 18:55:07', '2024-08-25 00:43:24', '2024-08-30 18:55:07');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee_task_assignment`
+--
+
+CREATE TABLE `employee_task_assignment` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `agency_id` bigint(20) UNSIGNED NOT NULL,
+  `employee_id` bigint(20) UNSIGNED NOT NULL,
+  `channel_id` bigint(20) UNSIGNED NOT NULL,
+  `status` enum('assigned','completed','removed') NOT NULL,
+  `assigned_at` timestamp NULL DEFAULT NULL,
+  `completed_at` timestamp NULL DEFAULT NULL,
+  `assigned_by` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `employee_task_assignment`
+--
+
+INSERT INTO `employee_task_assignment` (`id`, `agency_id`, `employee_id`, `channel_id`, `status`, `assigned_at`, `completed_at`, `assigned_by`, `created_at`, `updated_at`) VALUES
+(82, 2, 2, 43, 'removed', '2024-09-01 20:06:31', NULL, 1, '2024-09-01 20:06:31', '2024-09-02 18:04:10'),
+(83, 2, 52, 43, 'assigned', '2024-09-01 20:06:31', NULL, 1, '2024-09-01 20:06:31', '2024-09-02 17:56:52'),
+(85, 2, 55, 43, 'assigned', '2024-09-01 21:44:42', NULL, 1, '2024-09-01 21:44:42', '2024-09-02 17:54:15'),
+(86, 2, 54, 43, 'assigned', '2024-09-01 21:47:35', NULL, 1, '2024-09-01 21:47:35', '2024-09-01 21:47:35'),
+(87, 2, 51, 43, 'assigned', '2024-09-01 21:50:29', '2024-09-02 07:56:50', 1, '2024-09-01 21:50:29', '2024-09-02 07:56:50'),
+(88, 2, 56, 43, 'assigned', '2024-09-02 06:03:37', NULL, 1, '2024-09-02 06:03:37', '2024-09-02 06:03:37'),
+(89, 2, 4, 43, 'removed', '2024-09-02 08:56:18', NULL, 1, '2024-09-02 08:56:18', '2024-09-02 18:03:53');
 
 -- --------------------------------------------------------
 
@@ -388,7 +576,15 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2024_08_11_050525_create_admin_users_table', 6),
 (12, '2024_08_13_130531_create_chats_table', 7),
 (13, '2024_08_14_164630_create_agencies_table', 8),
-(14, '2024_08_15_033612_create_agency_users_table', 9);
+(14, '2024_08_15_033612_create_agency_users_table', 9),
+(16, '2024_08_18_040433_create_employees_table', 10),
+(17, '2024_08_19_061136_add_logo_path_to_agencies_table', 11),
+(18, '2024_08_20_013325_create_agency_updates_table', 12),
+(19, '2024_08_20_144342_create_agency_services_table', 13),
+(20, '2024_08_24_061534_create_employee_service_assignments_table', 14),
+(21, '2024_08_24_105549_add_agency_id_to_employee_service_assignments_table', 15),
+(22, '2024_08_31_152401_add_availability_to_employees_table', 16),
+(23, '2024_09_01_004138_create_employee_task_assignment_table', 17);
 
 -- --------------------------------------------------------
 
@@ -415,6 +611,7 @@ INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `
 ('14d0b7d7-a17e-4f37-8930-68a99011bcb5', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: House Painting\",\"bid_id\":22,\"service_request_id\":29}', NULL, '2024-07-26 06:41:12', '2024-07-26 06:41:12'),
 ('16580d1e-2d62-4872-a777-96c0761367d8', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 95, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":45,\"provider_name\":null}', NULL, '2024-07-31 23:14:43', '2024-07-31 23:14:43'),
 ('1799b44c-34f9-4034-b34c-9c609c681da1', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 110, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":50,\"provider_name\":null}', NULL, '2024-08-06 01:31:43', '2024-08-06 01:31:43'),
+('1c943f9a-eab3-449a-8b3a-68e74667b6b6', 'App\\Notifications\\BidConfirmed', 'App\\Models\\AgencyUser', 1, '{\"message\":\"Your bid has been confirmed for the service request: Sample Request 16\",\"bid_id\":94,\"service_request_id\":131}', NULL, '2024-08-27 22:00:25', '2024-08-27 22:00:25'),
 ('1d336f97-6858-42fa-b93e-8f487e23c5fc', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 116, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":53,\"provider_name\":null}', NULL, '2024-08-07 22:19:37', '2024-08-07 22:19:37'),
 ('21a06f53-5248-4458-9855-ae6aef62dbd1', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 86, '{\"message\":\"Your bid has been confirmed for the service request: k\",\"bid_id\":20,\"service_request_id\":27}', NULL, '2024-07-25 09:43:06', '2024-07-25 09:43:06'),
 ('2adb0ce8-2f21-414f-91a0-875e4574dff8', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 116, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":55,\"provider_name\":null}', NULL, '2024-08-07 23:30:00', '2024-08-07 23:30:00'),
@@ -422,6 +619,8 @@ INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `
 ('337998d6-2c91-43d4-a352-1c0bd9b1498c', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 86, '{\"message\":\"Your bid has been confirmed for the service request: Pump Installation\",\"bid_id\":45,\"service_request_id\":66}', NULL, '2024-07-31 23:25:22', '2024-07-31 23:25:22'),
 ('3596b769-d1e4-4865-8eac-5e6571faad34', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Shelving Installation\",\"bid_id\":27,\"service_request_id\":39}', NULL, '2024-07-27 07:16:48', '2024-07-27 07:16:48'),
 ('39f6d322-89ab-4282-a8e1-2491dd8981be', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Schedule Blocking 2\",\"bid_id\":48,\"service_request_id\":76}', NULL, '2024-08-02 09:56:27', '2024-08-02 09:56:27'),
+('3c6cabaa-bb28-4c17-8c43-c2cd48cecd01', 'App\\Notifications\\BidConfirmed', 'App\\Models\\AgencyUser', 1, '{\"message\":\"Your bid has been confirmed for the service request: agency user channel test\",\"bid_id\":84,\"service_request_id\":91}', NULL, '2024-08-27 08:57:14', '2024-08-27 08:57:14'),
+('4783b1ba-2de6-40e2-ac08-c116cb6bd98b', 'App\\Notifications\\BidConfirmed', 'App\\Models\\AgencyUser', 1, '{\"message\":\"Your bid has been confirmed for the service request: Agency Test\",\"bid_id\":64,\"service_request_id\":90}', NULL, '2024-08-26 08:28:26', '2024-08-26 08:28:26'),
 ('4c8eb5f8-eb3a-48d3-98f0-c3b8bff4699e', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 86, '{\"message\":\"Your bid has been confirmed for the service request: v\",\"bid_id\":19,\"service_request_id\":26}', NULL, '2024-07-25 05:07:18', '2024-07-25 05:07:18'),
 ('5a58ba4c-3d48-47dd-b431-689fb3c8a945', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 116, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":56,\"provider_name\":null}', NULL, '2024-08-08 00:13:05', '2024-08-08 00:13:05'),
 ('5b24e641-5a22-4870-ab95-8e446738f0ca', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Bookshelf Construction\",\"bid_id\":26,\"service_request_id\":38}', NULL, '2024-07-27 04:04:35', '2024-07-27 04:04:35'),
@@ -449,6 +648,7 @@ INSERT INTO `notifications` (`id`, `type`, `notifiable_type`, `notifiable_id`, `
 ('d32cb8f1-31b3-4247-99fe-c7ed5062ff33', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Schedule Blocking 1\",\"bid_id\":46,\"service_request_id\":75}', NULL, '2024-08-01 23:02:48', '2024-08-01 23:02:48'),
 ('d8b69d9d-fb03-485b-b0c5-da58f3be5e3e', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Deck Construction\",\"bid_id\":24,\"service_request_id\":31}', NULL, '2024-07-26 07:13:27', '2024-07-26 07:13:27'),
 ('dd7a83a9-7f1a-4151-aa9d-2cdae79ce89b', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 109, '{\"message\":\"Your bid has been confirmed for the service request: Repair Drywall\",\"bid_id\":57,\"service_request_id\":88}', NULL, '2024-08-08 01:24:34', '2024-08-08 01:24:34'),
+('de7ba79b-223c-46c3-8bff-ec282d9a1346', 'App\\Notifications\\BidConfirmed', 'App\\Models\\AgencyUser', 1, '{\"message\":\"Your bid has been confirmed for the service request: Agency Test\",\"bid_id\":83,\"service_request_id\":89}', NULL, '2024-08-26 22:15:42', '2024-08-26 22:15:42'),
 ('f28da11f-ffd2-4084-8668-5eb6a2473ecf', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: Installation of Floating Shelves\",\"bid_id\":41,\"service_request_id\":50}', NULL, '2024-08-02 09:22:42', '2024-08-02 09:22:42'),
 ('f4ed755a-d297-45fa-87e2-9838c18736e4', 'App\\Notifications\\BidConfirmed', 'App\\Models\\User', 98, '{\"message\":\"Your bid has been confirmed for the service request: 1 test upload\",\"bid_id\":38,\"service_request_id\":65}', NULL, '2024-07-31 21:39:13', '2024-07-31 21:39:13'),
 ('f8092d80-d76e-4911-9de3-9b5d2572c697', 'App\\Notifications\\BidPlacedNotification', 'App\\Models\\User', 95, '{\"message\":\"A provider has placed a bid on your service request.\",\"service_request_id\":42,\"provider_name\":null}', NULL, '2024-07-31 05:50:45', '2024-07-31 05:50:45'),
@@ -600,34 +800,6 @@ CREATE TABLE `ratings` (
   `responsiveness` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `ratings`
---
-
-INSERT INTO `ratings` (`id`, `channel_id`, `rated_by_id`, `rated_for_id`, `role`, `communication`, `fairness`, `quality_of_service`, `professionalism`, `cleanliness_tidiness`, `value_for_money`, `additional_feedback`, `created_at`, `updated_at`, `respectfulness`, `preparation`, `responsiveness`) VALUES
-(15, 10, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, 's', '2024-07-26 06:45:32', '2024-07-26 06:45:32', 10, 10, 10),
-(16, 10, 95, 98, NULL, NULL, NULL, 10, 10, 10, 9, 'dxfvx', '2024-07-26 06:45:44', '2024-07-26 06:45:44', NULL, NULL, NULL),
-(17, 11, 95, 98, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-07-26 07:09:57', '2024-07-26 07:09:57', NULL, NULL, NULL),
-(18, 11, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-07-26 07:10:00', '2024-07-26 07:10:00', 10, 10, 10),
-(19, 13, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-07-26 07:26:56', '2024-07-26 07:26:56', 10, 10, 10),
-(20, 13, 95, 98, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-07-26 07:26:57', '2024-07-26 07:26:57', NULL, NULL, NULL),
-(21, 14, 95, 98, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-07-27 04:05:43', '2024-07-27 04:05:43', NULL, NULL, NULL),
-(22, 14, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-07-27 04:05:45', '2024-07-27 04:05:45', 10, 10, 10),
-(23, 15, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-07-27 07:18:16', '2024-07-27 07:18:16', 10, 10, 10),
-(24, 15, 95, 98, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-07-27 07:18:17', '2024-07-27 07:18:17', NULL, NULL, NULL),
-(25, 17, 102, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-07-30 08:17:06', '2024-07-30 08:17:06', 10, 10, 10),
-(26, 17, 95, 102, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-07-30 08:17:07', '2024-07-30 08:17:07', NULL, NULL, NULL),
-(27, 22, 98, 95, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-08-04 23:44:11', '2024-08-04 23:44:11', 10, 10, 10),
-(28, 22, 95, 98, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-08-04 23:44:18', '2024-08-04 23:44:18', NULL, NULL, NULL),
-(29, 25, 102, 110, NULL, 8, 9, NULL, NULL, NULL, NULL, NULL, '2024-08-06 01:36:41', '2024-08-06 01:36:41', 6, 9, 10),
-(30, 25, 110, 102, NULL, NULL, NULL, 10, 10, 10, 10, NULL, '2024-08-06 01:37:02', '2024-08-06 01:37:02', NULL, NULL, NULL),
-(31, 16, 98, 95, NULL, 7, 7, NULL, NULL, NULL, NULL, NULL, '2024-08-06 21:55:29', '2024-08-06 21:55:29', 7, 7, 7),
-(32, 16, 95, 98, NULL, 6, NULL, 6, 6, 4, 5, NULL, '2024-08-06 21:55:42', '2024-08-06 21:55:42', NULL, NULL, NULL),
-(33, 26, 109, 116, NULL, 10, 10, NULL, NULL, NULL, NULL, NULL, '2024-08-08 00:16:04', '2024-08-08 00:16:04', 10, 10, 10),
-(34, 26, 116, 109, NULL, 10, NULL, 10, 10, 10, 10, NULL, '2024-08-08 00:16:34', '2024-08-08 00:16:34', NULL, NULL, NULL),
-(35, 27, 109, 116, NULL, 1, 3, NULL, NULL, NULL, NULL, NULL, '2024-08-08 01:08:27', '2024-08-08 01:08:27', 5, 6, 10),
-(36, 27, 116, 109, NULL, 9, NULL, 9, 9, 7, 8, NULL, '2024-08-08 01:09:37', '2024-08-08 01:09:37', NULL, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -727,7 +899,7 @@ CREATE TABLE `service_requests` (
 --
 
 INSERT INTO `service_requests` (`id`, `category`, `title`, `description`, `location`, `start_date`, `end_date`, `start_time`, `end_time`, `skill_tags`, `provider_gender`, `job_type`, `estimated_duration`, `number_of_bids`, `user_id`, `provider_id`, `is_direct_hire`, `status`, `created_at`, `updated_at`, `agreed_to_terms`, `min_price`, `max_price`) VALUES
-(11, 'Carpentry', 'Broken Roof', '', 'bacolod city, forest hills', NULL, NULL, '14:26:00', '13:26:00', '', NULL, 'project_based', 0, 4, 71, NULL, 0, 'open', '2024-07-11 07:26:20', '2024-08-07 09:00:20', 0, 0.00, 0.00),
+(11, 'Carpentry', 'Broken Roof', '', 'bacolod city, forest hills', NULL, NULL, '14:26:00', '13:26:00', '', NULL, 'project_based', 0, 15, 71, NULL, 0, 'open', '2024-07-11 07:26:20', '2024-08-26 07:52:55', 0, 0.00, 0.00),
 (14, 'Plumbing', 'toilet does not flush', 'asdasdasdasdasdasd', 'bacolod city, forest hills', '2024-07-03', '2024-07-20', '18:34:00', '20:34:00', 'flushing', NULL, 'hourly_rate', 1, 3, 72, NULL, 0, 'open', '2024-07-13 01:44:29', '2024-07-30 17:36:04', 0, 0.00, 0.00),
 (15, 'carpentry', 'Carpentry', 'asfsdafasdf', 'asdfsdafasdf', '2024-07-15', '2024-07-16', '23:36:00', '23:37:00', 'asasdasd', NULL, 'hourly_rate', 2, 3, 75, NULL, 0, 'open', '2024-07-14 19:34:31', '2024-07-18 01:43:21', 0, 0.00, 0.00),
 (17, 'building_related', 'aaaaaaaaaaaaaa', 'asdasdasd', 'bacolod city, forest hills', '2024-07-15', '2024-07-16', '19:04:00', '23:04:00', 'asdsadasa', 'male', 'project_based', 0, 1, 75, NULL, 0, 'open', '2024-07-14 21:04:23', '2024-07-19 06:09:39', 0, 0.00, 0.00),
@@ -789,7 +961,53 @@ INSERT INTO `service_requests` (`id`, `category`, `title`, `description`, `locat
 (85, 'Plumbing', 'Bathroom Sink Installation', 'Install bathroom sink into our bathroom', '876 Coconut Drive, Barangay Pahanocoy, Bacolod City', '2024-08-10', '2024-08-10', '02:39:00', '14:39:00', NULL, NULL, 'project_based', 5, 0, 116, 102, 1, 'open', '2024-08-07 22:40:15', '2024-08-07 22:40:15', 1, NULL, 1500.00),
 (86, 'Carpentry', 'repair door frames', 'repaire my door frames', 'Example Location', '2024-08-09', '2024-08-09', '03:25:00', '15:25:00', NULL, NULL, 'project_based', 3, 1, 116, 109, 1, 'completed', '2024-08-07 23:25:39', '2024-08-08 00:15:40', 1, NULL, 56.00),
 (87, 'Carpentry', 'Assemble Furniture', 'Assemble a new dining table and chairs.', 'Gatuslao Street, Bacolod City', '2024-08-09', '2024-08-09', '05:11:00', '17:11:00', NULL, NULL, 'project_based', 44, 0, 116, NULL, 0, 'open', '2024-08-08 01:11:56', '2024-08-08 01:11:56', 1, NULL, 56.00),
-(88, 'Carpentry', 'Repair Drywall', 'Repair drywall in the living room.', 'bacolod city, forest hills', '2024-08-10', '2024-08-10', '21:16:00', '12:16:00', NULL, NULL, 'hourly_rate', 6, 1, 116, 109, 0, 'in_progress', '2024-08-08 01:20:38', '2024-08-08 01:24:34', 1, 80.00, 100.00);
+(88, 'Carpentry', 'Repair Drywall', 'Repair drywall in the living room.', 'bacolod city, forest hills', '2024-08-10', '2024-08-10', '21:16:00', '12:16:00', NULL, NULL, 'hourly_rate', 6, 1, 116, 109, 0, 'in_progress', '2024-08-08 01:20:38', '2024-08-08 01:24:34', 1, 80.00, 100.00),
+(89, 'Carpentry', 'Agency Test', 'Agency Test', 'Agency Test', '2024-08-21', '2024-08-21', '08:25:00', '20:25:00', NULL, 'male', 'project_based', 3, 1, 95, 1, 0, 'in_progress', '2024-08-21 04:26:18', '2024-08-26 22:15:40', 1, 123.00, 677.00),
+(90, 'Carpentry', 'Agency Test', 'asdas', 'Agency Test', '2024-08-21', '2024-08-21', '08:27:00', '20:27:00', NULL, 'male', 'hourly_rate', 3, 9, 95, NULL, 0, 'in_progress', '2024-08-21 04:28:24', '2024-08-26 08:28:24', 1, 123.00, 677.00),
+(91, 'Welding', 'agency user channel test', 'agency user channel test', 'agency user channel test', '2024-08-28', '2024-08-28', '00:54:00', '12:54:00', NULL, NULL, 'hourly_rate', 3, 1, 95, NULL, 0, 'in_progress', '2024-08-27 08:54:46', '2024-08-27 08:57:12', 1, 1.00, 2.00),
+(92, 'Hairdressing', 'agency channel  test', 'agency channel  test', 'agency channel  test', '2024-08-31', '2024-08-31', '01:01:00', '13:01:00', NULL, NULL, 'hourly_rate', 2, 1, 95, 1, 0, 'in_progress', '2024-08-27 09:01:22', '2024-08-27 09:16:48', 1, 12.00, 123.00),
+(93, 'Beauty Therapy', 'Channel agency test', 'agency channel  test', 'agency channel  test', '2024-08-29', '2024-08-29', '01:01:00', '13:01:00', NULL, NULL, 'hourly_rate', 2, 1, 95, 1, 0, 'in_progress', '2024-08-27 09:02:00', '2024-08-27 09:25:05', 1, 123.00, 123.00),
+(94, 'Gardening', 'Sample Request 1', 'This is a sample description for request 1.', '789 Maple Ave, Newtown, USA', '2024-09-06', '2024-09-12', '21:40:07', '01:40:07', 'example', 'female', 'project_based', 4, 0, 77, NULL, 0, 'open', '2024-08-27 09:40:07', '2024-08-27 09:40:07', 0, 114.00, 0.00),
+(95, 'Cleaning', 'Sample Request 2', 'This is a sample description for request 2.', '123 Main St, Anytown, USA', '2024-09-06', '2024-09-13', '18:40:08', '01:40:08', 'example', 'male', 'project_based', 1, 0, 90, NULL, 0, 'cancelled', '2024-08-27 09:40:08', '2024-08-27 09:40:08', 0, 149.00, 0.00),
+(96, 'Electrical', 'Sample Request 1', 'This is a sample description for request 1.', '456 Elm St, Othertown, USA', '2024-09-05', '2024-09-16', '21:42:36', '03:42:36', 'example', NULL, 'project_based', 2, 0, 76, NULL, 0, 'open', '2024-08-27 09:42:36', '2024-08-27 09:42:36', 0, 100.00, 0.00),
+(97, 'Carpentry', 'Sample Request 2', 'This is a sample description for request 2.', '456 Elm St, Othertown, USA', '2024-08-28', '2024-09-11', '22:42:36', '23:42:36', 'example', 'female', 'project_based', 2, 0, 90, NULL, 0, 'completed', '2024-08-27 09:42:36', '2024-08-27 09:42:36', 0, 72.00, 0.00),
+(98, 'Carpentry', 'Sample Request 3', 'This is a sample description for request 3.', '123 Main St, Anytown, USA', '2024-09-02', '2024-09-09', '22:42:36', '23:42:36', 'example', 'male', 'hourly_rate', 3, 0, 99, NULL, 0, 'open', '2024-08-27 09:42:36', '2024-08-27 09:42:36', 0, 91.00, 0.00),
+(99, 'Plumbing', 'Sample Request 4', 'This is a sample description for request 4.', '123 Main St, Anytown, USA', '2024-09-04', '2024-09-08', '18:42:36', '23:42:36', 'example', NULL, 'hourly_rate', 3, 0, 112, NULL, 0, 'open', '2024-08-27 09:42:36', '2024-08-27 09:42:36', 0, 149.00, 0.00),
+(100, 'Gardening', 'Sample Request 5', 'This is a sample description for request 5.', '789 Maple Ave, Newtown, USA', '2024-08-30', '2024-09-07', '18:42:36', '01:42:36', 'example', 'female', 'hourly_rate', 1, 0, 80, NULL, 0, 'in_progress', '2024-08-27 09:42:36', '2024-08-27 09:42:36', 0, 61.00, 0.00),
+(101, 'Cleaning', 'Sample Request 6', 'This is a sample description for request 6.', '789 Maple Ave, Newtown, USA', '2024-08-31', '2024-09-10', '18:42:37', '02:42:37', 'example', 'female', 'hourly_rate', 2, 0, 96, NULL, 0, 'in_progress', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 57.00, 0.00),
+(102, 'Carpentry', 'Sample Request 7', 'This is a sample description for request 7.', '123 Main St, Anytown, USA', '2024-09-05', '2024-09-15', '19:42:37', '02:42:37', 'example', 'male', 'project_based', 4, 0, 80, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 102.00, 0.00),
+(103, 'Plumbing', 'Sample Request 8', 'This is a sample description for request 8.', '789 Maple Ave, Newtown, USA', '2024-08-31', '2024-09-14', '22:42:37', '23:42:37', 'example', 'male', 'project_based', 3, 0, 80, NULL, 0, 'in_progress', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 77.00, 0.00),
+(104, 'Electrical', 'Sample Request 9', 'This is a sample description for request 9.', '456 Elm St, Othertown, USA', '2024-08-29', '2024-09-14', '22:42:37', '02:42:37', 'example', 'female', 'project_based', 3, 0, 105, NULL, 0, 'completed', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 95.00, 0.00),
+(105, 'Electrical', 'Sample Request 10', 'This is a sample description for request 10.', '123 Main St, Anytown, USA', '2024-09-05', '2024-09-12', '21:42:37', '00:42:37', 'example', 'female', 'hourly_rate', 3, 0, 86, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 142.00, 0.00),
+(106, 'Gardening', 'Sample Request 11', 'This is a sample description for request 11.', '123 Main St, Anytown, USA', '2024-09-05', '2024-09-09', '20:42:37', '00:42:37', 'example', 'male', 'hourly_rate', 3, 0, 72, NULL, 0, 'in_progress', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 69.00, 0.00),
+(107, 'Gardening', 'Sample Request 12', 'This is a sample description for request 12.', '123 Main St, Anytown, USA', '2024-09-04', '2024-09-14', '18:42:37', '23:42:37', 'example', NULL, 'project_based', 4, 0, 80, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 134.00, 0.00),
+(108, 'Cleaning', 'Sample Request 13', 'This is a sample description for request 13.', '789 Maple Ave, Newtown, USA', '2024-09-06', '2024-09-13', '22:42:37', '02:42:37', 'example', NULL, 'project_based', 3, 0, 77, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 138.00, 0.00),
+(109, 'Plumbing', 'Sample Request 14', 'This is a sample description for request 14.', '456 Elm St, Othertown, USA', '2024-09-02', '2024-09-10', '19:42:37', '23:42:37', 'example', 'female', 'project_based', 2, 0, 73, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 65.00, 0.00),
+(110, 'Electrical', 'Sample Request 15', 'This is a sample description for request 15.', '123 Main St, Anytown, USA', '2024-09-03', '2024-09-09', '18:42:37', '00:42:37', 'example', 'female', 'hourly_rate', 2, 0, 112, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 107.00, 0.00),
+(111, 'Cleaning', 'Sample Request 16', 'This is a sample description for request 16.', '123 Main St, Anytown, USA', '2024-08-30', '2024-09-11', '18:42:37', '02:42:37', 'example', 'female', 'project_based', 3, 0, 85, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 107.00, 0.00),
+(112, 'Electrical', 'Sample Request 17', 'This is a sample description for request 17.', '789 Maple Ave, Newtown, USA', '2024-08-30', '2024-09-08', '22:42:37', '01:42:37', 'example', 'male', 'hourly_rate', 1, 0, 102, NULL, 0, 'cancelled', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 102.00, 0.00),
+(113, 'Carpentry', 'Sample Request 18', 'This is a sample description for request 18.', '789 Maple Ave, Newtown, USA', '2024-09-01', '2024-09-10', '21:42:37', '00:42:37', 'example', 'male', 'hourly_rate', 2, 0, 115, NULL, 0, 'in_progress', '2024-08-27 09:42:37', '2024-08-27 09:42:37', 0, 129.00, 0.00),
+(114, 'Carpentry', 'Sample Request 19', 'This is a sample description for request 19.', '456 Elm St, Othertown, USA', '2024-09-03', '2024-09-12', '20:42:38', '23:42:38', 'example', NULL, 'hourly_rate', 2, 0, 73, NULL, 0, 'cancelled', '2024-08-27 09:42:38', '2024-08-27 09:42:38', 0, 77.00, 0.00),
+(115, 'Carpentry', 'Sample Request 20', 'This is a sample description for request 20.', '789 Maple Ave, Newtown, USA', '2024-08-31', '2024-09-10', '19:42:38', '00:42:38', 'example', 'female', 'project_based', 2, 0, 93, NULL, 0, 'in_progress', '2024-08-27 09:42:38', '2024-08-27 09:42:38', 0, 54.00, 0.00),
+(116, 'Plumbing', 'Sample Request 1', 'This is a sample description for request 1.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:20', '19:46:20', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:20', '2024-08-27 09:46:20', 0, 0.00, 0.00),
+(117, 'Plumbing', 'Sample Request 2', 'This is a sample description for request 2.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:20', '19:46:20', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:20', '2024-08-27 09:46:20', 0, 0.00, 0.00),
+(118, 'Plumbing', 'Sample Request 3', 'This is a sample description for request 3.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(119, 'Plumbing', 'Sample Request 4', 'This is a sample description for request 4.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(120, 'Plumbing', 'Sample Request 5', 'This is a sample description for request 5.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(121, 'Plumbing', 'Sample Request 6', 'This is a sample description for request 6.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(122, 'Plumbing', 'Sample Request 7', 'This is a sample description for request 7.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(123, 'Plumbing', 'Sample Request 8', 'This is a sample description for request 8.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(124, 'Plumbing', 'Sample Request 9', 'This is a sample description for request 9.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(125, 'Plumbing', 'Sample Request 10', 'This is a sample description for request 10.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(126, 'Plumbing', 'Sample Request 11', 'This is a sample description for request 11.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(127, 'Plumbing', 'Sample Request 12', 'This is a sample description for request 12.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(128, 'Plumbing', 'Sample Request 13', 'This is a sample description for request 13.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(129, 'Plumbing', 'Sample Request 14', 'This is a sample description for request 14.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:21', '19:46:21', 'example', 'female', 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-27 09:46:21', '2024-08-27 09:46:21', 0, 0.00, 0.00),
+(130, 'Plumbing', 'Sample Request 15', 'This is a sample description for request 15.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:22', '19:46:22', 'example', 'female', 'hourly_rate', 2, 2, 95, NULL, 0, 'open', '2024-08-27 09:46:22', '2024-08-31 05:20:04', 0, 0.00, 0.00),
+(131, 'Plumbing', 'Sample Request 16', 'This is a sample description for request 16.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:22', '19:46:22', 'example', 'female', 'hourly_rate', 2, 1, 95, 1, 0, 'in_progress', '2024-08-27 09:46:22', '2024-08-27 22:00:22', 0, 0.00, 0.00),
+(132, 'Plumbing', 'Sample Request 17', 'This is a sample description for request 17.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:22', '19:46:22', 'example', 'female', 'hourly_rate', 2, 1, 95, 1, 0, 'in_progress', '2024-08-27 09:46:22', '2024-08-27 19:42:58', 0, 0.00, 0.00),
+(133, 'Plumbing', 'Sample Request 18', 'This is a sample description for request 18.', '123 Example St', '2024-08-27', '2024-09-06', '17:46:22', '19:46:22', 'example', 'female', 'hourly_rate', 2, 3, 95, 1, 0, 'in_progress', '2024-08-27 09:46:22', '2024-08-27 19:33:57', 0, 0.00, 0.00),
+(137, 'Carpentry', 'repair', 'repair description', 'bacolod city', '2024-08-31', '2024-09-01', '11:09:00', '23:09:00', NULL, NULL, 'hourly_rate', 2, 0, 95, NULL, 0, 'open', '2024-08-30 19:09:47', '2024-08-30 19:09:47', 1, 100.00, 200.00);
 
 -- --------------------------------------------------------
 
@@ -840,7 +1058,13 @@ INSERT INTO `service_request_images` (`id`, `service_request_id`, `file_path`, `
 (38, 85, 'service_requests/documents/wcfYkEYi2GxsblvT1wYQixuO7Qc5RCrAowmUErtL.webp', '2024-08-07 22:40:16', '2024-08-07 22:40:16'),
 (39, 86, 'service_requests/documents/cIib8tGSYuTCyk83GAYRiiUBgZ9XwurXV6qHOvjw.jpg', '2024-08-07 23:25:40', '2024-08-07 23:25:40'),
 (40, 87, 'service_requests/documents/ePcGYOI7N0S2EpS8p79LH2V7zCrfBIWWQUQ0z5qj.jpg', '2024-08-08 01:11:57', '2024-08-08 01:11:57'),
-(41, 88, 'service_requests/documents/n0NWjKvSs0mdoCgGl1tJoNfl267SMY02v34Wgmeg.jpg', '2024-08-08 01:20:38', '2024-08-08 01:20:38');
+(41, 88, 'service_requests/documents/n0NWjKvSs0mdoCgGl1tJoNfl267SMY02v34Wgmeg.jpg', '2024-08-08 01:20:38', '2024-08-08 01:20:38'),
+(42, 89, 'service_requests/documents/0ZOWLJFL5mZA3QByoaYwCRuXeLsKv3x5WhWtKrfu.png', '2024-08-21 04:26:19', '2024-08-21 04:26:19'),
+(43, 90, 'service_requests/documents/ZjKg42FC02eNZWvuSJ9IbLb090tzJpLsCiTQ5G2h.png', '2024-08-21 04:28:24', '2024-08-21 04:28:24'),
+(44, 91, 'service_requests/documents/c9Fptpjj2dySmTbR8XM1hY07iSEGdCbh3gNGeUDa.png', '2024-08-27 08:54:47', '2024-08-27 08:54:47'),
+(45, 92, 'service_requests/documents/v0JM4qlluCqdvLY83RP1rLTny6f1biB1GnwxiyAR.png', '2024-08-27 09:01:22', '2024-08-27 09:01:22'),
+(46, 93, 'service_requests/documents/53CEN08JuTwO7zSjvPWAYkn27Vq0c9wib7NLeN0c.png', '2024-08-27 09:02:01', '2024-08-27 09:02:01'),
+(48, 137, 'service_requests/documents/lgALPB72JFQ4sg7pwy1jUc4Ao4AeEZiBZxFBiz9J.jpg', '2024-08-30 19:09:48', '2024-08-30 19:09:48');
 
 -- --------------------------------------------------------
 
@@ -862,7 +1086,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('w7i3TjFOFpoMGiME80abgtyF85ZKToYciqbUJKlT', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiRTljdEo3VUJza3JVOVF0bDRZTTNwR1NValU0YkVZU2ZuUmE5dDl0TSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNjoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL2FnZW5jaWVzIjt9czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZ2VuY3kvaG9tZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTg6ImxvZ2luX2FnZW5jeV91c2VyXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1723817447);
+('HneRMwVi1hQydF90n3QKZssSRFguCK19ekGpz3a6', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoieVBqRDVXMER2eUlOMHZLQmZOaVRwdkZadHJPNEVZZmFXSE5iaUVheSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0NzoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FnZW5jeS9hZ2VuY3ktY2hhbm5lbC8xMzEiO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozODoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FnZW5jeS9lbXBsb3llZXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU5OiJsb2dpbl9hZ2VuY3lfdXNlcnNfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1725331637),
+('vK0yhEW9oAPguu6wmDxK6eq7sJGSfEFq8LzDGTUv', 95, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiWVczdlEwOExEZXFtVkh6TUs0QWd2VmZWZlZDZ05PV2kzWmNNQ0lNSyI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozODoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FnZW5jeS9lbXBsb3llZXMiO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czo0MDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2NoYW5uZWwvc2Vla2VyLzEzMSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjk1O30=', 1725345561);
 
 -- --------------------------------------------------------
 
@@ -933,13 +1158,6 @@ INSERT INTO `users` (`id`, `name`, `email`, `cell_no`, `email_verified_at`, `pas
 --
 
 --
--- Indexes for table `addresses`
---
-ALTER TABLE `addresses`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `addresses_user_id_foreign` (`user_id`);
-
---
 -- Indexes for table `admin_users`
 --
 ALTER TABLE `admin_users`
@@ -952,6 +1170,23 @@ ALTER TABLE `admin_users`
 ALTER TABLE `agencies`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `agencies_email_unique` (`email`);
+
+--
+-- Indexes for table `agency_services`
+--
+ALTER TABLE `agency_services`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `agency_services_agency_id_foreign` (`agency_id`),
+  ADD KEY `agency_services_created_by_foreign` (`created_by`);
+
+--
+-- Indexes for table `agency_updates`
+--
+ALTER TABLE `agency_updates`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `agency_updates_agency_id_foreign` (`agency_id`),
+  ADD KEY `agency_updates_submitted_by_foreign` (`submitted_by`),
+  ADD KEY `agency_updates_reviewed_by_foreign` (`reviewed_by`);
 
 --
 -- Indexes for table `agency_users`
@@ -994,9 +1229,9 @@ ALTER TABLE `certifications`
 ALTER TABLE `channel`
   ADD PRIMARY KEY (`id`),
   ADD KEY `seeker_id` (`seeker_id`),
-  ADD KEY `provider_id` (`provider_id`),
   ADD KEY `service_request_id` (`service_request_id`),
-  ADD KEY `bid_id` (`bid_id`);
+  ADD KEY `bid_id` (`bid_id`),
+  ADD KEY `channel_ibfk_provider` (`provider_id`);
 
 --
 -- Indexes for table `chats`
@@ -1005,6 +1240,32 @@ ALTER TABLE `chats`
   ADD PRIMARY KEY (`id`),
   ADD KEY `chats_channel_id_created_at_index` (`channel_id`,`created_at`),
   ADD KEY `chats_sender_id_foreign` (`sender_id`);
+
+--
+-- Indexes for table `employees`
+--
+ALTER TABLE `employees`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `fk_agency` (`agency_id`);
+
+--
+-- Indexes for table `employee_service_assignments`
+--
+ALTER TABLE `employee_service_assignments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `employee_service_assignments_employee_id_foreign` (`employee_id`),
+  ADD KEY `employee_service_assignments_service_id_foreign` (`service_id`);
+
+--
+-- Indexes for table `employee_task_assignment`
+--
+ALTER TABLE `employee_task_assignment`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `employee_task_assignment_employee_id_channel_id_unique` (`employee_id`,`channel_id`),
+  ADD KEY `employee_task_assignment_agency_id_foreign` (`agency_id`),
+  ADD KEY `employee_task_assignment_channel_id_foreign` (`channel_id`),
+  ADD KEY `employee_task_assignment_assigned_by_foreign` (`assigned_by`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -1125,12 +1386,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `addresses`
---
-ALTER TABLE `addresses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `admin_users`
 --
 ALTER TABLE `admin_users`
@@ -1143,16 +1398,28 @@ ALTER TABLE `agencies`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `agency_services`
+--
+ALTER TABLE `agency_services`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `agency_updates`
+--
+ALTER TABLE `agency_updates`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `agency_users`
 --
 ALTER TABLE `agency_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `bid`
 --
 ALTER TABLE `bid`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `certifications`
@@ -1164,13 +1431,31 @@ ALTER TABLE `certifications`
 -- AUTO_INCREMENT for table `channel`
 --
 ALTER TABLE `channel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `employees`
+--
+ALTER TABLE `employees`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+
+--
+-- AUTO_INCREMENT for table `employee_service_assignments`
+--
+ALTER TABLE `employee_service_assignments`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `employee_task_assignment`
+--
+ALTER TABLE `employee_task_assignment`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -1188,7 +1473,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `philid_cards`
@@ -1230,13 +1515,13 @@ ALTER TABLE `request_lists`
 -- AUTO_INCREMENT for table `service_requests`
 --
 ALTER TABLE `service_requests`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT for table `service_request_images`
 --
 ALTER TABLE `service_request_images`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -1249,10 +1534,19 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints for table `addresses`
+-- Constraints for table `agency_services`
 --
-ALTER TABLE `addresses`
-  ADD CONSTRAINT `addresses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+ALTER TABLE `agency_services`
+  ADD CONSTRAINT `agency_services_agency_id_foreign` FOREIGN KEY (`agency_id`) REFERENCES `agencies` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `agency_services_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `agency_users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `agency_updates`
+--
+ALTER TABLE `agency_updates`
+  ADD CONSTRAINT `agency_updates_agency_id_foreign` FOREIGN KEY (`agency_id`) REFERENCES `agencies` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `agency_updates_reviewed_by_foreign` FOREIGN KEY (`reviewed_by`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `agency_updates_submitted_by_foreign` FOREIGN KEY (`submitted_by`) REFERENCES `agency_users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `agency_users`
@@ -1264,8 +1558,7 @@ ALTER TABLE `agency_users`
 -- Constraints for table `bid`
 --
 ALTER TABLE `bid`
-  ADD CONSTRAINT `bid_ibfk_1` FOREIGN KEY (`service_request_id`) REFERENCES `service_requests` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `bid_ibfk_2` FOREIGN KEY (`bidder_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `bid_ibfk_1` FOREIGN KEY (`service_request_id`) REFERENCES `service_requests` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `certifications`
@@ -1278,9 +1571,9 @@ ALTER TABLE `certifications`
 --
 ALTER TABLE `channel`
   ADD CONSTRAINT `channel_ibfk_1` FOREIGN KEY (`seeker_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `channel_ibfk_2` FOREIGN KEY (`provider_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `channel_ibfk_3` FOREIGN KEY (`service_request_id`) REFERENCES `service_requests` (`id`),
-  ADD CONSTRAINT `channel_ibfk_4` FOREIGN KEY (`bid_id`) REFERENCES `bid` (`id`);
+  ADD CONSTRAINT `channel_ibfk_4` FOREIGN KEY (`bid_id`) REFERENCES `bid` (`id`),
+  ADD CONSTRAINT `channel_ibfk_provider` FOREIGN KEY (`provider_id`) REFERENCES `agency_users` (`id`);
 
 --
 -- Constraints for table `chats`
@@ -1288,6 +1581,28 @@ ALTER TABLE `channel`
 ALTER TABLE `chats`
   ADD CONSTRAINT `chats_channel_id_foreign` FOREIGN KEY (`channel_id`) REFERENCES `channel` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `chats_sender_id_foreign` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `employees`
+--
+ALTER TABLE `employees`
+  ADD CONSTRAINT `fk_agency` FOREIGN KEY (`agency_id`) REFERENCES `agencies` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `employee_service_assignments`
+--
+ALTER TABLE `employee_service_assignments`
+  ADD CONSTRAINT `employee_service_assignments_employee_id_foreign` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_service_assignments_service_id_foreign` FOREIGN KEY (`service_id`) REFERENCES `agency_services` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `employee_task_assignment`
+--
+ALTER TABLE `employee_task_assignment`
+  ADD CONSTRAINT `employee_task_assignment_agency_id_foreign` FOREIGN KEY (`agency_id`) REFERENCES `agencies` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_task_assignment_assigned_by_foreign` FOREIGN KEY (`assigned_by`) REFERENCES `agency_users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_task_assignment_channel_id_foreign` FOREIGN KEY (`channel_id`) REFERENCES `channel` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_task_assignment_employee_id_foreign` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `philid_cards`

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@extends('layouts.app')
+
+@section('content')
     <div class="mt-3 md:px-12 py-6 bg-white shadow-md sm:rounded-lg w-full md:w-4/5 mx-auto">
         <div class="flex flex-col md:flex-row w-10/12 mx-auto">
             {{-- User Profile Picture --}}

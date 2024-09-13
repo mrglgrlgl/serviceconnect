@@ -31,10 +31,10 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Login link -->
-                    <a href="{{ route('login') }}" class="inline-flex items-center px-2 pt-1 border-b-4 border-transparent text-gray-800 focus:outline-none transition duration-150 ease-in-out hover:border-gray-700 hover:text-gray-700">
+                    {{-- <a href="{{ route('login') }}" class="inline-flex items-center px-2 pt-1 border-b-4 border-transparent text-gray-800 focus:outline-none transition duration-150 ease-in-out hover:border-gray-700 hover:text-gray-700">
                         {{ __('Login') }}
                     </a>
                 </div>

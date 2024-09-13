@@ -54,7 +54,9 @@ class RatingController extends Controller
             'channel_id' => 'required|exists:channel,id',
             'rating_quality_of_service' => 'nullable|integer|min:0|max:10',
             'rating_communication' => 'nullable|integer|min:0|max:10',
+            'rating_communication' => 'nullable|integer|min:0|max:10',
             'rating_professionalism' => 'nullable|integer|min:0|max:10',
+            'rating_cleanliness_tidiness' => 'nullable|integer|min:0|max:10',
             'rating_cleanliness_tidiness' => 'nullable|integer|min:0|max:10',
             'rating_value_for_money' => 'nullable|integer|min:0|max:10',
             'feedback' => 'nullable|string|max:255',
@@ -67,8 +69,16 @@ class RatingController extends Controller
             return redirect()->back()->with('error', 'Channel or related agency not found.');
         }
     
+        // Retrieve the channel with related agency user
+        $channel = Channel::with('agencyuser.agency')->find($validated['channel_id']);
+    
+        if (!$channel || !$channel->agencyuser || !$channel->agencyuser->agency) {
+            return redirect()->back()->with('error', 'Channel or related agency not found.');
+        }
+    
         // Check if the user has already rated this channel
         $existingRating = Rating::where('channel_id', $validated['channel_id'])
+                                ->where('seeker_id', Auth::id())
                                 ->where('seeker_id', Auth::id())
                                 ->first();
     
@@ -81,9 +91,12 @@ class RatingController extends Controller
             'channel_id' => $validated['channel_id'],
             'agency_id' => $channel->agencyuser->agency->id, // Retrieve agency_id through provider
             'seeker_id' => Auth::id(),
+            'agency_id' => $channel->agencyuser->agency->id, // Retrieve agency_id through provider
+            'seeker_id' => Auth::id(),
             'quality_of_service' => $validated['rating_quality_of_service'],
             'communication' => $validated['rating_communication'],
             'professionalism' => $validated['rating_professionalism'],
+            'cleanliness_tidiness' => $validated['rating_cleanliness_tidiness'],
             'cleanliness_tidiness' => $validated['rating_cleanliness_tidiness'],
             'value_for_money' => $validated['rating_value_for_money'],
             'additional_feedback' => $validated['feedback'],
@@ -91,5 +104,6 @@ class RatingController extends Controller
     
         return redirect()->route('dashboard')->with('success', 'Rating submitted successfully.');
     }
+    
     
 }

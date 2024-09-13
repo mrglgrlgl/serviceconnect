@@ -1,6 +1,9 @@
 @extends('layouts.agency-dashboard')
 
 @section('content')
+@extends('layouts.agency-dashboard')
+
+@section('content')
     <div class="container mx-auto my-10 max-w-2xl">
         <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Add New Employee</h2>
 
@@ -54,13 +57,17 @@
             <div class="mb-6">
                 <label for="photo" class="block  font-medium text-gray-700">Photo</label>
                 <input type="file" name="photo" id="photo" class="mt-1 block w-full  text-gray-500 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:">
+                <label for="photo" class="block  font-medium text-gray-700">Photo</label>
+                <input type="file" name="photo" id="photo" class="mt-1 block w-full  text-gray-500 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:">
             </div>
 
             <div class="text-center">
+                <button type="submit" class="bg-blue-500 text-white py-3 px-6 rounded-md font-semibold shadow-md hover:bg-blue-600 transition ease-in-out duration-300">
                 <button type="submit" class="bg-blue-500 text-white py-3 px-6 rounded-md font-semibold shadow-md hover:bg-blue-600 transition ease-in-out duration-300">
                     Add Employee
                 </button>
             </div>
         </form>
     </div>
+@endsection
 @endsection

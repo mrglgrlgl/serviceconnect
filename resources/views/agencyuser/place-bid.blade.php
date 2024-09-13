@@ -1,4 +1,5 @@
 @extends('layouts.agency-dashboard')
+@extends('layouts.agency-dashboard')
 
 @section('content')
     <div class="mt-6 px-6 py-8 bg-white shadow-md sm:rounded-lg w-full max-w-xl mx-auto mb-4 font-poppins">

@@ -188,6 +188,7 @@ public function create()
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i',
             'manpower_number' => 'nullable|integer',
+            'manpower_number' => 'nullable|integer',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
             // 'price_type' => 'required|in:fixed,range',
@@ -223,6 +224,7 @@ public function create()
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
                $serviceRequest->is_direct_hire = false;
+               $serviceRequest->manpower_number = $validatedData['manpower_number'];
                $serviceRequest->manpower_number = $validatedData['manpower_number'];
                $serviceRequest->min_price = $validatedData['min_price'];
                $serviceRequest->max_price = $validatedData['max_price'];
@@ -384,7 +386,42 @@ public function myRequests(Request $request)
 {
     $filter = $request->input('filter', 'all');
     $query = ServiceRequest::whereHas('bids', function ($query) {
+// public function myRequests()
+// {
+//     $serviceRequests = ServiceRequest::whereHas('bids', function ($query) {
+//         $query->where('bidder_id', auth()->user()->id);
+//     })->get();
+
+//     return view('provider.myrequests', compact('serviceRequests'));
+// }
+public function myRequests(Request $request)
+{
+    $filter = $request->input('filter', 'all');
+    $query = ServiceRequest::whereHas('bids', function ($query) {
         $query->where('bidder_id', auth()->user()->id);
+    });
+
+    // Apply filter
+    switch ($filter) {
+        case 'sent_bids':
+            $query->whereHas('bids', function ($query) {
+                $query->where('status', 'open');
+            });
+            break;
+        case 'in_progress':
+            $query->where('status', 'in_progress');
+            break;
+        case 'completed':
+            $query->where('status', 'completed');
+            break;
+        case 'direct_hire':
+            $query->where('is_direct_hire', true);
+            break;
+    }
+
+    $serviceRequests = $query->get();
+
+    return view('provider.myrequests', compact('serviceRequests', 'filter'));
     });
 
     // Apply filter
