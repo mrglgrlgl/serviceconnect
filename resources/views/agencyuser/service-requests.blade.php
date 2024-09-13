@@ -109,6 +109,23 @@
                                         <span class="material-symbols-outlined mr-1 text-red-500">location_on</span>
                                         {{ $serviceRequest->location }}
                                     </div>
+
+
+                                     {{-- Display Associated Images --}}
+                        @if ($serviceRequest->images->isNotEmpty())
+                            <div class="flex items-start px-8 mt-4">
+                                <div class="flex flex-wrap gap-4">
+                                    @foreach ($serviceRequest->images->take(4) as $image)
+    <div class="w-32 h-32 overflow-hidden rounded-lg">
+        <img src="{{ asset('storage/' . $image->file_path) }}" alt="Service Request Image" class="object-cover w-full h-full">
+    </div>
+@endforeach
+
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-gray-500 px-8 mt-4">No images uploaded for this request.</p>
+                        @endif
                                     <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
                                 </div>
                             </div>

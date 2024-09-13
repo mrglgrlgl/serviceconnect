@@ -77,14 +77,7 @@
                         <small id="phoneHelp" class="text-red-500"></small>
                     </div>
             
-                    <div class="mt-4">
-                        <x-input-label for="position">
-                            Position <span class="text-red-500">*</span>
-                        </x-input-label>
-                        <x-text-input id="position" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
-                            type="text" name="position" :value="old('position')" required autocomplete="position" />
-                        <x-input-error :messages="$errors->get('position')" class="mt-2" />
-                    </div>
+                
                 </div>
             
                 <!-- Password and Confirm Password -->

@@ -8,22 +8,50 @@ use App\Models\AgencyService;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
+    {
+        // Retrieve the agency ID of the currently logged-in user
+        $agency = auth()->user()->agency;
+    
+        // Get the filters
+        $nameFilter = $request->input('name');
+        $serviceFilter = $request->input('service');
+    
+        // Retrieve all employees belonging to the user's agency
+        $employees = Employee::where('agency_id', $agency->id)->with('services');
+    
+        // Apply name filter if provided
+        if (!empty($nameFilter)) {
+            $employees->where('name', 'like', '%' . $nameFilter . '%');
+        }
+    
+        // Apply service filter if provided
+        if (!empty($serviceFilter)) {
+            $employees->whereHas('services', function ($query) use ($serviceFilter) {
+                $query->where('agency_services.id', $serviceFilter);
+            });
+        }
+    
+        // Get filtered employees
+        $employees = $employees->get();
+    
+        // Retrieve all services for the agency
+        $services = AgencyService::where('agency_id', $agency->id)->get();
+    
+        // Pass the employees, services, and agency to the view
+        return view('agencyuser.employee-list', compact('employees', 'services', 'agency'));
+    }
+    
+
+//view employee profile
+public function show(Employee $employee)
 {
-    // Retrieve the agency ID of the currently logged-in user
-    $agency = auth()->user()->agency;
-    
-    // Retrieve all employees belonging to the user's agency
-    $employees = Employee::where('agency_id', $agency->id)->with('services')->get();
-    
-    // Retrieve all services for the agency
-    $services = AgencyService::where('agency_id', $agency->id)->get();
-    
-    // Pass the employees, services, and agency to the view
-    return view('agencyuser.employee-list', compact('employees', 'services', 'agency'));
+    // Eager load services, taskAssignments, and channels
+    $employee = $employee->load('services');
+    return view('agencyuser.view-employee-profile', compact('employee'));
 }
 
-    
+   
     
 
     public function create()

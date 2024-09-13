@@ -35,7 +35,11 @@ use App\Http\Controllers\EmployeeTaskAssignmentController;
 // use App\Http\Controllers\AgencyProfileController;
 
 Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
-Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+
+Route::get('/dashboard/{serviceRequestId}', [BidController::class, 'showDashboard'])->name('dashboard');
+
+
+// Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 // Route::get('/service-requests/{id}/bids', [BidController::class, 'index']);
 Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
 
@@ -86,8 +90,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     
     Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
     Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Agency user-specific actions for the channel
+
     Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
 
     Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
@@ -118,6 +121,9 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     // Store the new employee in the database
     Route::post('/employees', [EmployeeController::class, 'store'])->name('agency.employees.store');
 
+
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('agency.employees.show');
+
     // Show the form to edit an existing employee
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('agency.employees.edit');
 
@@ -127,6 +133,8 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     // Delete an employee from the database
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('agency.employees.destroy');
     
+
+
     Route::get('/home', function () {
         return view('agencyuser.home');
     })->name('agency.home');  // Use agency.home instead of agency.dashboard

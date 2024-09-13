@@ -219,7 +219,42 @@
             </div>
         </div>
 
-    
+        <!-- Profile Modal -->
+        <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="closeProfileModal">
+            <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
+                    <button @click="closeProfileModal" class="text-red-500 hover:text-red-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="col-span-1">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
+                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
+                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
+                            <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
+                            <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Report Modal -->
         <div x-show="showReportModal" x-transition class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
