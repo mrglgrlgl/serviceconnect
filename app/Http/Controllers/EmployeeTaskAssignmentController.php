@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 class EmployeeTaskAssignmentController extends Controller
 {
 
-     public function showAssignmentPage($serviceRequestId)
+    public function showAssignmentPage($serviceRequestId)
 {
     $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
     
@@ -43,6 +43,7 @@ class EmployeeTaskAssignmentController extends Controller
         'employees' => $employees
     ]);
 }
+
     
     
 

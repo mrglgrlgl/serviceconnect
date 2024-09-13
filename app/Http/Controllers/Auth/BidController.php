@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Auth; // Ensure this line is present
 
 class BidController extends Controller
 {
-    
-    
-     public function viewProfile($agencyUserId)
+
+
+    public function viewProfile($agencyUserId)
     {
         $agencyUser = AgencyUser::with('agency')->findOrFail($agencyUserId);
 
@@ -37,11 +37,9 @@ class BidController extends Controller
             'services' => $services
         ]);
     }
+
     
-    
-    
-    
-    
+
     public function store(Request $request)
 {
     // Ensure 'agency_user' guard is used to get the authenticated user's ID
@@ -116,6 +114,7 @@ class BidController extends Controller
     }
 
 
+
     public function confirm(Request $request, $bidId)
 {
     try {
@@ -134,15 +133,7 @@ class BidController extends Controller
             $serviceRequest->update(['provider_id' => $bid->bidder_id, 'status' => 'in_progress']);
         }
 
-        // Save the service request to trigger the observer
-        $serviceRequest->save();
 
-        // Notify the bidder
-
-        // Check if the service request and bid are valid
-        if ($serviceRequest) {
-            $serviceRequest->update(['provider_id' => $bid->bidder_id, 'status' => 'in_progress']);
-        }
 
         // Save the service request to trigger the observer
         $serviceRequest->save();

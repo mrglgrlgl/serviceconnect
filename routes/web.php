@@ -19,8 +19,6 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ProviderProfileController;
-use App\Http\Controllers\Auth\PhilIDController;
-use App\Http\Controllers\ViewProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DirectHireController;
@@ -34,16 +32,19 @@ use App\Http\Controllers\AgencySettingsController;
 use App\Http\Controllers\AdminAgencyReviewController;
 use App\Http\Controllers\AgencyServiceController;
 use App\Http\Controllers\EmployeeTaskAssignmentController;
+// use App\Http\Controllers\AgencyProfileController;
+
+Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
+
+Route::get('/dashboard/{serviceRequestId}', [BidController::class, 'showDashboard'])->name('dashboard');
 
 
-
-Route::get('/login', function () {
-    return view('login'); // Your login.blade.php
-})->name('login');
+// Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+// Route::get('/service-requests/{id}/bids', [BidController::class, 'index']);
+Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
 
 
 Route::get('/profile/{agencyUserId}', [BidController::class, 'viewProfile'])->name('view-profile');
-
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -67,12 +68,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], functio
 
 Route::get('agency/login', [AgencyUserController::class, 'showLoginForm'])->name('agency.login');
 Route::post('agency/login', [AgencyUserController::class, 'login']);
-Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 
 
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
+    Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 
     Route::put('/channel/{channel}/employee/{employee}', [ChannelController::class, 'unassignEmployee'])->name('unassign.employee');
@@ -89,8 +90,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     
     Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
     Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Agency user-specific actions for the channel
+
     Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
 
     Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
@@ -103,6 +103,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     Route::get('/provider/filter-requests', [ServicerequestController::class, 'filterServiceRequests'])->name('provider.filterRequests');
 
 Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], function () {
+    Route::post('agency/logout', [AgencyUserController::class, 'logout'])->name('agency.logout');
 
 
     Route::put('/channel/{channel}/employee/{employee}', [ChannelController::class, 'unassignEmployee'])->name('unassign.employee');
@@ -119,8 +120,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     
     Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
     Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Route::get('/agency-channel/{serviceRequestId}', [ChannelController::class, 'agencyChannel'])->name('channel.agency');
-    // Agency user-specific actions for the channel
+
     Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
 
     Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
@@ -157,6 +157,9 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     // Store the new employee in the database
     Route::post('/employees', [EmployeeController::class, 'store'])->name('agency.employees.store');
 
+
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('agency.employees.show');
+
     // Show the form to edit an existing employee
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('agency.employees.edit');
 
@@ -166,6 +169,8 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     // Delete an employee from the database
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('agency.employees.destroy');
     
+
+
     Route::get('/home', function () {
         return view('agencyuser.home');
     })->name('agency.home');  // Use agency.home instead of agency.dashboard
@@ -205,20 +210,7 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
 
     
 
-
-// contact info
-Route::get('/contact-us', function () {
-    return view('contact-us');
-})->name('contact-us');
-
-
-// Route::middleware('auth')->group(function () {
-//     // Other routes...
-
-//     // Agency analytics route
-//     Route::get('/agency/analytics', [AnalyticsController::class, 'agencyanalytics'])->name('agency.analytics');
-// });
-
+// routes/web.php
 
 // contact info
 Route::get('/contact-us', function () {
@@ -239,14 +231,14 @@ Route::post('/report', [ReportController::class, 'store'])->name('report.store')
 Route::get('/direct-hire/create/{providerId}', [DirectHireController::class, 'create'])->name('direct-hire.create');
 Route::post('/direct-hire/store', [DirectHireController::class, 'store'])->name('direct-hire.store');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
-    Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
-    Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
+//     Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
+//     Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
 
  
 
-});
+// });
 
 
 
@@ -255,11 +247,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 Route::view('/terms', 'terms')->name('terms');
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/philid', [PhilIDController::class, 'index'])->name('philid.index');
-    Route::get('/philid/create', [PhilIDController::class, 'create'])->name('philid.create');
-    Route::post('/philid', [PhilIDController::class, 'store'])->name('philid.store');
-});
+
 
 Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating');
 Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
@@ -337,9 +325,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
+// });
 
 Route::get('/home', function () {
     return view('home');
@@ -430,11 +418,6 @@ Route::get('/service-requests/{serviceRequest}/edit', [ServiceRequestController:
 
 Route::delete('/service-requests/{service_request}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
 
-// routes/web.php
-Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
-Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
-// Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
-Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
 
 Route::patch('bids/{id}', [BidController::class, 'update'])->name('bids.update');
 Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bidders-profile');
@@ -444,7 +427,6 @@ Route::get('/bids/update/{id}', [BidController::class, 'update'])->name('bidders
 Route::get('/chat', function () {return view('chat');})->name('chat');
 
 Route::get('/api/providers/{bidderId}', [BidController::class, 'getProviderProfile']);
-Route::post('/bids/{bidId}/accept', [BidController::class, 'acceptBid'])->name('bids.accept');
 
 
 
@@ -457,14 +439,5 @@ Route::get('/profile/view', [ProfileController::class, 'profile'])->name('profil
 Route::get('/analytics', [AnalyticsController::class, 'seekeranalytics'])
     ->middleware(['auth', 'verified'])
     ->name('analytics');
-
-// Define route for provider analytics with appropriate middleware
-// Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])
-//     ->middleware(['auth', 'verified'])
-//     ->name('provider.analytics');
-// Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])
-//     ->middleware(['auth', 'verified'])
-//     ->name('provider.analytics');
-
 
 require __DIR__.'/auth.php';

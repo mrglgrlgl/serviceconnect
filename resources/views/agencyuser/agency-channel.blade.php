@@ -275,7 +275,7 @@
 
 
 
-
+{{-- 
     <!-- Rating Modal -->
     <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
         style="display: none;">
@@ -343,7 +343,7 @@
                     {{ session('error') }}
                 </div>
             @endif
-        </div>
+        </div> --}}
 
 
         {{-- <div class="bg-gray-50 rounded-lg border p-6 mt-6">
@@ -436,9 +436,7 @@
         }
 
         // Modal display functions
-        function openRatingModal() {
-            document.getElementById('ratingModal').style.display = 'flex';
-        }
+
 
         // Trigger the modal opening conditionally
         document.addEventListener('DOMContentLoaded', function() {

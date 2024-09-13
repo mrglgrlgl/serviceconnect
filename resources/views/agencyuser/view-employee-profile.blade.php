@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="font-poppins bg-gray-100 min-h-screen">
-        <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-8">
+        <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Employee Profile</h1>
 
             <div class="flex items-center mb-6">
