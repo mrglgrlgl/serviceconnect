@@ -1,4 +1,6 @@
-<x-dashboard>
+@extends('layouts.dashboard')
+
+@section('content')
     <div class="max-w-lg mx-auto p-6 bg-custom-admin-secondary rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4 text-white">Edit Agency</h2>
 
@@ -51,4 +53,4 @@
             </div>
         </form>
     </div>
-</x-dashboard>
+@endsection

@@ -1,4 +1,6 @@
-<x-dashboard>
+@extends('layouts.dashboard')
+
+@section('content')
     <div class="max-w-lg mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Create Agency User for {{ $agency->name }}</h2>
 
@@ -42,4 +44,4 @@
             </div>
         </form>
     </div>
-</x-dashboard>
+@endsection

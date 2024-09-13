@@ -1,4 +1,6 @@
-<x-app-layout class="font-open-sans">
+@extends('layouts.app')
+
+@section('content')
     <div class="mt-3 md:px-12 py-6 bg-white shadow-md sm:rounded-lg w-full mx-auto">
         <div class="flex flex-col md:flex-row mx-auto">
             {{-- User Profile Picture --}}
@@ -366,3 +368,4 @@
         margin-bottom: 1.5rem;
     }
 </style>
+@endsection

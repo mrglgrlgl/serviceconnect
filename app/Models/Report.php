@@ -18,7 +18,7 @@ class Report extends Model
         'issue_type', 
         'details', 
         'reported_by',
-        'reported_user_id', 
+        'agency_id',  // Ensure agency_id is included
         
     ];
 

@@ -16,6 +16,7 @@ class Employee extends Model
         'position',
         'gender',
         'birthdate',
+        'availability',
         'photo',
     ];
 
@@ -23,4 +24,23 @@ class Employee extends Model
     {
         return $this->belongsTo(Agency::class);
     }
+    
+    public function services()
+    {
+        return $this->belongsToMany(AgencyService::class, 'employee_service_assignments', 'employee_id', 'service_id')
+                    ->withPivot('agency_id', 'assigned_at')
+                    ->withTimestamps();
+    }
+    public function taskAssignments()
+{
+    return $this->hasMany(EmployeeTaskAssignment::class);
+}
+public function channels()
+{
+    // Define the relationship, assuming a many-to-many relationship
+    return $this->belongsToMany(Channel::class, 'employee_channel', 'employee_id', 'channel_id');
+}
+
+
+
 }

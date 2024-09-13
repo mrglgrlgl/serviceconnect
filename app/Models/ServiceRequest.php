@@ -16,16 +16,11 @@ class ServiceRequest extends Model
         'end_date',
         'start_time',
         'end_time',
-        // 'skill_tags',
         'provider_gender',
         'job_type',
         'min_price',
         'max_price',
         'estimated_duration',
-        // 'attach_media',
-        // 'attach_media2',
-        // 'attach_media3',
-        // 'attach_media4',
         'status',
         'user_id',
         'provider_id',
@@ -64,6 +59,12 @@ class ServiceRequest extends Model
     return $this->hasMany(Report::class, 'service_request_id');
 }
     
+public function agencyUser()
+{
+    return $this->belongsTo(AgencyUser::class, 'provider_id');
+}
+
+
 }
 
 

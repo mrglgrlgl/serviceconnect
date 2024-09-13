@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-4">
+{{--            <div class="flex items-center space-x-4">
                 <!-- Right-aligned navigation links -->
                 <div class="hidden space-x-8 sm:flex font-semibold">
                     <!-- Sign up link with dropdown -->
@@ -38,6 +38,7 @@
                         {{ __('Login') }}
                     </a>
                 </div>
+                --}}
 
                 <!-- Hamburger -->
                 <div class="-mr-2 flex items-center sm:hidden">

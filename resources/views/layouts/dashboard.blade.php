@@ -41,15 +41,14 @@
     
     <body class="antialiased">
         <div class="min-h-screen bg-custom-admin-bg">
-    
-            {{-- Sidebar inclusion --}}
 
+            {{-- Sidebar inclusion --}}
             @include('layouts.admin_navigation')
     
             {{-- Main Content Area --}}
             <main>
                 <div class="content-container">
-                    {{ $slot }}
+                    @yield('content')
                 </div>
             </main>
     

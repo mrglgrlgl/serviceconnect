@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="py-12">
         <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto bg-white p-6 rounded-lg shadow-md">
             <h1 class="text-2xl font-bold mb-4">Terms and Conditions</h1>
@@ -33,4 +35,4 @@
             <p class="mt-6">By using ServiceConnect, you agree to be bound by these terms and conditions, acknowledge that you have read them, and understand them.</p>
         </div>
     </div>
-</x-app-layout>
+@endsection

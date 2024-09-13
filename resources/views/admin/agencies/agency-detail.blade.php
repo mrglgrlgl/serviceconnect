@@ -1,4 +1,6 @@
-<x-dashboard>
+@extends('layouts.dashboard')
+
+@section('content')
     <div class="max-w-4xl mx-auto p-4">
         <h2 class="text-2xl font-bold mb-4 text-white">{{ $agency->name }} Details</h2>
 
@@ -61,30 +63,26 @@
                 @endif
             </div>
         </div>
-    
 
-    <div class="card">
-    <div class="card-header">
-        <h3>Agency Updates</h3>
+        <!-- Section for agency updates -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Agency Updates</h3>
+            </div>
+            <div class="card-body">
+                @if($agency->pendingUpdates && !$agency->pendingUpdates->isEmpty())
+                    <ul>
+                        @foreach($agency->pendingUpdates as $update)
+                            <li>
+                                <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->status }}
+                                <a href="{{ route('admin.agency.update.review', $update->id) }}" class="btn btn-info btn-sm">Review</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p>No pending updates.</p>
+                @endif
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        @if($agency->pendingUpdates && !$agency->pendingUpdates->isEmpty())
-            <ul>
-                @foreach($agency->pendingUpdates as $update)
-                    <li>
-                        <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->status }}
-                        <a href="{{ route('admin.agency.update.review', $update->id) }}" class="btn btn-info btn-sm">Review</a>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p>No pending updates.</p>
-        @endif
-    </div>
-</div>
-</div>
-
-
-
-
-</x-dashboard>
+@endsection

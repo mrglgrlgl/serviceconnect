@@ -12,7 +12,7 @@ class AgencyAuthMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('agency_user')->check()) {
+        if (Auth::guard('agency_users')->check()) {
             return $next($request);
         }
 

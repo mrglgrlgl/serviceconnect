@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
     <div class="max-w-screen-5xl mx-auto">
@@ -125,4 +127,4 @@
             window.location.href = '/direct-hire/create/' + providerId;
         }
     </script>
-</x-app-layout>
+@endsection

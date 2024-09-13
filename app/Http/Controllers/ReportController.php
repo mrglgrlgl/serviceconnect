@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Models\ServiceRequest;
+use App\Models\AgencyUser;
 
 class ReportController extends Controller
 {
@@ -27,21 +28,32 @@ class ReportController extends Controller
             return back()->with('error', 'Could not identify the user being reported.');
         }
 
+        // Retrieve the agency_id from the provider_id in the service request
+        $agencyId = null;
+        if ($serviceRequest->provider_id) {
+            $agencyUser = AgencyUser::where('id', $serviceRequest->provider_id)->first();
+            if ($agencyUser) {
+                $agencyId = $agencyUser->agency_id;
+            }
+        }
+
         Report::create([
             'service_request_id' => $request->service_request_id,
             'issue_type' => $request->issue_type,
             'details' => $request->details,
             'reported_by' => auth()->id(),
             'reported_user_id' => $reportedUserId,
+            'agency_id' => $agencyId, // Ensure this is set correctly
         ]);
 
         return back()->with('success', 'Report submitted successfully.');
     }
 
-//authorizer
-public function index()
-{
-    $reports = Report::with(['reportedBy', 'reportedUser', 'serviceRequest'])->get();
-    return view('agencyuser.reports', compact('reports'));
+    public function index()
+    {
+        $reports = Report::with(['reportedBy', 'reportedUser', 'serviceRequest'])->get();
+        return view('agencyuser.reports', compact('reports'));
+    }
 }
-}
+
+

@@ -10,7 +10,7 @@ class AgencySettingsController extends Controller
 {
     public function showSettings(Request $request)
     {
-        $user = Auth::guard('agency_user')->user();
+        $user = Auth::guard('agency_users')->user();
         $agency = $user->agency;
     
         if (!$agency) {
@@ -28,7 +28,7 @@ class AgencySettingsController extends Controller
 
     public function editSettings(Request $request)
     {
-        $user = Auth::guard('agency_user')->user();
+        $user = Auth::guard('agency_users')->user();
         $agency = $user->agency;
 
         if (!$agency) {
@@ -40,7 +40,7 @@ class AgencySettingsController extends Controller
 
     public function updateSettings(Request $request)
     {
-        $user = Auth::guard('agency_user')->user();
+        $user = Auth::guard('agency_users')->user();
         $agency = $user->agency;
 
         if (!$agency) {
@@ -80,3 +80,4 @@ class AgencySettingsController extends Controller
         return redirect()->route('agency.settings')->with('success', 'Your changes have been submitted for review.');
     }
 }
+

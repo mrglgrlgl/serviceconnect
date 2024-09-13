@@ -1,4 +1,6 @@
-<x-guest-layout>
+@extends('layouts.guest')
+
+@section('content')
     <div class="grid grid-cols-1 md:grid-cols-2 w-full mx-auto pb-6">
         <!-- Login Form on the Left -->
         <div class="md:col-span-1 order-1 md:order-1 p-16 border border-r-0 bg-white border-l-lg border-r-none border-gray-300">
@@ -68,4 +70,4 @@
             </div>
         </div>
     </div>
-</x-guest-layout>
+    @endsection

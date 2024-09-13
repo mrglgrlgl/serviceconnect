@@ -1,4 +1,6 @@
-<x-guest-layout>
+@extends('layouts.guest')
+
+@section('content')
     <div class="grid grid-cols-1 md:grid-cols-2 w-full mx-auto pb-6">
         <!-- Login Form on the Left -->
         <div class="md:col-span-1 order-1 md:order-1 p-16 border border-r-0 bg-white border-l-lg border-r-none border-gray-300">
@@ -70,9 +72,11 @@
                 </x-primary-button>
                 <div class="border-t my-4 relative text-center"></div>
                 <div class="pb-2">
-                    <span class="text-xl font-semibold">Interested in applying as an agency? Contact us now!</span>
+                    <span class="text-xl font-semibold">Interested in applying as an agency? 
+                        <a href="{{ route('contact-us') }}" class="underline">Contact Us Now!</a>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
-</x-guest-layout>
+@endsection

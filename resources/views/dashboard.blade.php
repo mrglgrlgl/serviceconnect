@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     {{-- <div class="relative w-full pt-8 mx-auto overflow-hidden bg-gray-100" style="max-width: calc(100% - 250px); margin-left: 250px;">
         <div class="flex justify-center text-center w-full">
             <div class="flex items-center space-x-4 sm:space-x-12 md:space-x-20 lg:space-x-28 xl:space-x-28 2xl:space-x-28 overflow-x-auto md:overflow-hidden">
@@ -12,11 +14,13 @@
         </div>
     </div> --}}
 
-<div>Service Requests</div>
+
 
     <div class="flex justify-center">
         <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
+
+    
 
     <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full mx-auto flex justify-end">
@@ -73,18 +77,18 @@
                                 </div>
                                 
                                 <div class="flex items-center p-2">
-                                    <span class="material-symbols-outlined text-red-500">location_on</span>
+                                    <span class="material-icons text-red-500">location_on</span>
                                     {{ $serviceRequest->location }}
                                 </div>
 
                                 <!-- Combine Project Type, Price, and Estimated Duration in one line -->
                                 <div class="flex items-center space-x-4 p-2 text-gray-700">
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">work</span>
+                                        <span class="material-icons text-gray-500">work</span>
                                         {{ $serviceRequest->job_type }}
                                     </div>
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                        <span class="material-icons text-gray-500">request_quote</span>
                                         Price: 
                                         @if ($serviceRequest->min_price)
                                             {{ $serviceRequest->min_price }} -
@@ -92,7 +96,7 @@
                                         {{ $serviceRequest->max_price }}
                                     </div>
                                     <div class="flex items-center">
-                                        <span class="material-symbols-outlined text-gray-500">schedule</span>
+                                        <span class="material-icons text-gray-500">schedule</span>
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
                                     </div>
                                 </div>
@@ -105,7 +109,7 @@
                                     @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
                                         <div class="flex items-center space-x-2">
                                             <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
-                                                <span class="material-symbols-outlined">
+                                                <span class="material-icons">
                                                     edit
                                                 </span>
                                             </a>
@@ -113,7 +117,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this service request?')">
-                                                    <span class="material-symbols-outlined">
+                                                    <span class="material-icons">
                                                         delete
                                                     </span>
                                                 </button>
@@ -158,7 +162,7 @@
             </div>
         </div>
 
-        <!-- Bids Panel -->
+       <!-- Bids Panel -->
         <div x-show="showBidsPanel" x-transition class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4" style="display: none;">
             <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
                 <div class="pb-8">
@@ -181,10 +185,27 @@
                                     <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
+ <!-- Display agency name and logo -->
+                <div class="flex items-center text-xl pb-4">
+                    <template x-if="bid.bidder.agency">
+                        <div class="flex items-center">
+                            <template x-if="bid.bidder.agency.logo_path">
+                                <img :src="'/public/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
+                            </template>
+                            <template x-if="!bid.bidder.agency.logo_path">
+                                <span class="text-gray-400">No logo available</span>
+                            </template>
+                            <span class="ml-4" x-text="bid.bidder.agency.name"></span>
+                        </div>
+                    </template>
+                    <template x-if="!bid.bidder.agency">
+                        <span class="text-gray-400">No agency information available</span>
+                    </template>
+                </div>
                                     <div class="flex justify-end space-x-2">
-                                        <a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
-                                            View Profile
-                                        </a>
+                                     <a :href="`/public/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+    View Profile
+</a>
                                         <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                                     </div>
                                 </div>
@@ -195,42 +216,6 @@
             </div>
         </div>
 
-        <!-- Profile Modal -->
-        <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="closeProfileModal">
-            <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
-                    <button @click="closeProfileModal" class="text-red-500 hover:text-red-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="col-span-1">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
-                        </div>
-                        <div class="flex justify-between">
-                            <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
-                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
-                            <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
-                            <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-end space-x-4">
-                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Report Modal -->
         <div x-show="showReportModal" x-transition class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
@@ -282,7 +267,7 @@
                 async fetchBids(requestId) {
                     this.selectedRequestId = requestId;
                     try {
-                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
+                        const response = await fetch(`/public/api/service-requests/${requestId}/bids`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
@@ -294,34 +279,36 @@
                     }
                 },
 
-                async viewProfile(bidderId) {
-                    try {
-                        const response = await fetch(`/api/providers/${bidderId}`);
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        const data = await response.json();
-                        this.profile = data;
-                        this.showProfileModal = true;
-                    } catch (error) {
-                        console.error('Error fetching profile:', error);
-                    }
-                },
+       
+
+
+
+
+
+
 
                 async confirmBid(bidId, requestId) {
+                        console.log(`Attempting to confirm bid with ID: ${bidId} for request ID: ${requestId}`);
+
                     try {
-                        const response = await fetch(`/bids/${bidId}/confirm`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({ request_id: requestId })
-                        });
+        const response = await fetch(`/public/bids/${bidId}/confirm`, {  // Use dynamic bidId here
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({ request_id: requestId })
+});
+
+                        
+                        console.log(`Response Status: ${response.status}`);
+        console.log(`Response URL: ${response.url}`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
                         const data = await response.json();
+                                console.log('Response Data:', data);
+
                         alert(data.message);
                         if (data.success) {
                             this.bids.forEach(bid => {
@@ -339,6 +326,12 @@
                         console.error('There was a problem with the fetch operation:', error);
                     }
                 },
+
+
+
+
+
+
 
                 openReportModal(serviceRequestId) {
                     console.log("Opening report modal for service request: " + serviceRequestId); // Debugging line
@@ -360,4 +353,4 @@
             }
         }
     </script>
-</x-app-layout>
+@endsection

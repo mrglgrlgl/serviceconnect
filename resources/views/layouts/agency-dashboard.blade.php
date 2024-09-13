@@ -39,22 +39,20 @@
     </style>
 </head>
     
-    <body class="antialiased">
-        <div class="min-h-screen bg-gray-100">
-    
-            {{-- Sidebar inclusion --}}
-    
-            @include('layouts.agencyuser-navigation')
-    
-            {{-- Main Content Area --}}
-            <main>
-                <div class="content-container">
-                    {{ $slot }}
-                </div>
-            </main>
-        </div>
-    </body>
-    </html>
+<body class="antialiased">
+    <div class="min-h-screen bg-gray-100">
+        {{-- Sidebar inclusion --}}
+        @include('layouts.agencyuser-navigation')
+
+        {{-- Main Content Area --}}
+        <main>
+            <div class="content-container">
+                @yield('content')
+            </div>
+        </main>
+    </div>
+</body>
+</html>
 {{-- @extends('layouts.app')
 
 @section('content')

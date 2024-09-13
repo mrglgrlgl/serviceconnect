@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12 font-open-sans">
-        <div class="w-full md:w-10/12 lg:w-8/12 xl:w-8/12 2xl:w-7/12 mx-auto">
+        <div class="w-full mx-auto">
             <div class="container mx-auto">
                 <div class="flex flex-wrap">
                     <div class="w-full">
@@ -30,7 +30,7 @@
                                     <div>Start the task</div>
                                 </div>
                             @endif
-
+shit
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4">
                                 <div class="md:col-span-3">
                                     <div class="flex items-center text-xl pt-4">
