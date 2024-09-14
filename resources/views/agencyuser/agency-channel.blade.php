@@ -36,7 +36,7 @@
                             {{-- Task actions --}}
                             <div class="bg-custom-light-blue rounded-lg border p-4 flex justify-between">
 
-                                    <h3 class="text-xl font-semibold text-white">Task Actions:</h3>
+                                <h3 class="text-xl font-semibold text-white">Task Actions:</h3>
 
                                 <div class="space-y-4">
                                     @if ($channel->is_on_the_way == '1' && is_null($channel->is_arrived))
@@ -49,11 +49,13 @@
                                             @if ($channel->is_task_completed === 'true')
                                                 <p class="text-green-white">Task is completed.</p>
                                             @else
-                                                <p class="text-gray-500">Click complete task to notify provider you have
+
+                                            
+                                                {{-- <p class="text-gray-500">Click complete task to notify provider you have
                                                     finished the request.</p>
                                                 <button onclick="completeTask()"
                                                     class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Complete
-                                                    Task</button>
+                                                    Task</button> --}}
                                             @endif
                                         @else
                                             <button onclick="startTask()"
@@ -123,13 +125,7 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->seeker->name }}
-                                                {{-- <span class="ml-2 text-yellow-500">
-                                                    @if (isset($averageRating))
-                                                        {{ number_format($averageRating, 2) }} / 5
-                                                    @else
-                                                        No ratings yet
-                                                    @endif
-                                                </span> --}}
+                                            
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -144,15 +140,7 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="bg-white rounded-lg border p-6 mt-6">
-                                <div class="border-b pb-4 mb-4">
-                                    <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
-                                </div>
-                                <div class="text-gray-800">
-                                    <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
-                                </div>
-                            </div> --}}
+                      
 
 
                             <div class="flex justify-between pt-4">
@@ -172,20 +160,20 @@
                                             <span class="material-symbols-outlined">description</span>
                                             <strong>Description:</strong> {{ $channel->bid->bid_description }}
                                         </p>
-                                    
+
                                         <p class="flex items-center space-x-2">
                                             <span class="material-icons text-md">schedule</span>
                                             <strong>Estimated Duration:</strong>
                                             <span>{{ $channel->serviceRequest->estimated_duration }} hours</span>
                                         </p>
-                                    
+
                                         <div class="border-b pb-4 mb-4">
                                             <p class="flex items-center space-x-2">
                                                 <span class="material-symbols-outlined">checkbook</span>
                                                 <strong>Bid Amount: </strong> ₱{{ $channel->bid->bid_amount }}
                                             </p>
                                         </div>
-                                    
+
                                         <div class="bg-yellow-100 py-4 rounded-md flex items-center space-x-2 pl-2">
                                             <span class="material-icons text-yellow-800">payments</span>
                                             <p class="text-yellow-800">
@@ -203,7 +191,7 @@
                                             <strong>Description:</strong> {{ $channel->bid->bid_description }}
                                         </p>
                                     @endif
-                                    </div>
+                                </div>
 
                                 <!-- Assigned Employees Section -->
                                 <div class="bg-gray-50 rounded-lg border p-6 mt-6 w-full">
@@ -222,11 +210,11 @@
 
                                         <!-- Example Button to Open Modal -->
                                         <button
-                                        onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
-                                        class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
-                                        <span class="material-symbols-outlined text-lg mr-2">person_add</span>
-                                        Assign Employees
-                                    </button>
+                                            onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
+                                            class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
+                                            <span class="material-symbols-outlined text-lg mr-2">person_add</span>
+                                            Assign Employees
+                                        </button>
                                     </div>
 
                                     <ul class="list-none p-0">
@@ -275,100 +263,30 @@
     </div>
     </div>
 
-
-
-{{-- 
-    <!-- Rating Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
-        style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h5 class="text-xl font-semibold">Rate Your Experience</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
-                    onclick="closeModal('ratingModal')">&times;</button>
+ Task Completion Confirmation Modal -->
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
+                id="completeTaskModal" style="display: none;">
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+                    <div class="flex justify-between items-center border-b pb-4 mb-4">
+                        <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
+                        <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                            onclick="closeModal('completeTaskModal')">&times;</button>
+                    </div>
+                    <div class="mb-4">
+                        <p>The provider has marked the task as completed. Please confirm if the task is indeed
+                            completed.</p>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
+                            onclick="closeModal('completeTaskModal')">Close</button>
+                        <button type="button"
+                            class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800 "
+                            onclick="confirmTaskCompletion()">Confirm Completion</button>
+                    </div>
+                </div>
             </div>
-            <div class="mb-4">
-                <p class="text-lg">On a scale of one to ten, rate your seeker by the following criteria:</p>
-            </div>
-            <form action="{{ route('submit.rating') }}" method="POST" class="space-y-6">
-                @csrf
-                <input type="hidden" name="channel_id" value="{{ $channel->id }}">
-                <input type="hidden" name="rated_for_id" value="{{ $channel->seeker_id }}">
-                @php
-                    $criteria = ['Communication', 'Fairness', 'Respectfulness', 'Preparation', 'Responsiveness'];
-                @endphp
-                <div class="space-y-4">
-                    @foreach ($criteria as $criterion)
-                        <div>
-                            <label class="block text-lg font-medium text-gray-700 text-center">{{ $criterion }}</label>
-                            <div class="flex justify-center space-x-2">
-                                @for ($i = 1; $i <= 10; $i++)
-                                    <input type="radio"
-                                        name="rating_{{ strtolower(str_replace(' ', '_', $criterion)) }}"
-                                        value="{{ $i }}"
-                                        id="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
-                                        class="hidden" />
-                                    <label for="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
-                                        class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150"
-                                        onclick="highlightSelected(this)">
-                                        {{ $i }}
-                                    </label>
-                                @endfor
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-600 mt-1">
-                                <span>Poor</span>
-                                <span>Excellent</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="space-y-2 pt-4">
-                    <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback
-                        (Optional)</label>
-                    <textarea name="feedback" id="feedback" rows="4"
-                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
-                </div>
-                <div class="flex justify-center pt-4">
-                    <button type="submit"
-                        class="px-6 py-2 bg-custom-light-blue text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
-                </div>
-            </form>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
 
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-        </div> --}}
-
-
-        {{-- <div class="bg-gray-50 rounded-lg border p-6 mt-6">
-            <div class="border-b pb-4 mb-4">
-                <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
-            </div>
-            <ul>
-                @forelse ($assignedEmployees as $employee)
-                    <li class="flex items-center py-2 border-b border-gray-300">
-                        @if ($employee->photo)
-                            <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}"
-                                class="w-12 h-12 rounded-full object-cover mr-4">
-                        @else
-                            <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile"
-                                class="w-12 h-12 rounded-full object-cover mr-4">
-                        @endif
-                        <span>{{ $employee->name }}</span>
-                    </li>
-                @empty
-                    <li>No employees assigneddd.</li>
-                @endforelse
-            </ul>
-        </div> --}}
+    
 
 
 
@@ -379,6 +297,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.3.0/dist/custom-forms.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
+
+         document.addEventListener('DOMContentLoaded', function() {
+
+                            if ('{{ $channel->is_task_completed }}' === 'pending') {
+                                document.getElementById('completeTaskModal').style.display = 'block';
+                            }
+                        });
         function informSeekerOnTheWay() {
             axios.post('{{ route('channel.informSeekerOnTheWay', $channel->id) }}')
                 .then(response => {
@@ -412,17 +337,32 @@
                 });
         }
 
-        function completeTask() {
-            axios.post('{{ route('channel.completeTask', $channel->id) }}')
+        /** function completeTask() {
+             axios.post('{{ route('channel.completeTask', $channel->id) }}')
+                 .then(response => {
+                     alert('Task completion notified.');
+                     location.reload(); // Reload the page to update the status
+                 })
+                 .catch(error => {
+                     console.error(error);
+                 });
+         }**/
+
+        function confirmTaskCompletion() {
+            axios.post('{{ route('channel.confirmTaskCompletion', $channel->id) }}', {}, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
                 .then(response => {
-                    alert('Task completion notified.');
+                    alert(response.data.message);
+                    closeModal('completeTaskModal');
                     location.reload(); // Reload the page to update the status
                 })
                 .catch(error => {
                     console.error(error);
                 });
         }
-
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';

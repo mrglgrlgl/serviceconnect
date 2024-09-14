@@ -162,7 +162,7 @@
             </div>
         </div>
 
-        <!-- Bids Panel -->
+       <!-- Bids Panel -->
         <div x-show="showBidsPanel" x-transition class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4" style="display: none;">
             <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
                 <div class="pb-8">
@@ -174,23 +174,23 @@
                     </div>
                 </template>
                 <ul x-show="bids.length > 0" class="space-y-4">
-                <template x-for="bid in bids" :key="bid.id">
-    <li x-show="!bid.rejected" class="mb-4 border-b pb-4">
-        <div class="flex justify-between items-start">
-            <div class="flex-grow">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="font-semibold text-lg" x-text="bid.bidder.name"></div>
-                    <div class="text-gray-600 ml-2" x-text="new Date(bid.created_at).toLocaleString()"></div>
-                </div>
-                <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
-                <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
+                    <template x-for="bid in bids" :key="bid.id">
+                        <li x-show="!bid.rejected" class="mb-4 border-b pb-4">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="font-semibold text-lg" x-text="bid.bidder.name"></div>
+                                        <div class="text-gray-600 ml-2" x-text="new Date(bid.created_at).toLocaleString()"></div>
+                                    </div>
+                                    <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
+                                    <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
-                <!-- Display agency name and logo -->
+ <!-- Display agency name and logo -->
                 <div class="flex items-center text-xl pb-4">
                     <template x-if="bid.bidder.agency">
                         <div class="flex items-center">
                             <template x-if="bid.bidder.agency.logo_path">
-                                <img :src="'/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
+                                <img :src="'/public/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
                             </template>
                             <template x-if="!bid.bidder.agency.logo_path">
                                 <span class="text-gray-400">No logo available</span>
@@ -202,59 +202,20 @@
                         <span class="text-gray-400">No agency information available</span>
                     </template>
                 </div>
-
-                <div class="flex justify-end space-x-2">
-<a :href="`/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    <div class="flex justify-end space-x-2">
+                                     <a :href="`/public/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
     View Profile
 </a>
-
-
-                    <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
-                </div>
-            </div>
-        </div>
-    </li>
-</template>
+                                        <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
                 </ul>
             </div>
         </div>
 
-        <!-- Profile Modal -->
-        <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="closeProfileModal">
-            <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
-                    <button @click="closeProfileModal" class="text-red-500 hover:text-red-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="col-span-1">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
-                        </div>
-                        <div class="flex justify-between">
-                            <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
-                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">mail</span>
-                            <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-symbols-outlined text-gray-600 mr-2">call</span>
-                            <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-end space-x-4">
-                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Report Modal -->
         <div x-show="showReportModal" x-transition class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
@@ -306,7 +267,7 @@
                 async fetchBids(requestId) {
                     this.selectedRequestId = requestId;
                     try {
-                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
+                        const response = await fetch(`/public/api/service-requests/${requestId}/bids`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
@@ -318,21 +279,36 @@
                     }
                 },
 
+       
+
+
+
+
+
+
 
                 async confirmBid(bidId, requestId) {
+                        console.log(`Attempting to confirm bid with ID: ${bidId} for request ID: ${requestId}`);
+
                     try {
-                        const response = await fetch(`/bids/${bidId}/confirm`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({ request_id: requestId })
-                        });
+        const response = await fetch(`/public/bids/${bidId}/confirm`, {  // Use dynamic bidId here
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({ request_id: requestId })
+});
+
+                        
+                        console.log(`Response Status: ${response.status}`);
+        console.log(`Response URL: ${response.url}`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
                         const data = await response.json();
+                                console.log('Response Data:', data);
+
                         alert(data.message);
                         if (data.success) {
                             this.bids.forEach(bid => {
@@ -350,6 +326,12 @@
                         console.error('There was a problem with the fetch operation:', error);
                     }
                 },
+
+
+
+
+
+
 
                 openReportModal(serviceRequestId) {
                     console.log("Opening report modal for service request: " + serviceRequestId); // Debugging line

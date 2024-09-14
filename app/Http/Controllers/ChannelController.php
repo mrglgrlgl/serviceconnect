@@ -240,6 +240,8 @@ $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
 
     public function completeTask(Channel $channel)
 {
+
+
     // Assuming the provider can notify the completion
     $channel->is_task_completed = 'pending'; // Set to 'pending' until seeker confirms
     $channel->save();
@@ -251,10 +253,11 @@ $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
 public function confirmTaskCompletion(Channel $channel)
 {
     try {
-        $user = Auth::user();
+        // Use the agency_users guard to authenticate the user
+        $agencyUser = Auth::guard('agency_users')->user();
 
-        if ($user->role != 3) { // Assuming role 3 is the seeker role
-            Log::error('Unauthorized action.', ['user_id' => $user->id, 'role' => $user->role]);
+        if (!$agencyUser) {
+            Log::error('Unauthorized action.', ['agency_user' => null]);
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 
@@ -296,6 +299,7 @@ public function confirmTaskCompletion(Channel $channel)
         return response()->json(['message' => 'Error confirming task completion.'], 500);
     }
 }
+
 
 
 

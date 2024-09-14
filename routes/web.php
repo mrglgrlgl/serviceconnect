@@ -36,10 +36,9 @@ use App\Http\Controllers\EmployeeTaskAssignmentController;
 
 Route::post('/bids', [BidController::class, 'store'])->name('provider.bids.store');
 
-Route::get('/dashboard/{serviceRequestId}', [BidController::class, 'showDashboard'])->name('dashboard');
 
 
-// Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
+Route::get('/api/service-requests/{id}/bids', [BidController::class, 'index']);
 // Route::get('/service-requests/{id}/bids', [BidController::class, 'index']);
 Route::post('/bids/{bid}/confirm', [BidController::class, 'confirm'])->name('bids.confirm');
 
@@ -95,8 +94,9 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
 
     Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
     Route::post('/channel/{channel}/start-task', [ChannelController::class, 'startTask'])->name('channel.startTask');
-    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
-    Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
+    // Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+    Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+    // Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
 
     // Agency user channel view
 
@@ -230,7 +230,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/channel/{channel}/confirm-task-start', [App\Http\Controllers\ChannelController::class, 'confirmTaskStart'])->name('channel.confirmTaskStart');
     // Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
-    Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+    // Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+
     // Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
 });
 
