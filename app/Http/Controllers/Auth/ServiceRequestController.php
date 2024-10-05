@@ -5,8 +5,6 @@ use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use App\Models\ServiceRequestImages;
 use App\Models\ProviderDetail;
-use App\Models\Certification;
-use App\Models\PhilID;
 use App\Models\PsaJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +34,7 @@ class ServiceRequestController extends Controller
                   });
         })
         ->with(['bids', 'user', 'images']) // Eager load necessary relationships
+        ->orderBy('created_at', 'desc')    // Order by the latest requests first
         ->get();
     
         // Handle potential conflicts with in-progress requests
@@ -66,66 +65,7 @@ class ServiceRequestController extends Controller
     
 
     
-    // public function retrieveByUserRole()
-    // {
-    //     $user = Auth::user();
-    
-    //     // Ensure the user is authenticated and has a role
-    //     if (!$user) {
-    //         return redirect()->route('login');
-    //     }
-    
-    //     // Determine if the user is a provider
-    //     if ($user->role == 2) {
-    //         $providerDetail = ProviderDetail::where('provider_id', $user->id)->first();
-    //         $providerCategory = $providerDetail ? $providerDetail->serviceCategory : null;
-    
-    //         // Retrieve service requests for the provider's category and direct hire requests for the provider
-    //         $serviceRequests = ServiceRequest::where(function ($query) use ($providerCategory, $user) {
-    //             $query->whereRaw('LOWER(category) = ?', [strtolower($providerCategory)])
-    //                   ->orWhere(function ($query) use ($user) {
-    //                       $query->where('provider_id', $user->id)
-    //                             ->where('is_direct_hire', true);
-    //                   });
-    //         })
-    //         ->with('images') // Eager load images
-    //         ->get();
-    
-    //         // Get the count of certifications
-    //         $certificationsCount = $user->certifications()->count();
-    
-    //         // Find in-progress requests
-    //         $inProgressRequests = ServiceRequest::where('provider_id', $user->id)
-    //             ->where('status', 'in_progress')
-    //             ->get();
-    
-    //         $conflictingRequests = [];
-    //         $psaJobs = DB::table('psa_jobs')->pluck('average_occupational_wage_per_hour', 'job_title')->toArray();
-    //         $serviceRequests = ServiceRequest::with(['bids', 'user'])->get(); // Assuming you need service requests with bids and user info
 
-    //         // Check for conflicts
-    //         foreach ($serviceRequests as $serviceRequest) {
-    //             foreach ($inProgressRequests as $inProgressRequest) {
-    //                 if ($serviceRequest->id !== $inProgressRequest->id &&
-    //                     (
-    //                         ($serviceRequest->start_date <= $inProgressRequest->end_date && $serviceRequest->end_date >= $inProgressRequest->start_date) ||
-    //                         ($serviceRequest->start_date <= $inProgressRequest->start_date && $serviceRequest->end_date >= $inProgressRequest->start_date)
-    //                     )) {
-    //                     $conflictingRequests[$serviceRequest->id] = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     } else {
-    //         $serviceRequests = ServiceRequest::with('images')->get(); // Eager load images
-    //         $certificationsCount = 0; // Default value or handle accordingly
-    //         $conflictingRequests = []; // Default value or handle accordingly
-    //     }
-    
-    //     // Pass data to the view
-    //     return view('provider.dashboard', compact('serviceRequests', 'certificationsCount', 'conflictingRequests','psaJobs'));
-    // }
-    
 
     
     public function checkForConflict($serviceRequest, $userId)
@@ -185,19 +125,14 @@ public function create()
             'location' => 'required|string|max:255',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i',
+            //'start_time' => 'required|date_format:H:i',
+            //'end_time' => 'required|date_format:H:i',
             'manpower_number' => 'nullable|integer',
             'provider_gender' => 'nullable|in:male,female',
             'job_type' => 'required|in:project_based,hourly_rate',
-            // 'price_type' => 'required|in:fixed,range',
-            // 'fixed_price' => 'nullable|numeric|min:0',
-            // 'min_price' => 'required|numeric|min:0',
-            // 'max_price' => 'required|numeric|min:0|gte:min_price',
-            // 'price_type' => 'required|in:fixed,range',
             'max_price' => 'required|numeric|min:0', // Use the same field for both fixed and max price
             'min_price' => 'nullable|numeric|min:0', // Ensure min_price is not required when nulls set
-    'estimated_duration' => 'required|integer|min:0',
+    //'estimated_duration' => 'required|integer|min:0',
             'attach_media1' => 'nullable|image|max:2048',
             'attach_media2' => 'nullable|image|max:2048',
             'attach_media3' => 'nullable|image|max:2048',
@@ -217,8 +152,8 @@ public function create()
                $serviceRequest->location = $validatedData['location'];
                $serviceRequest->start_date = $validatedData['start_date'];
                $serviceRequest->end_date = $validatedData['end_date'];
-               $serviceRequest->start_time = $validatedData['start_time'];
-               $serviceRequest->end_time = $validatedData['end_time'];
+               //$serviceRequest->start_time = $validatedData['start_time'];
+               //$serviceRequest->end_time = $validatedData['end_time'];
             //    $serviceRequest->skill_tags = $validatedData['skill_tags'];
                $serviceRequest->provider_gender = $validatedData['provider_gender'];
                $serviceRequest->job_type = $validatedData['job_type'];
@@ -226,7 +161,7 @@ public function create()
                $serviceRequest->manpower_number = $validatedData['manpower_number'];
                $serviceRequest->min_price = $validatedData['min_price'];
                $serviceRequest->max_price = $validatedData['max_price'];
-               $serviceRequest->estimated_duration = $validatedData['estimated_duration'];
+               //$serviceRequest->estimated_duration = $validatedData['estimated_duration'];
                $serviceRequest->status = 'open'; // Default status
                $serviceRequest->user_id = auth()->id();
                $serviceRequest->agreed_to_terms = $validatedData['agreed_to_terms'];  // Include this field
@@ -403,6 +338,11 @@ public function myRequests(Request $request)
         case 'direct_hire':
             $query->where('is_direct_hire', true);
             break;
+     case 'open':
+                // Show service requests with status 'open'
+                $serviceRequests->where('status', 'open');
+                break;
+        
     }
 
     $serviceRequests = $query->get();
@@ -414,35 +354,60 @@ public function myRequests(Request $request)
 public function filterServiceRequests(Request $request)
 {
     $filter = $request->input('filter', 'all'); // Get the filter option from the request, default to 'all'
+    $currentUserId = auth()->user()->id; // Get the current authenticated user's ID
 
     $serviceRequests = ServiceRequest::query();
 
     switch ($filter) {
-        case 'sent_bids':
-            // Show service requests where the current user has sent a bid and the request is still open
-            $serviceRequests->whereHas('bids', function ($query) {
-                $query->where('bidder_id', auth()->user()->id);
-            })->where('status', 'open');
-            break;
+        case 'open':
+                // Show service requests with status 'open'
+                $serviceRequests->where('status', 'open')
+                                ->orderBy('created_at', 'desc');    // Order by the latest requests first
+
+                break;
+        
+    case 'sent_bids':
+    // Show service requests where the current user has sent a bid that is either pending or rejected
+    $serviceRequests->whereHas('bids', function ($query) {
+        $query->where('bidder_id', auth()->user()->id)
+              ->whereIn('status', ['pending', 'rejected']);  // Only show pending or rejected bids
+    })
+    ->orderBy('created_at', 'desc');    // Order by the latest requests first
+    break;
+
 
         case 'in_progress':
             // Show service requests where the current user's bid has been accepted and the status is 'in_progress'
             $serviceRequests->whereHas('bids', function ($query) {
                 $query->where('bidder_id', auth()->user()->id)
+                    ->orderBy('created_at', 'desc')    // Order by the latest requests first
+
                       ->where('status', 'accepted');
-            })->where('status', 'in_progress');
+            })
+            ->orderBy('created_at', 'desc')    // Order by the latest requests first
+            ->where('status', 'in_progress');
             break;
 
         case 'completed':
-            // Show service requests that have been completed
-            $serviceRequests->where('status', 'completed');
-            break;
+                // Show service requests that have been completed and belong to the current provider
+                $serviceRequests->where('status', 'completed')
+                                ->where('provider_id', $currentUserId);
+                break;
 
         case 'direct_hire':
             // Show direct hire requests
             $serviceRequests->where('is_direct_hire', true);
             break;
-
+            
+        case 'cancelled':
+            // Show cancelled service requests
+       $serviceRequests->whereHas('bids', function ($query) {
+                $query->where('bidder_id', auth()->user()->id)
+                      ->where('status', 'accepted');
+            })->where('status', 'cancelled');
+            break;
+            
+            
         case 'all':
         default:
             // Show all service requests

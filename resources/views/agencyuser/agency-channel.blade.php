@@ -2,41 +2,56 @@
 
 @section('content')
     <div class="p-12">
-        <div class="w-full mx-auto">
+        <div class="w-10/12 mx-auto">
             <div class="container mx-auto">
                 <div class="flex flex-wrap">
                     <div class="w-full">
                         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-300">
-                            <h1 class="text-2xl font-semibold text-custom-header ">Service Request Details</h1>
+                                                                                <div class="flex justify-start space-x-4">
+                                                <div class="mb-4">
+                <a href="{{ route('agency.employees') }}" class="inline-block bg-gray-500 text-white rounded px-4 py-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                    Back
+                </a>
+            </div>
+
+                            <h1 class="text-2xl font-semibold text-custom-header ">Service Request Details</h1>            </div>
                             <div class="border-b pb-4 mb-4"></div>
 
                             <!-- Status Indicator -->
-                            @if ($channel->is_task_completed === 'true')
+                            @if ($channel->is_cancelled == 'true')
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-red-100">
+                                    <div>The task has been cancelled.</div>
+                                </div>
+
+                            
+                            @elseif ($channel->is_task_completed === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-green-100">
                                     <div>The task has been completed.</div>
                                 </div>
                             @elseif ($channel->is_task_started === 'true' && $channel->is_task_completed === 'pending')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
-                                    <div>Waiting for seeker to confirm task completion.</div>
+                                    <div>Seeker prompts for task completion.</div>
                                 </div>
                             @elseif ($channel->is_task_started === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-yellow-100">
                                     <div>The task is in progress.</div>
                                 </div>
                             @elseif ($channel->is_task_started === 'pending')
-                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100 text-blue-500">
+                                <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100 text-gray-100">
                                     <div>Awaiting seeker's task start confirmation.</div>
                                 </div>
                             @elseif ($channel->is_arrived === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
                                     <div>Start the task</div>
                                 </div>
+
+                                
                             @endif
 
                             {{-- Task actions --}}
                             <div class="bg-custom-light-blue rounded-lg border p-4 flex justify-between">
 
-                                    <h3 class="text-xl font-semibold text-white">Task Actions:</h3>
+                                <h3 class="text-xl font-semibold text-white">Task Actions:</h3>
 
                                 <div class="space-y-4">
                                     @if ($channel->is_on_the_way == '1' && is_null($channel->is_arrived))
@@ -47,25 +62,35 @@
                                     @elseif ($channel->is_arrived === 'true')
                                         @if ($channel->is_task_started === 'true')
                                             @if ($channel->is_task_completed === 'true')
-                                                <p class="text-green-white">Task is completed.</p>
+                                                <p class="text-white">Task is completed.</p>
                                             @else
-                                                <p class="text-gray-500">Click complete task to notify provider you have
+
+                                            
+                                                {{-- <p class="text-gray-500">Click complete task to notify provider you have
                                                     finished the request.</p>
                                                 <button onclick="completeTask()"
                                                     class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Complete
-                                                    Task</button>
+                                                    Task</button> --}}
                                             @endif
                                         @else
+                                                @if ($channel->is_cancelled !== 'true')
                                             <button onclick="startTask()"
                                                 class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Start
                                                 Task</button>
+                                                
+                                        @endif
                                         @endif
                                     @elseif (is_null($channel->is_on_the_way))
-                                        <button onclick="informSeekerOnTheWay()"
-                                            class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Inform
-                                            Seeker Provider is on the way</button>
+                                    
+                                     @if ($isEmployeeAssigned)
+                <button onclick="informSeekerOnTheWay()"
+                    class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Inform
+                    Seeker Provider is on the way</button>
+            @endif
+                                            
+                                            
                                     @elseif ($channel->is_arrived == 'pending')
-                                        <div>Awaiting seeker's arrival confirmation.</div>
+                                        <div class="text-gray-300">Awaiting seeker's arrival confirmation.</div>
                                     @elseif ($channel->is_task_started == 'pending')
                                         <div class="text-gray-500">Task is ongoing</div>
                                     @endif
@@ -108,9 +133,24 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <p class="mt-4 pl-6 text-custom-header">
-                                                <strong>Description:</strong> {{ $channel->serviceRequest->description }}
+                                            
+                                        <div class="flex items-center pt-2 ">
+                                            <span class="material-icons text-gray-500">group</span>
+                                            <p class="pl-2">Manpower: {{ $serviceRequest->manpower_number }} </p>
+                                        </div>
+                                        
+                                                                                    <p class="mt-4 pl-6 text-custom-header">
+                                                <strong>Description:</strong>
+                                                {{ $channel->serviceRequest->description }}
                                             </p>
+{{--                                                                    <p class="flex space-x-2 pt-2">
+                                                                    <span
+                                                                        class="material-symbols-outlined text-gray-500">description</span>
+                                                                    <strong class="text-custom-header">De:</strong>
+                                                                    <div class="pl-2">
+                                                                    {{ $channel->bid->bid_description }}
+                                                                    </div>
+                                                                </p>    --}}
                                         </div>
                                     </div>
                                 </div>
@@ -123,13 +163,7 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->seeker->name }}
-                                                {{-- <span class="ml-2 text-yellow-500">
-                                                    @if (isset($averageRating))
-                                                        {{ number_format($averageRating, 2) }} / 5
-                                                    @else
-                                                        No ratings yet
-                                                    @endif
-                                                </span> --}}
+                                            
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -144,15 +178,7 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="bg-white rounded-lg border p-6 mt-6">
-                                <div class="border-b pb-4 mb-4">
-                                    <h3 class="text-2xl font-semibold text-gray-800">Bid Details</h3>
-                                </div>
-                                <div class="text-gray-800">
-                                    <p><strong>Bid Amount:</strong> {{ $channel->bid->bid_amount }}</p>
-                                    <p><strong>Bid Description:</strong> {{ $channel->bid->bid_description }}</p>
-                                </div>
-                            </div> --}}
+                      
 
 
                             <div class="flex justify-between pt-4">
@@ -172,25 +198,25 @@
                                             <span class="material-symbols-outlined">description</span>
                                             <strong>Description:</strong> {{ $channel->bid->bid_description }}
                                         </p>
-                                    
+
                                         <p class="flex items-center space-x-2">
                                             <span class="material-icons text-md">schedule</span>
                                             <strong>Estimated Duration:</strong>
                                             <span>{{ $channel->serviceRequest->estimated_duration }} hours</span>
                                         </p>
-                                    
+
                                         <div class="border-b pb-4 mb-4">
                                             <p class="flex items-center space-x-2">
                                                 <span class="material-symbols-outlined">checkbook</span>
                                                 <strong>Bid Amount: </strong> ₱{{ $channel->bid->bid_amount }}
                                             </p>
                                         </div>
-                                    
+
                                         <div class="bg-yellow-100 py-4 rounded-md flex items-center space-x-2 pl-2">
                                             <span class="material-icons text-yellow-800">payments</span>
                                             <p class="text-yellow-800">
                                                 <strong>Total Amount:</strong>
-                                                ₱{{ number_format($channel->bid->bid_amount * $channel->serviceRequest->estimated_duration, 2) }}
+                                                    ₱{{ $channel->bid->bid_amount }}
                                             </p>
                                         </div>
                                     @else
@@ -198,12 +224,13 @@
                                             <span class="material-symbols-outlined">checkbook</span>
                                             <strong>Amount:</strong> {{ $channel->bid->bid_amount }}
                                         </p>
-                                        <p class="flex items-center space-x-2">
+                                        <p class="flex space-x-2 pt-2">
                                             <span class="material-symbols-outlined text-custom-header">description</span>
-                                            <strong>Description:</strong> {{ $channel->bid->bid_description }}
+                                            <strong>Work Plan:</strong> 
+                                            <div>{{ $channel->bid->bid_description }}</div>
                                         </p>
                                     @endif
-                                    </div>
+                                </div>
 
                                 <!-- Assigned Employees Section -->
                                 <div class="bg-gray-50 rounded-lg border p-6 mt-6 w-full">
@@ -221,13 +248,16 @@
                                         @endif
 
                                         <!-- Example Button to Open Modal -->
+                                        @if ($channel->is_cancelled !== 'true' && $channel->status !== 'completed')
+
                                         <button
-                                        onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
-                                        class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
-                                        <span class="material-symbols-outlined text-lg mr-2">person_add</span>
-                                        Assign Employees
-                                    </button>
+                                            onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
+                                            class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
+                                            <span class="material-symbols-outlined text-lg mr-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">person_add</span>
+                                            Assign Employees
+                                        </button>
                                     </div>
+                                      @endif
 
                                     <ul class="list-none p-0">
                                         @forelse ($assignedEmployees as $employee)
@@ -276,99 +306,80 @@
     </div>
 
 
-
-
-    <!-- Rating Modal -->
-    <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 pt-4" id="ratingModal"
-        style="display: none;">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-auto p-6 overflow-auto max-h-screen">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h5 class="text-xl font-semibold">Rate Your Experience</h5>
-                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
-                    onclick="closeModal('ratingModal')">&times;</button>
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
+                id="completeTaskModal" style="display: none;">
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+                    <div class="flex justify-between items-center border-b pb-4 mb-4">
+                        <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
+                        <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                            onclick="closeModal('completeTaskModal')">&times;</button>
+                    </div>
+                    <div class="mb-4">
+                        <p>The seeker has marked the task as completed. Please confirm if the task is indeed
+                            completed.</p>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
+                            onclick="closeModal('completeTaskModal')">Close</button>
+                        <button type="button"
+                            class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800 "
+                            onclick="confirmTaskCompletion()">Confirm Completion</button>
+                    </div>
+                </div>
             </div>
-            <div class="mb-4">
-                <p class="text-lg">On a scale of one to ten, rate your seeker by the following criteria:</p>
+
+    
+<!-- Modal for Agency to Confirm Cancellation -->
+@if ($channel->is_cancelled == 'pending')  <!-- Only show modal if cancellation is pending -->
+<div id="confirm-cancellation-modal-{{ $channel->id }}"
+     class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
+     style="display:none;">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
+        <h2 class="text-xl font-semibold mb-2">Cancellation Request</h2>
+        <p class="mb-2"><strong>Reason for Cancellation:</strong> {{ $channel->cancel_reason }}</p>
+        <p class="mb-4">Do you want to confirm this cancellation?</p>
+        <form id="confirm-cancellation-form-{{ $channel->id }}" action="{{ route('confirm.cancellation') }}" method="POST">
+            @csrf
+            <input type="hidden" name="channel_id" value="{{ $channel->id }}">
+            <div class="flex justify-end mt-4 space-x-2">
+                <button type="button" class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold px-4 py-2 rounded" onclick="closeAgencyCancelModal({{ $channel->id }})">Close</button>
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded">Confirm Cancellation</button>
             </div>
-            <form action="{{ route('submit.rating') }}" method="POST" class="space-y-6">
-                @csrf
-                <input type="hidden" name="channel_id" value="{{ $channel->id }}">
-                <input type="hidden" name="rated_for_id" value="{{ $channel->seeker_id }}">
-                @php
-                    $criteria = ['Communication', 'Fairness', 'Respectfulness', 'Preparation', 'Responsiveness'];
-                @endphp
-                <div class="space-y-4">
-                    @foreach ($criteria as $criterion)
-                        <div>
-                            <label class="block text-lg font-medium text-gray-700 text-center">{{ $criterion }}</label>
-                            <div class="flex justify-center space-x-2">
-                                @for ($i = 1; $i <= 10; $i++)
-                                    <input type="radio"
-                                        name="rating_{{ strtolower(str_replace(' ', '_', $criterion)) }}"
-                                        value="{{ $i }}"
-                                        id="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
-                                        class="hidden" />
-                                    <label for="{{ strtolower(str_replace(' ', '_', $criterion)) }}-{{ $i }}"
-                                        class="rating-label flex items-center justify-center w-12 h-12 mb-2 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-200 transition-colors duration-150"
-                                        onclick="highlightSelected(this)">
-                                        {{ $i }}
-                                    </label>
-                                @endfor
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-600 mt-1">
-                                <span>Poor</span>
-                                <span>Excellent</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="space-y-2 pt-4">
-                    <label for="feedback" class="block text-lg font-medium text-gray-700">Additional Feedback
-                        (Optional)</label>
-                    <textarea name="feedback" id="feedback" rows="4"
-                        class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                        placeholder="Share your thoughts...">{{ old('feedback') }}</textarea>
-                </div>
-                <div class="flex justify-center pt-4">
-                    <button type="submit"
-                        class="px-6 py-2 bg-custom-light-blue text-white rounded-md hover:bg-blue-600 focus:outline-none">Submit</button>
-                </div>
-            </form>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-        </div>
+        </form>
+    </div>
+</div>
+@endif
 
 
-        {{-- <div class="bg-gray-50 rounded-lg border p-6 mt-6">
-            <div class="border-b pb-4 mb-4">
-                <h3 class="text-2xl font-semibold text-gray-800">Assigned Employees</h3>
-            </div>
-            <ul>
-                @forelse ($assignedEmployees as $employee)
-                    <li class="flex items-center py-2 border-b border-gray-300">
-                        @if ($employee->photo)
-                            <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}"
-                                class="w-12 h-12 rounded-full object-cover mr-4">
-                        @else
-                            <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile"
-                                class="w-12 h-12 rounded-full object-cover mr-4">
-                        @endif
-                        <span>{{ $employee->name }}</span>
-                    </li>
-                @empty
-                    <li>No employees assigneddd.</li>
-                @endforelse
-            </ul>
-        </div> --}}
+    <!-- Script to show and close the modal -->
+    <script>
+        function openAgencyCancelModal(channelId) {
+            document.getElementById('confirm-cancellation-modal-' + channelId).style.display = 'block';
+        }
+
+        function closeAgencyCancelModal(channelId) {
+            document.getElementById('confirm-cancellation-modal-' + channelId).style.display = 'none';
+        }
+    </script>
+
+    <!-- Automatically open modal when page loads, if cancellation is pending -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            openAgencyCancelModal({{ $channel->id }});
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const successMessage = '{{ session('success') }}';
+    const modalId = '{{ $channel->id }}'; // If you want to close a specific modal
+
+    if (successMessage) {
+        // Optionally close the modal
+        closeAgencyCancelModal(modalId);
+    }
+});
+
+    </script>
+
 
 
 
@@ -379,6 +390,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.3.0/dist/custom-forms.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
+
+         document.addEventListener('DOMContentLoaded', function() {
+
+                            if ('{{ $channel->is_task_completed }}' === 'pending') {
+                                document.getElementById('completeTaskModal').style.display = 'block';
+                            }
+                        });
         function informSeekerOnTheWay() {
             axios.post('{{ route('channel.informSeekerOnTheWay', $channel->id) }}')
                 .then(response => {
@@ -412,17 +430,32 @@
                 });
         }
 
-        function completeTask() {
-            axios.post('{{ route('channel.completeTask', $channel->id) }}')
+        /** function completeTask() {
+             axios.post('{{ route('channel.completeTask', $channel->id) }}')
+                 .then(response => {
+                     alert('Task completion notified.');
+                     location.reload(); // Reload the page to update the status
+                 })
+                 .catch(error => {
+                     console.error(error);
+                 });
+         }**/
+
+        function confirmTaskCompletion() {
+            axios.post('{{ route('channel.confirmTaskCompletion', $channel->id) }}', {}, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
                 .then(response => {
-                    alert('Task completion notified.');
+                    alert(response.data.message);
+                    closeModal('completeTaskModal');
                     location.reload(); // Reload the page to update the status
                 })
                 .catch(error => {
                     console.error(error);
                 });
         }
-
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
@@ -438,9 +471,7 @@
         }
 
         // Modal display functions
-        function openRatingModal() {
-            document.getElementById('ratingModal').style.display = 'flex';
-        }
+
 
         // Trigger the modal opening conditionally
         document.addEventListener('DOMContentLoaded', function() {

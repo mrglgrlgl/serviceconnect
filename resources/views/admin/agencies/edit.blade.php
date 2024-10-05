@@ -23,14 +23,16 @@
                 <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name', $agency->name) }}">
             </div>
 
-            <div class="space-y-2">
-                <label for="email" class="block text-white font-medium">Email</label>
-                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $agency->email) }}">
-            </div>
+            <div class="flex space-x-4"> {{-- Flex container for email and phone --}}
+                <div class="w-full space-y-2"> {{-- Email field container --}}
+                    <label for="email" class="block text-white font-medium">Email</label>
+                    <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email', $agency->email) }}">
+                </div>
 
-            <div class="space-y-2">
-                <label for="phone" class="block text-white font-medium">Phone</label>
-                <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone', $agency->phone) }}">
+                <div class="w-full space-y-2"> {{-- Phone field container --}}
+                    <label for="phone" class="block text-white font-medium">Phone</label>
+                    <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone', $agency->phone) }}">
+                </div>
             </div>
 
             <div class="space-y-2">

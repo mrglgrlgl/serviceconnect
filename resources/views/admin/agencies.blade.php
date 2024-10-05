@@ -43,9 +43,9 @@
                                     {{ ucfirst($agency->status) }}
                                 </span>
                             </td>
-                            <td class="p-4 text-right space-x-2">
-                                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-flex items-center border border-gray-200 text-white px-4 py-2 rounded font-bold hover:bg-gray-600" onclick="event.stopPropagation();">
-                                    <span class="material-icons-round mr-1">edit</span> Edit
+                            <td class="p-4 flex justify-between space-x-2">
+                                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-flex items-center border border-gray-200 text-white px-4 py-2 rounded font-bold hover:bg-gray-500" onclick="event.stopPropagation();">
+                                    <span class="material-icons-round mr-1">edit</span>
                                 </a>
                                 <form action="{{ route('agencies.destroy', $agency->id) }}" method="POST" class="inline" onsubmit="event.stopPropagation();">
                                     @csrf

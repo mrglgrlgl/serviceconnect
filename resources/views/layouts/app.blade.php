@@ -42,7 +42,7 @@
 <body class="antialiased">
     <div class="min-h-screen bg-gray-100">
 
-        {{-- Sidebar inclusion --}}
+{{--        {{-- Sidebar inclusion --}}
         @if(Auth::check())
             @if(Auth::user()->role == 1)
                 @include('layouts.auth-navigation')
@@ -50,10 +50,12 @@
                 @include('layouts.navigation')
             @endif
         @endif
-
+        
+        --}}
+                @include('layouts.navigation')
         {{-- Main Content Area --}}
         <main>
-            <div class="content-container">
+            <div class="container pt-8">
                 @yield('content')
             </div>
         </main>

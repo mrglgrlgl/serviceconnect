@@ -6,6 +6,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bid;
+use App\Models\Agency;
+use App\Models\AgencyUser;
+use App\Models\AgencyService;
 use App\Models\ServiceRequest;
 use App\Notifications\BidPlacedNotification;
 use App\Notifications\BidConfirmed;
@@ -15,6 +18,30 @@ use Illuminate\Support\Facades\Auth; // Ensure this line is present
 
 class BidController extends Controller
 {
+    
+    
+     public function viewProfile($agencyUserId)
+    {
+        $agencyUser = AgencyUser::with('agency')->findOrFail($agencyUserId);
+
+        if (!$agencyUser) {
+            return redirect()->back()->withErrors('Agency profile not found.');
+        }
+
+        // Fetch services related to the agency
+        $services = AgencyService::where('agency_id', $agencyUser->agency->id)->get();
+
+        return view('view-profile', [
+            'agencyUser' => $agencyUser,
+            'agency' => $agencyUser->agency,
+            'services' => $services
+        ]);
+    }
+    
+    
+    
+    
+    
     public function store(Request $request)
 {
     // Ensure 'agency_user' guard is used to get the authenticated user's ID
@@ -43,7 +70,7 @@ class BidController extends Controller
     public function index($serviceRequestId)
     {
         $bids = Bid::where('service_request_id', $serviceRequestId)
-            ->with('bidder')
+            ->with('bidder.agency')
             ->get();
 
         return response()->json($bids);
@@ -69,6 +96,7 @@ class BidController extends Controller
 {
     try {
         $bid = Bid::findOrFail($bidId);
+        
 
         if ($bid->status == 'accepted') {
             return response()->json(['success' => false, 'message' => 'This bid is already accepted.']);
@@ -95,7 +123,6 @@ class BidController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Bid accepted successfully.']);
     } catch (\Exception $e) {
-        \Log::error('Error confirming bid: ' . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
     }
 }

@@ -23,7 +23,7 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
 
-                <div class="flex items-center justify-between mt-2">
+{{--                <div class="flex items-center justify-between mt-2">
                     <!-- Remember Me -->
                     <div class="block">
                         <label for="remember_me" class="inline-flex items-center">
@@ -41,6 +41,7 @@
                         @endif
                     </div>
                 </div>
+--}}
 
                 <!-- Login button -->
                 <div class="mt-4">
@@ -67,7 +68,7 @@
                 <div class="pb-8">
                     <span class="justify-center px-2 font-semibold text-xl">Register as a</span>
                 </div>
-                <x-primary-button :href="route('register')" class="h-12 w-3/5 justify-center text-xl bg-transparent border-2 border-white hover:border-transparent hover:text-white hover:bg-custom-lightest-blue hover:shadow-xl">
+                <x-primary-button :href="route('register')" class="h-12 w-3/5 justify-center text-xl bg-transparent border-2 border-white hover:border-transparent hover:text-white hover:bg-custom-lightest-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                     {{ __('Seeker') }}
                 </x-primary-button>
                 <div class="border-t my-4 relative text-center"></div>

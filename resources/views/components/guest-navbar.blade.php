@@ -2,17 +2,30 @@
 <nav x-data="{ open: false, signUpDropdownOpen: false }" class="border-b-gray-300 bg-gray-100 border font-open-sans">
     <!-- Primary Navigation Menu -->
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <img class="h-8 w-auto" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
-                    </a>
-                </div>
-            </div>
+        
+<div class="flex justify-between h-16 items-center">
+    <!-- Logo -->
+    <div class="shrink-0 flex items-center">
+        <a href="{{ route('dashboard') }}">
+            <img class="h-8 w-auto" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
+        </a>
+    </div>
+    <div class="flex items-center space-x-4"> <!-- Use space-x-4 for horizontal spacing -->
+        <!-- Login Link -->
+        <x-nav-link href="{{ route('login') }}" icon="login" :active="request()->routeIs('login')"> <!-- Adjusted icon to "login" -->
+            Login
+        </x-nav-link>
+        
+        <!-- About Us Link -->
+        <x-nav-link href="{{ route('about') }}" icon="info" :active="request()->routeIs('about')">
+            About Us
+        </x-nav-link>
+    </div>
+</div>
 
-            <div class="flex items-center space-x-4">
+
+
+{{--            <div class="flex items-center space-x-4">
                 <!-- Right-aligned navigation links -->
                 <div class="hidden space-x-8 sm:flex font-semibold">
                     <!-- Sign up link with dropdown -->
@@ -38,6 +51,7 @@
                         {{ __('Login') }}
                     </a>
                 </div>
+                --}}
 
                 <!-- Hamburger -->
                 <div class="-mr-2 flex items-center sm:hidden">
@@ -66,10 +80,10 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+{{--                <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-
+--}}
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

@@ -65,11 +65,12 @@ class CreateAgencyUserController extends Controller
     
 
 
-    public function destroy(Agency $agency, AgencyUser $agencyUser)
+     public function destroy(Agency $agency, AgencyUser $user)
     {
         // Delete the user
-        $agencyUser->delete();
-
-        return redirect()->route('agencies.show', $agency->id)->with('success', 'Agency User deleted successfully.');
+        $user->delete();
+    
+        return redirect()->route('agencies.show', $agency->id)
+                         ->with('success', 'Agency User deleted successfully.');
     }
 }

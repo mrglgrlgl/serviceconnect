@@ -35,6 +35,17 @@ use App\Http\Controllers\AdminAgencyReviewController;
 use App\Http\Controllers\AgencyServiceController;
 use App\Http\Controllers\EmployeeTaskAssignmentController;
 
+Route::get('/agency-profile/{agencyId}', [SearchController::class, 'viewAgencyProfile'])->name('view-agency-profile');
+Route::post('/cancel-request/{channel}', [ChannelController::class, 'cancelRequest'])->name('cancel.request');
+
+
+Route::get('/login', function () {
+    return view('login'); // Your login.blade.php
+})->name('login');
+
+
+Route::get('/profile/{agencyUserId}', [BidController::class, 'viewProfile'])->name('view-profile');
+
 
 // Admin User Authentication Routes
 Route::get('admin/login', [AdminUserController::class, 'showLoginForm'])->name('admin.login');
@@ -47,7 +58,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], functio
     Route::resource('agencies', AgencyController::class); // This creates all CRUD routes for the Agency resource
     Route::resource('agencies.users', CreateAgencyUserController::class)->scoped([
         'user' => 'id',    ]);
-
+ Route::delete('admin/agencies/{agency}/users/{user}', [CreateAgencyUserController::class, 'destroy'])
+        ->name('agencies.users.destroy');
 
         Route::get('/agency-updates', [AdminAgencyReviewController::class, 'index'])->name('admin.agency.updates');
         Route::get('/agency-updates/{id}/review', [AdminAgencyReviewController::class, 'review'])->name('admin.agency.update.review');
@@ -67,6 +79,7 @@ Route::group(['prefix' => 'agency', 'middleware' => ['auth:agency_users']], func
 
 
     Route::put('/channel/{channel}/employee/{employee}', [ChannelController::class, 'unassignEmployee'])->name('unassign.employee');
+    Route::post('/agency/confirm-cancellation', [ChannelController::class, 'confirmCancellation'])->name('confirm.cancellation');
 
 
 // Route to show the assignment page
@@ -86,7 +99,8 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
 
     Route::post('/channel/{channel}/set-arrived', [ChannelController::class, 'setArrived'])->name('channel.setArrived');
     Route::post('/channel/{channel}/start-task', [ChannelController::class, 'startTask'])->name('channel.startTask');
-    Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+        Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+
     Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
 
     // Agency user channel view
@@ -99,15 +113,24 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
    Route::get('/placebid/{id}', [BidController::class, 'show'])->name('placebid');
    Route::get('/service-requests', [ServiceRequestController::class, 'retrieveByUserRole'])->name('agencyuser.service-requests');
 
-
+//Agency Services
 
     Route::get('/{agency}/settings', [AgencyServiceController::class, 'index'])->name('agencyservice.settings');
-
-    Route::get('/{agency}/services/create', [AgencyServiceController::class, 'create'])->name('agencies.services.create');
     Route::post('/{agency}/services', [AgencyServiceController::class, 'store'])->name('agencies.services.store');
+    Route::get('/{agency}/services/create', [AgencyServiceController::class, 'create'])->name('agencies.services.create');
+// Define routes with proper parameters
+    Route::get('agencies/{agency}/services/{service}/edit', [AgencyServiceController::class, 'edit'])
+    ->name('agencies.services.edit');
+    Route::put('agencies/{agency}/services/{service}', [AgencyServiceController::class, 'update'])->name('agencies.services.update');
+    Route::delete('agencies/{agency}/services/{service}', [AgencyServiceController::class, 'destroy'])->name('agencies.services.destroy');
+
+
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('agency.employees');
     Route::get('/employees/create', [EmployeeController::class, 'create'])->name('agency.employees.create');
+
+
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('agency.employees.show');
 
     // Store the new employee in the database
     Route::post('/employees', [EmployeeController::class, 'store'])->name('agency.employees.store');
@@ -121,9 +144,13 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     // Delete an employee from the database
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('agency.employees.destroy');
     
-    Route::get('/home', function () {
-        return view('agencyuser.home');
-    })->name('agency.home');  // Use agency.home instead of agency.dashboard
+
+
+    Route::get('/home', [AnalyticsController::class, 'providerAnalytics'])->name('agency.home');
+
+
+
+
 
     // Service Requests
     Route::get('/requests', function () {
@@ -131,15 +158,21 @@ Route::get('/assign-employees/{serviceRequestId}', [EmployeeTaskAssignmentContro
     })->name('agency.requests');
 
     // Reports
-    Route::get('/reports', function () {
-        return view('agencyuser.reports');
-    })->name('agency.reports');
+    // Route::get('/reports', function () {
+    //    return view('agencyuser.reports');
+    // })->name('agency.reports');
+    
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    
+    // Feedbacks
+    Route::get('/feedback', [RatingController::class, 'index'])->name('agency.feedback');
 
 
     // Agency Settings
     Route::get('/settings', [AgencySettingsController::class, 'showSettings'])->name('agency.settings');
     Route::get('/settings/edit', [AgencySettingsController::class, 'editSettings'])->name('agency.settings.edit');
     Route::put('/settings', [AgencySettingsController::class, 'updateSettings'])->name('agency.settings.update');
+    
     Route::get('/analytics', [AnalyticsController::class, 'providerAnalytics'])->name('agency.analytics');
 
 
@@ -173,16 +206,8 @@ Route::post('/report', [ReportController::class, 'store'])->name('report.store')
 Route::get('/direct-hire/create/{providerId}', [DirectHireController::class, 'create'])->name('direct-hire.create');
 Route::post('/direct-hire/store', [DirectHireController::class, 'store'])->name('direct-hire.store');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/authorizer/dashboard', [PhilIDController::class, 'showAll'])->name('authorizer.dashboard');
-    Route::post('/philid/{id}/accept', [PhilIDController::class, 'accept'])->name('philid.accept');
-    Route::post('/philid/{id}/reject', [PhilIDController::class, 'reject'])->name('philid.reject');
 
- 
 
-});
-
-Route::get('/view-profile/{providerId}', [ViewProfileController::class, 'show'])->name('view-profile');
 
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -190,11 +215,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 Route::view('/terms', 'terms')->name('terms');
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/philid', [PhilIDController::class, 'index'])->name('philid.index');
-    Route::get('/philid/create', [PhilIDController::class, 'create'])->name('philid.create');
-    Route::post('/philid', [PhilIDController::class, 'store'])->name('philid.store');
-});
+
 
 Route::post('/ratings', [RatingController::class, 'store'])->name('submit.rating');
 Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRating'])->name('submit.seeker.rating');
@@ -202,30 +223,27 @@ Route::post('/seeker/rate-provider', [RatingController::class, 'storeSeekerRatin
 // Outside the auth middleware group
 // Route::get('/channel/{channel}', [ChannelController::class, 'showChannel'])->name('channel.show');
 Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
-// Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
 
-// Route::get('/provider-channel/{serviceRequestId}', [ChannelController::class, 'providerChannel'])->name('provider-channel');
 
 
 Route::middleware(['auth'])->group(function () {
-    // Route::post('/bids/{bidId}/edit', [ChannelController::class, 'editBid'])->name('bids.edit');
 
 
-    // Route::post('/channel/{channel}/set-arrived', [App\Http\Controllers\ChannelController::class, 'setArrived'])->name('channel.setArrived');
+
     Route::post('/channel/{channel}/confirm-arrival', [App\Http\Controllers\ChannelController::class, 'confirmArrival'])->name('channel.confirmArrival');
-    // Route::post('/channel/{channel}/start-task', [App\Http\Controllers\ChannelController::class, 'startTask'])->name('channel.startTask');
-    // Route::post('/channel/{channel}/complete-task', [App\Http\Controllers\ChannelController::class, 'completeTask'])->name('channel.completeTask');
-    // Route::post('/channel/{channel}/inform-seeker-on-the-way', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
+
     Route::get('/channel/seeker/{serviceRequestId}', [ChannelController::class, 'seekerChannel'])->name('channel.seeker');
     
     Route::post('/channel/{channel}/confirm-task-start', [App\Http\Controllers\ChannelController::class, 'confirmTaskStart'])->name('channel.confirmTaskStart');
     // Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
-    Route::post('/channel/{channel}/confirm-task-completion', [ChannelController::class, 'confirmTaskCompletion'])->name('channel.confirmTaskCompletion');
+    
+  Route::post('/channel/{channel}/complete-task', [ChannelController::class, 'completeTask'])->name('channel.completeTask');
+
     // Route::post('/channel/{channel}/confirm-payment', [ChannelController::class, 'confirmPayment'])->name('channel.confirmPayment');
+//    Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
 });
 
-// Route::post('/channel/{channel}/inform-seeker', [ChannelController::class, 'informSeekerOnTheWay'])->name('channel.informSeekerOnTheWay');
-
+//    Route::get('/profile/edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -271,6 +289,9 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
+Route::get('/home', [SearchController::class, 'index'])->name('home');
+
+
 Route::get('/chat', function () {
     return view('chat'); 
 })->name('chat');
@@ -278,7 +299,7 @@ Route::get('/chat', function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
+//    Route::get('/profile', [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('user.profile.destroy');
 
@@ -308,8 +329,8 @@ Route::get('provider-documents/{filename}', function ($filename) {
 Route::middleware('auth')->group(function () {
     Route::get('/profile/view', [App\Http\Controllers\Auth\ProviderProfileController::class, 'show'])->name('profile.view');
     Route::get('/seekerprofile', [ProfileController::class, 'seekerProfile'])->name('seekerprofile');
-    Route::get('/profile/edit', [App\Http\Controllers\Auth\ProviderProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [App\Http\Controllers\Auth\ProviderProfileController::class, 'update'])->name('profile.update');
+Route::get('/seekerprofile-edit', [App\Http\Controllers\ProfileController::class, 'edit'])->name('seekerprofile-edit');
+    Route::put('/seekerprofile-update', [App\Http\Controllers\ProfileController::class, 'update'])->name('seekerprofile-update');
 });
 
 
@@ -383,6 +404,8 @@ Route::get('/profile/view', [ProfileController::class, 'profile'])->name('profil
 Route::get('/analytics', [AnalyticsController::class, 'seekeranalytics'])
     ->middleware(['auth', 'verified'])
     ->name('analytics');
+
+Route::get('/about', [ProfileController::class, 'about'])->name('about');
 
 // Define route for provider analytics with appropriate middleware
 // Route::get('/provider-analytics', [AnalyticsController::class, 'provideranalytics'])

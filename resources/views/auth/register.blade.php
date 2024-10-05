@@ -5,7 +5,7 @@
         <div class="flex flex-col items-center">
             <form method="POST" action="{{ route('register') }}" class="max-w-xl mx-auto">
                 @csrf
-
+            
                 <!-- Create an Account || Already registered? -->
                 <div class="flex items-center justify-between mt-3 mb-4">
                     <div class="text-3xl text-custom-header">Create an Account</div>
@@ -14,45 +14,55 @@
                         {{ __('log in instead') }}
                     </a>
                 </div>
-
+            
                 <!-- First Name and Last Name -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="mt-4">
-                        <x-input-label for="first_name" :value="__('First Name')" />
+                        <x-input-label for="first_name">
+                            First Name <span class="text-red-500">*</span>
+                        </x-input-label>
                         <x-text-input id="first_name" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
                             type="text" name="first_name" :value="old('first_name')" required autofocus
                             autocomplete="first_name" />
                         <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
                     </div>
-
+            
                     <div class="mt-4">
-                        <x-input-label for="last_name" :value="__('Last Name')" />
+                        <x-input-label for="last_name">
+                            Last Name <span class="text-red-500">*</span>
+                        </x-input-label>
                         <x-text-input id="last_name" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
                             type="text" name="last_name" :value="old('last_name')" required autocomplete="last_name" />
                         <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
                     </div>
                 </div>
-
+            
                 <!-- Email Address -->
                 <div class="mt-4">
-                    <x-input-label for="email" :value="__('Email')" />
+                    <x-input-label for="email">
+                        Email <span class="text-red-500">*</span>
+                    </x-input-label>
                     <x-text-input id="email" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
                         type="email" name="email" :value="old('email')" required autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
-
+            
                 <!-- Address -->
                 <div class="mt-4">
-                    <x-input-label for="address" :value="__('Address')" />
+                    <x-input-label for="address">
+                        Address <span class="text-red-500">*</span>
+                    </x-input-label>
                     <x-text-input id="address" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
                         type="text" name="address" :value="old('address')" required autocomplete="address" />
                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                 </div>
-
+            
                 <!-- Phone Number and Position -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="mt-4">
-                        <x-input-label for="cell_no" :value="__('Phone Number')" />
+                        <x-input-label for="cell_no">
+                            Phone Number <span class="text-red-500">*</span>
+                        </x-input-label>
                         <div class="flex">
                             <!-- Fixed Prefix -->
                             <span class="inline-flex items-center px-3 bg-gray-200 border border-gray-300 rounded-l-md">
@@ -66,38 +76,39 @@
                         <x-input-error :messages="$errors->get('cell_no')" class="mt-2" />
                         <small id="phoneHelp" class="text-red-500"></small>
                     </div>
-
-                    <div class="mt-4">
-                        <x-input-label for="position" :value="__('Position')" />
-                        <x-text-input id="position" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
-                            type="text" name="position" :value="old('position')" required autocomplete="position" />
-                        <x-input-error :messages="$errors->get('position')" class="mt-2" />
-                    </div>
+            
+                
                 </div>
-
+            
                 <!-- Password and Confirm Password -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="mt-4">
-                        <x-input-label for="password" :value="__('Password')" />
+                        <x-input-label for="password">
+                            Password <span class="text-red-500">*</span>
+                        </x-input-label>
                         <x-text-input id="password" class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md"
                             type="password" name="password" required autocomplete="new-password" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         <div class="text-xs font-open-sans">Use 8 or more characters with a mix of letters, numbers &
                             symbols.</div>
                     </div>
-
+            
                     <div class="mt-4">
-                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                        <x-input-label for="password_confirmation">
+                            Confirm Password <span class="text-red-500">*</span>
+                        </x-input-label>
                         <x-text-input id="password_confirmation"
                             class="block mt-1 w-full px-3 py-2 border-gray-300 rounded-md" type="password"
                             name="password_confirmation" required autocomplete="new-password" />
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
                 </div>
-
+            
                 <!-- Gender -->
                 <div class="mt-4">
-                    <x-input-label for="gender" :value="__('Gender')" class="pb-2 pt-2" />
+                    <x-input-label for="gender" class="pb-2 pt-2">
+                        Gender <span class="text-red-500">*</span>
+                    </x-input-label>
                     <div class="flex justify-start space-x-12">
                         <label class="flex items-center space-x-2">
                             <input type="radio" name="gender" value="Male" class="radio" required />
@@ -114,22 +125,23 @@
                     </div>
                     <x-input-error :messages="$errors->get('gender')" class="mt-2" />
                 </div>
-
+            
                 <!-- Birth Date -->
                 <div class="mt-4">
-                    <x-input-label for="birth_date" :value="__('Birth Date')" />
+                    <x-input-label for="birth_date">
+                        Birth Date <span class="text-red-500">*</span>
+                    </x-input-label>
                     <div class="flex mr-4 space-x-4 justify-center">
                         <div class="w-1/3">
                             <x-selection id="birth_date_month" name="birth_date_month" required>
                                 <option value="">Month</option>
                                 @for ($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}">{{ date('F', mktime(0, 0, 0, $i, 1)) }}
-                                    </option>
+                                    <option value="{{ $i }}">{{ date('F', mktime(0, 0, 0, $i, 1)) }}</option>
                                 @endfor
                             </x-selection>
                             <x-input-error :messages="$errors->get('birth_date_month')" class="mt-2" />
                         </div>
-
+            
                         <div class="w-1/3">
                             <x-selection id="birth_date_day" name="birth_date_day" required>
                                 <option value="">Day</option>
@@ -139,7 +151,7 @@
                             </x-selection>
                             <x-input-error :messages="$errors->get('birth_date_day')" class="mt-2" />
                         </div>
-
+            
                         <div class="w-1/3">
                             <x-selection id="birth_date_year" name="birth_date_year" required>
                                 <option value="">Year</option>
@@ -151,7 +163,7 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <!-- Terms of Service -->
                 <div class="block mt-4">
                     <label for="remember_me" class="flex items-start">
@@ -169,15 +181,14 @@
                         </span>
                     </label>
                 </div>
-
+            
                 <div class="pt-4 flex items-center justify-center mt-4 ">
                     <x-primary-button class="h-12 px-12 justify-center text-xl border-transparent text-white">
                         {{ __('Next') }}
                     </x-primary-button>
                 </div>
-        </div>
-    </div>
-    </form>
+            </form>
+            
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {

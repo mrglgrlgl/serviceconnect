@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <div class="max-w-lg mx-auto p-6 bg-gray-800 text-white rounded-lg shadow-lg">
+    <div class="max-w-2xl mx-auto p-6 bg-custom-admin-secondary rounded text-white rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Create Agency</h2>
 
         @if ($errors->any())
@@ -16,24 +16,27 @@
 
         <form action="{{ route('agencies.store') }}" method="POST" class="space-y-6">
             @csrf
-            <div class="space-y-2">
-                <label for="name" class="block text-sm font-medium">Name</label>
-                <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name') }}">
+            
+            <div class="flex space-x-4">
+                <div class="flex-1 space-y-2">
+                    <label for="name" class="block text-sm font-medium">Name</label>
+                    <input type="text" name="name" id="name" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('name') }}">
+                </div>
+                <div class="flex-1 space-y-2">
+                    <label for="email" class="block text-sm font-medium">Email</label>
+                    <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email') }}">
+                </div>
             </div>
 
-            <div class="space-y-2">
-                <label for="email" class="block text-sm font-medium">Email</label>
-                <input type="email" name="email" id="email" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('email') }}">
-            </div>
-
-            <div class="space-y-2">
-                <label for="phone" class="block text-sm font-medium">Phone</label>
-                <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone') }}">
-            </div>
-
-            <div class="space-y-2">
-                <label for="address" class="block text-sm font-medium">Address</label>
-                <input type="text" name="address" id="address" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('address') }}">
+            <div class="flex space-x-4">
+                <div class="flex-1 space-y-2">
+                    <label for="phone" class="block text-sm font-medium">Phone</label>
+                    <input type="text" name="phone" id="phone" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('phone') }}">
+                </div>
+                <div class="flex-1 space-y-2">
+                    <label for="address" class="block text-sm font-medium">Address</label>
+                    <input type="text" name="address" id="address" class="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" value="{{ old('address') }}">
+                </div>
             </div>
 
             <div class="space-y-2">

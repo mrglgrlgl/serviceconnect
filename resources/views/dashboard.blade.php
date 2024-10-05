@@ -16,12 +16,6 @@
 
 
 
-    <div class="flex justify-center">
-        <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
-    </div>
-
-    
-
     <div class="pt-6 pb-6 bg-gray-100" x-data="dashboard()">
         <div class="w-full mx-auto flex justify-end">
             <div class="relative inline-block mb-4">
@@ -29,11 +23,18 @@
                     <option value="all">All Requests</option>
                     <option value="open">Open</option>
                     <option value="in_progress">In Progress</option>
+                    <option value="cancelled">Cancelled</option>
                     <option value="completed">Completed</option>
                 </select>
                 <span class="material-icons absolute left-3 top-2.5 text-gray-400">filter_list</span>
             </div>
         </div>
+        
+        
+            <div class="flex justify-center">
+        <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
+    </div>
+        
 
         <div class="py-12 px-4 md:px-8 lg:px-16">
             <div class="w-full mx-auto">
@@ -91,14 +92,21 @@
                                         <span class="material-icons text-gray-500">request_quote</span>
                                         Price: 
                                         @if ($serviceRequest->min_price)
-                                            {{ $serviceRequest->min_price }} -
+                                            P{{ $serviceRequest->min_price }} -
                                         @endif
-                                        {{ $serviceRequest->max_price }}
+                                        P{{ $serviceRequest->max_price }}
                                     </div>
-                                    <div class="flex items-center">
+{{--                                    <div class="flex items-center">
                                         <span class="material-icons text-gray-500">schedule</span>
                                         Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
-                                    </div>
+                                    </div> --}}
+                                                                            <div class="flex items-center p-2">
+                                            <span class="material-icons text-gray-500">
+group
+</span> 
+                                            Manpower: {{ $serviceRequest->manpower_number }} 
+                                        </div>
+                                    
                                 </div>
 
                                 <div class="mb-4 text-custom-default-text">
@@ -108,11 +116,11 @@
                                 <div class="flex justify-between items-center">
                                     @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
                                         <div class="flex items-center space-x-2">
-                                            <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
+                                     {{--       <a href="{{ route('service-requests.edit', $serviceRequest) }}" class="text-gray-500 hover:text-gray-700">
                                                 <span class="material-icons">
                                                     edit
                                                 </span>
-                                            </a>
+                                            </a> --}}
                                             <form action="{{ route('service-requests.destroy', $serviceRequest) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -124,36 +132,47 @@
                                             </form>
                                         </div>
                                     @endif
-                                    <div class="flex items-center justify-end w-full">
-                                        @if ($serviceRequest->hasAcceptedBid())
-                                            <div class="flex items-center text-green-500 font-semibold">
-                                                <span class="material-icons">
-                                                    check_circle
-                                                </span>
-                                                <span class="ml-1">Bid Confirmed</span>
-                                            </div>
-                                            <a href="{{ route('channel.seeker', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline ml-4">Service Request Details</a>
-                                        @else
-                                            <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
-                                            <button @click="fetchBids({{ $serviceRequest->id }})" class="ml-4 underline text-blue-500">View Bids >></button>
-                                        @endif
-                                        
+                                    
+<div class="flex items-center justify-end w-full">
+    @if ($serviceRequest->hasAcceptedBid())
+        <div class="flex items-center text-green-500 font-semibold">
+            <span class="material-icons">check_circle</span>
+            <span class="ml-1">Bid Confirmed</span>
+        </div>
+        <a href="{{ route('channel.seeker', ['serviceRequestId' => $serviceRequest->id]) }}" class="border border-custom-lightest-blue text-custom-lightest-blue px-4 py-2 rounded-md ml-4 flex items-center hover:bg-custom-lightest-blue hover:text-white transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+            <span class="material-icons">info</span>
+            <span class="ml-1">View Details</span>
+        </a>
+    @else
+        <span class="text-gray-600">{{ $serviceRequest->bids->count() }} bids</span>
+        <button @click="fetchBids({{ $serviceRequest->id }})" class="border border-custom-lightest-blue text-custom-lightest-blue px-4 py-2 rounded-md ml-4 flex items-center hover:bg-custom-lightest-blue hover:text-white transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+            <span class="material-icons">visibility</span>
+            <span class="ml-1">View Bids >></span>
+        </button>
+    @endif
 
-                                        @if ($serviceRequest->status == 'completed')
-                                            <!-- Display Report Link or Label -->
-                                            @php
-                                                $reportExists = $serviceRequest->reports
-                                                    ->where('reported_by', auth()->id())
-                                                    ->isNotEmpty();
-                                            @endphp
-                                            @if ($reportExists)
-                                                <span class="text-gray-500 ml-4">Report submitted</span>
-                                            @else
-                                                <a href="#" class="text-red-500 underline ml-3" @click.prevent="openReportModal({{ $serviceRequest->id }})">Report</a>
-                                            @endif
-                                        @endif
+    @if ($serviceRequest->status == 'completed')
+        @php
+            $reportExists = $serviceRequest->reports
+                ->where('reported_by', auth()->id())
+                ->isNotEmpty();
+        @endphp
+{{--        @if ($reportExists)
+            <span class="text-gray-500 ml-4">Report submitted</span>
+        @else
+            <button class="border border-red-500 text-red-500 px-4 py-2 rounded-md ml-3 flex items-center hover:bg-red-500 hover:text-white transform transition-transform duration-300 hover:scale-105 hover:shadow-xl" onclick="openReportModal({{ $serviceRequest->id }})">
+                <span class="material-icons">flag</span>
+                <span class="ml-1">Report</span>
+            </button>
+        @endif--}}
+    @endif
+</div>
 
-                                    </div>
+
+
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -162,7 +181,7 @@
             </div>
         </div>
 
-        <!-- Bids Panel -->
+       <!-- Bids Panel -->
         <div x-show="showBidsPanel" x-transition class="fixed inset-0 bg-gray-800 bg-opacity-50 z-50 flex justify-end p-4" style="display: none;">
             <div class="bg-white p-6 shadow-lg rounded-lg w-full max-w-lg relative" @click.stop>
                 <div class="pb-8">
@@ -185,10 +204,27 @@
                                     <div class="text-gray-600 mb-2" x-text="'Amount: ' + bid.bid_amount"></div>
                                     <div class="text-gray-600 mb-4" x-text="bid.bid_description"></div>
 
+ <!-- Display agency name and logo -->
+                <div class="flex items-center text-xl pb-4">
+                    <template x-if="bid.bidder.agency">
+                        <div class="flex items-center">
+                            <template x-if="bid.bidder.agency.logo_path">
+                                <img :src="'/public/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
+                            </template>
+                            <template x-if="!bid.bidder.agency.logo_path">
+                                <span class="text-gray-400">No logo available</span>
+                            </template>
+                            <span class="ml-4" x-text="bid.bidder.agency.name"></span>
+                        </div>
+                    </template>
+                    <template x-if="!bid.bidder.agency">
+                        <span class="text-gray-400">No agency information available</span>
+                    </template>
+                </div>
                                     <div class="flex justify-end space-x-2">
-                                        <a :href="'/view-profile/' + bid.bidder.id" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
-                                            View Profile
-                                        </a>
+                                     <a :href="`/public/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+    View Profile
+</a>
                                         <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
                                     </div>
                                 </div>
@@ -199,85 +235,71 @@
             </div>
         </div>
 
-        <!-- Profile Modal -->
-        <div x-show="showProfileModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;" @click.away="closeProfileModal">
-            <div class="bg-white p-16 rounded-lg w-3/5 max-w-4xl mx-auto shadow-lg" @click.stop>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800" x-text="profile.name"></h2>
-                    <button @click="closeProfileModal" class="text-red-500 hover:text-red-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="col-span-1">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.serviceCategory"></div>
-                            <div class="font-semibold text-xl text-gray-700" x-text="profile.providerDetails.years_of_experience + ' years of experience'"></div>
-                        </div>
-                        <div class="flex justify-between">
-                            <div class="text-gray-600 mb-4" x-text="profile.providerDetails.description"></div>
-                            <div class="text-gray-600 mb-2" x-text="'Have Tools: ' + (profile.providerDetails.have_tools ? 'Yes' : 'No')"></div>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-icons text-gray-600 mr-2">mail</span>
-                            <span class="text-gray-600">Email: <span x-text="profile.providerDetails.work_email"></span></span>
-                        </div>
-                        <div class="flex items-center mb-2">
-                            <span class="material-icons text-gray-600 mr-2">call</span>
-                            <span class="text-gray-600">Phone: <span x-text="profile.providerDetails.contact_number"></span></span>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex justify-end space-x-4">
-                        <button @click="confirmBid(profile.bidId, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Confirm Bid</button>
-                    </div>
-                </div>
+
+ <!-- Report Modal -->
+<div id="reportModal" class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+        <div class="bg-white p-4">
+            <div class="flex justify-between items-center pb-2">
+                <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
+                <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeReportModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
+            <form action="{{ route('report.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="service_request_id" id="reportServiceRequestId">
 
-        <!-- Report Modal -->
-        <div x-show="showReportModal" x-transition class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                <div class="bg-white p-4">
-                    <div class="flex justify-between items-center pb-2">
-                        <h5 class="text-lg font-semibold text-custom-header">Report an Issue</h5>
-                        <button type="button" class="text-gray-400 hover:text-gray-600" aria-label="Close" @click="showReportModal = false">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{ route('report.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="service_request_id" x-model="serviceRequestId">
+                <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
+                <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="non_payment">Non Payment</option>
+                    <option value="illegal_activity">Illegal Activity</option>
+                    <option value="unprofessional_behavior">Unprofessional Behavior</option>
+                    <option value="poor_quality_work">Poor Quality Work</option>
+                    <option value="other">Other</option>
+                </select>
 
-                        <label for="issue_type" class="block text-sm font-medium text-gray-700">Issue Type:</label>
-                        <select name="issue_type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <option value="non_payment">Non Payment</option>
-                            <option value="illegal_activity">Illegal Activity</option>
-                            <option value="unprofessional_behavior">Unprofessional Behavior</option>
-                            <option value="poor_quality_work">Poor Quality Work</option>
-                            <option value="other">Other</option>
-                        </select>
+                <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
+                <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
 
-                        <label for="details" class="block text-sm font-medium text-gray-700 mt-4">Details:</label>
-                        <textarea name="details" required class="h-16 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
-
-                        <div class="flex justify-center mt-4">
-                            <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
-                        </div>
-                    </form>
+                <div class="flex justify-center mt-4">
+                    <button type="submit" class="bg-green-500 text-white font-semibold px-4 py-2 rounded hover:bg-green-400">Submit Report</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+</div>
+<script>
+    // Place the JavaScript functions here
+    function openReportModal(serviceRequestId) {
+        const modal = document.getElementById('reportModal');
+        const serviceRequestInput = document.getElementById('reportServiceRequestId');
 
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+        if (serviceRequestInput) {
+            serviceRequestInput.value = serviceRequestId;
+        }
+    }
+
+    function closeReportModal() {
+        const modal = document.getElementById('reportModal');
+
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    window.openReportModal = openReportModal;
+    window.closeReportModal = closeReportModal;
+</script>
     <script>
         function dashboard() {
             return {
                 filter: 'all',
                 showBidsPanel: false,
                 showProfileModal: false,
-                showReportModal: false,
                 serviceRequestId: null,
                 bids: [],
                 profile: {},
@@ -286,7 +308,7 @@
                 async fetchBids(requestId) {
                     this.selectedRequestId = requestId;
                     try {
-                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
+                        const response = await fetch(`/public/api/service-requests/${requestId}/bids`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
@@ -298,34 +320,36 @@
                     }
                 },
 
-                async viewProfile(bidderId) {
-                    try {
-                        const response = await fetch(`/api/providers/${bidderId}`);
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        const data = await response.json();
-                        this.profile = data;
-                        this.showProfileModal = true;
-                    } catch (error) {
-                        console.error('Error fetching profile:', error);
-                    }
-                },
+       
+
+
+
+
+
+
 
                 async confirmBid(bidId, requestId) {
+                        console.log(`Attempting to confirm bid with ID: ${bidId} for request ID: ${requestId}`);
+
                     try {
-                        const response = await fetch(`/bids/${bidId}/confirm`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({ request_id: requestId })
-                        });
+        const response = await fetch(`/public/bids/${bidId}/confirm`, {  // Use dynamic bidId here
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({ request_id: requestId })
+});
+
+                        
+                        console.log(`Response Status: ${response.status}`);
+        console.log(`Response URL: ${response.url}`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
                         const data = await response.json();
+                                console.log('Response Data:', data);
+
                         alert(data.message);
                         if (data.success) {
                             this.bids.forEach(bid => {
@@ -344,15 +368,13 @@
                     }
                 },
 
-                openReportModal(serviceRequestId) {
-                    console.log("Opening report modal for service request: " + serviceRequestId); // Debugging line
-                    this.serviceRequestId = serviceRequestId;
-                    this.showReportModal = true;
-                },
 
-                closeReportModal() {
-                    this.showReportModal = false;
-                },
+
+
+
+
+
+        
 
                 closeBidsPanel() {
                     this.showBidsPanel = false;

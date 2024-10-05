@@ -22,10 +22,12 @@
                                     class="form-select block w-full md:w-40 pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
                                     onchange="this.form.submit()">
                                     <option value="all" {{ request('filter') == 'all' ? 'selected' : '' }}>All Requests</option>
+                                    <option value="open" {{ request('filter') == 'open' ? 'selected' : '' }}>Open Requests</option>
                                     <option value="sent_bids" {{ request('filter') == 'sent_bids' ? 'selected' : '' }}>Sent Bids</option>
                                     <option value="in_progress" {{ request('filter') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                                     <option value="completed" {{ request('filter') == 'completed' ? 'selected' : '' }}>Completed</option>
-                                    <option value="direct_hire" {{ request('filter') == 'direct_hire' ? 'selected' : '' }}>Direct Hire Requests</option>
+                                    <option value="cancelled" {{ request('filter') == 'cancelled' ? 'selected' : '' }}>Cancelled Requests</option> <!-- New Option -->
+
                                 </select>
                                 <span class="material-icons absolute left-3 top-2.5 text-gray-400">filter_list</span>
                             </form>
@@ -46,6 +48,7 @@
 
                         <div class="p-4 border border-gray-300 bg-white shadow-sm rounded-lg md:mb-4"
                              x-show="filter === 'all' 
+                                || (filter === 'open' && '{{ $serviceRequest->status }}' === 'open')
                                 || (filter === 'sent_bids' && {{ $userBid ? 'true' : 'false' }} && '{{ $serviceRequest->status }}' === 'open')
                                 || (filter === 'in_progress' && '{{ $serviceRequest->status }}' === 'in_progress')
                                 || (filter === 'completed' && '{{ $serviceRequest->status }}' === 'completed')
@@ -54,8 +57,6 @@
                             <div class="flex justify-between items-center mb-4 {{ $serviceRequest->is_direct_hire ? 'bg-yellow-100' : '' }}">
                                 <div class="flex items-center space-x-2">
                                     <x-category :category="$serviceRequest->category" class="mr-2 text-gray-900" />
-                                    <span class="text-gray-900 font-semibold">{{ $serviceRequest->title }}</span>
-                                    <span class="text-gray-900">- {{ $serviceRequest->user->name }}</span>
                                 </div>
 
                                 <div class="text-sm text-gray-600 md:mt-2">
@@ -71,6 +72,7 @@
                                     @endif
                                 </div>
                             </div>
+                            
 
                             @if ($serviceRequest->is_direct_hire)
                                 <div class="flex items-center p-2 bg-yellow-100 border-t-2 border-yellow-400">
@@ -80,15 +82,19 @@
 
                             <div class="flex items-start px-8">
                                 <div class="flex-1">
+                                    
+                                    <span class="text-gray-700 text-xl font-semibold">{{ $serviceRequest->title }}</span>
+                                    <span class="text-gray-500">- {{ $serviceRequest->user->name }}</span>
+                                    
                                     <div class="flex text-gray-700 items-center space-x-4">
                                         <x-service-status :status="$serviceRequest->status"/>
                                         <div class="flex items-center p-2">
-                                            <span class="material-symbols-outlined">work</span>
+                                            <span class="material-icons text-gray-500">work</span>
                                             {{ $serviceRequest->job_type }}
                                         </div>
 
                                         <div class="flex items-center p-2">
-                                            <span class="material-symbols-outlined text-gray-500">request_quote</span>
+                                            <span class="material-icons text-gray-500">request_quote</span>
                                             Price: 
                                             @if ($serviceRequest->min_price)
                                                 {{ $serviceRequest->min_price }} -
@@ -97,42 +103,101 @@
                                         </div>
 
                                         <div class="flex items-center p-2">
-                                            Estimated Duration: {{ $serviceRequest->estimated_duration }} hours
+                                            <span class="material-icons text-gray-500">
+schedule
+</span>
+                                         {{--   Estimated Duration: {{ $serviceRequest->estimated_duration }} hours  --}}
                                         </div>
 
                                         <div class="flex items-center p-2">
+                                            <span class="material-icons text-gray-500">
+group
+</span>
                                             Manpower: {{ $serviceRequest->manpower_number }} 
                                         </div>
                                     </div>
 
                                     <div class="flex items-center p-2">
-                                        <span class="material-symbols-outlined mr-1 text-red-500">location_on</span>
+                                        <span class="material-icons mr-1 text-red-500">location_on</span>
                                         {{ $serviceRequest->location }}
                                     </div>
-                                    <div class="pl-3">Description: {{ $serviceRequest->description }}</div>
+                                    
+                                <div class="pl-3"><strong>Description: </strong>{{ $serviceRequest->description }}</div>
+                                    
+                                    
+                                                   {{-- Display Associated Images --}}
+                        @if ($serviceRequest->images->isNotEmpty())
+                            <div class="flex items-start px-8 mt-4">
+                                <div class="flex flex-wrap gap-4">
+                                    @foreach ($serviceRequest->images->take(4) as $image)
+    <div class="w-32 h-32 overflow-hidden rounded-lg">
+        <img src="{{ asset('storage/' . $image->file_path) }}" alt="Service Request Image" style="max-width: 128px; max-height: 128px;" class="object-cover">
+
+    </div>
+@endforeach
+
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-gray-500 px-8 mt-4">No images uploaded for this request.</p>
+                        @endif
+                                    
+                                    
+
                                 </div>
                             </div>
 
                             <div class="flex justify-end items-center space-x-2 mt-4">
                                 @if ($userBid)
-                                    @if ($userBid->status == 'accepted')
+                                
+                                
+                                                                    @if ($userBid->status == 'cancelled' && !$userBid)
                                         <span class="text-green-500 font-semibold">Bid Accepted</span>
-<a href="{{ route('channel.agency', ['serviceRequestId' => $serviceRequest->id]) }}" class="text-blue-500 underline">View Channel</a>
+<a href="{{ route('channel.agency', ['serviceRequestId' => $serviceRequest->id]) }}" class="border border-custom-agency-secondary text-custom-agency-secondary px-4 py-2 rounded-md ml-4 flex items-center hover:bg-custom-agency-secondary transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+            <span class="material-icons">info</span>
+            <span class="ml-1">View Details</span>
+        </a>
+                                
+                                    @elseif ($userBid->status == 'cancelled')
+                                        <span class="text-red-500 font-semibold">Bid Rejected</span>
+                                
+                                    @elseif ($userBid->status == 'accepted')
+                                        <span class="text-green-500 font-semibold">Bid Accepted</span>
+<a href="{{ route('channel.agency', ['serviceRequestId' => $serviceRequest->id]) }}" class="border border-custom-agency-secondary text-custom-agency-secondary px-4 py-2 rounded-md ml-4 flex items-center hover:bg-custom-agency-secondary transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+            <span class="material-icons">info</span>
+            <span class="ml-1">View Details</span>
+        </a>
+        
+
+                                    
                                     @elseif ($userBid->status == 'rejected')
                                         <span class="text-red-500 font-semibold">Bid Closed</span>
+                                        
+                                
+
+
+
+ {{--                                       
                                     @else
                                         <span class="text-gray-500 font-semibold">Bid Sent</span>
                                         <a href="#"
-                                            class="border-2 border-custom-light-blue text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2">
+                                            class="border-2 border-custom-light-blue text-custom-light-blue hover:text-white hover:border-cyan-700 font-semibold px-4 py-2 rounded hover:bg-cyan-700 flex items-center space-x-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                                             <span class="material-symbols-outlined">visibility</span>
                                             View Bid
                                         </a>
-                                    @endif
+                                        --}}
+                                    @endif  
+                                
+
+
+        
+        
                                 @else
                                     <a href="{{ route('bids.create', ['id' => $serviceRequest->id]) }}"
-                                        class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700">
+                                        class="bg-custom-light-blue text-white px-4 py-2 rounded hover:bg-cyan-700 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                                         Place Bid
                                     </a>
+                                
                                 @endif
 
                                 {{-- @if ($serviceRequest->status == 'completed')

@@ -26,18 +26,21 @@
 <body>
 
 <aside class="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-custom-admin-secondary dark:border-gray-800 font-open-sans text-xl">
-    <a href="{{ route('dashboard') }}">
-        <img class="w-auto h-7" src="{{ asset('images/horizontal-logo.png') }}" alt="Your Company">
-    </a>
+        <div class="flex items-center pb-4">
+            <a href="{{ route('agencies.index') }}" class="flex items-center">
+                <img class="h-16 w-auto mr-2" src="{{ asset('images/logo.png') }}" alt="Your Company">
+                <img class="h-14 w-auto" src="{{ asset('images/logo-text-2.png') }}" alt="Your Company">
+            </a>
+        </div>
 
     <div class="flex flex-col justify-between flex-1 mt-6">
         <nav class="-mx-3 space-y-6 ">
             <div class="space-y-3 ">
                 
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700">
+{{--                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700">
                     <span class="material-icons-round">home</span>
                     <span class="mx-2 text-sm font-medium">Home</span>
-                </a>
+                </a> --}}
 
                 <a href="{{ route('agencies.index') }}" class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700">
                     <span class="material-icons-round">dashboard</span>
@@ -47,22 +50,13 @@
 
 
             <div class="space-y-3 ">
-                <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Customization</label>
+{{--             <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Customization</label> --}}
 
-                <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700" href="#">
-                    <span class="material-icons-round">palette</span>
-                    <span class="mx-2 text-sm font-medium">Themes</span>
-                </a>
 
-                <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700" href="#">
-                    <span class="material-icons-round">settings</span>
-                    <span class="mx-2 text-sm font-medium">Setting</span>
-                </a>
-
-                <div class="space-y-3">
+                <div class="space-y-3 flex items-center">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-300 hover:bg-lightest-blue">
+                        <button type="submit" class="block w-full flex items-center text-left px-4 py-2 text-sm text-red-300 hover:bg-lightest-blue">
                             <span class="material-icons-round">logout</span> Log Out
                         </button>
                     </form>

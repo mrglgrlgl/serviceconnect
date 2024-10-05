@@ -20,9 +20,79 @@ use Illuminate\Support\Facades\Log;
 class ChannelController extends Controller
 {
 
+public function cancelRequest(Request $request, Channel $channel)
+{
+    $user = Auth::user();
 
-    // In ChannelController.php
-  // In ChannelController.php
+    // Ensure the user is a seeker (role 3 is assumed to be a seeker)
+    if ($user->role != 3) {
+        return redirect()->back()->with('error', 'Unauthorized action.');
+    }
+
+    // Check if the task has already started
+    if ($channel->is_task_started === 'true') {
+        return redirect()->back()->with('error', 'You cannot cancel a task that has already started.');
+    }
+
+    // Proceed with cancellation
+    $channel->cancel_reason = $request->input('cancel_reason'); // Set the cancellation reason
+    $channel->is_cancelled = 'pending';
+    $channel->save();
+
+    // Optionally notify the agency user about the pending cancellation
+    // You can implement a notification system here
+
+    return redirect()->back()->with('success', 'Cancellation requested. Awaiting confirmation from the agency.');
+}      
+
+
+public function confirmCancellation(Request $request)
+{
+    // Retrieve channel by ID from the request
+    $channel = Channel::findOrFail($request->channel_id);
+
+    // Get the currently authenticated agency user
+    $agencyUser = Auth::guard('agency_users')->user();
+
+    // Ensure the cancellation is in 'pending' status
+    if ($channel->is_cancelled !== 'pending') {
+        return redirect()->back()->with('error', 'Cancellation is not in pending state.');
+    }
+
+    // Confirm cancellation
+    $channel->status = 'cancelled';
+    $channel->is_cancelled = 'true';
+    $channel->save();
+
+    // Update the associated service request status to 'cancelled'
+    $serviceRequest = $channel->serviceRequest; // Assuming there's a relationship defined in the Channel model
+    if ($serviceRequest) {
+        $serviceRequest->status = 'cancelled'; // Set the service request status to 'cancelled'
+        $serviceRequest->save();
+    }
+
+        // Update only the employees with status 'assigned'
+        $assignments = EmployeeTaskAssignment::where('channel_id', $channel->id)
+        ->where('status', 'assigned')
+        ->get();
+
+    foreach ($assignments as $assignment) {
+        // Update the assignment status and completion time
+        $assignment->status = 'cancelled';
+        $assignment->completed_at = now();
+        $assignment->save();
+
+        // Update the employee's availability to 'available'
+        $employee = $assignment->employee; // Assuming there's a relationship defined in EmployeeTaskAssignment model
+        if ($employee) {
+            $employee->availability = 'available';
+            $employee->save();
+        }
+    }
+
+    return redirect()->back()->with('success', 'Task cancelled and employees released.')->with('showModal', false);
+}
+   
 public function seekerChannel($serviceRequestId)
 {
     $user = Auth::user();
@@ -93,52 +163,43 @@ public function seekerChannel($serviceRequestId)
         ->pluck('employee_id');
 $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
     
+            // Check if there are any assigned employees
+    $isEmployeeAssigned = $assignedEmployees->isNotEmpty();
+
         // Pass agency ID to the view
         $agencyId = $agencyUser->agency_id; // Adjust this according to your schema
     
-        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker', 'employees', 'assignedEmployees', 'agencyId'));
+        return view('agencyuser.agency-channel', compact('serviceRequest', 'channel', 'seeker', 'employees', 'assignedEmployees', 'agencyId','isEmployeeAssigned'));
     }
     
    
     
-    public function unassignEmployee(Request $request, $channelId, $employeeId)
+     public function unassignEmployee(Request $request, $channelId, $employeeId)
 {
-    // Debugging statements
-    // dd('Channel ID:', $channelId, 'Employee ID:', $employeeId);
-
     try {
         // Find the assignment entry
         $assignment = EmployeeTaskAssignment::where('channel_id', $channelId)
                                            ->where('employee_id', $employeeId)
                                            ->first();
         
-        // Debugging statement to check if assignment is found
         if (!$assignment) {
-            // dd('No assignment found for Channel ID:', $channelId, 'Employee ID:', $employeeId);
+            return redirect()->back()->with('error', 'No assignment found.');
         }
 
-        // Update the status to 'removed'
-        $assignment->status = 'removed';
-        $assignment->save();
+        // Delete the assignment
+        $assignment->delete();
+
+        // Update the employee's availability
         $employee = Employee::find($employeeId);
-
-        if (!$employee) {
-            // If no employee is found, redirect with an error message
-            return redirect()->back()->with('error', 'Employee not found.');
+        if ($employee) {
+            $employee->availability = 'available';
+            $employee->save();
         }
-
-        // Update the employee's availability to 'available'
-        $employee->availability = 'available';
-        $employee->save();
-        // Debugging statement to confirm status update
-        // dd('Updated Assignment:', $assignment);
 
         // Redirect with success message
         return redirect()->back()->with('success', 'Employee successfully unassigned.');
     } catch (\Exception $e) {
-        // Log and handle the error
-        // dd('Error:', $e->getMessage());
-        return redirect()->back()->with('error', 'Failed to unassign employee.');
+        return redirect()->back()->with('error', 'Failed to unassign employee: ' . $e->getMessage());
     }
 }
 
@@ -240,6 +301,8 @@ $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
 
     public function completeTask(Channel $channel)
 {
+
+
     // Assuming the provider can notify the completion
     $channel->is_task_completed = 'pending'; // Set to 'pending' until seeker confirms
     $channel->save();
@@ -251,10 +314,11 @@ $assignedEmployees = Employee::whereIn('id', $assignedEmployeeIds)->get();
 public function confirmTaskCompletion(Channel $channel)
 {
     try {
-        $user = Auth::user();
+        // Use the agency_users guard to authenticate the user
+        $agencyUser = Auth::guard('agency_users')->user();
 
-        if ($user->role != 3) { // Assuming role 3 is the seeker role
-            Log::error('Unauthorized action.', ['user_id' => $user->id, 'role' => $user->role]);
+        if (!$agencyUser) {
+            Log::error('Unauthorized action.', ['agency_user' => null]);
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 
@@ -296,6 +360,7 @@ public function confirmTaskCompletion(Channel $channel)
         return response()->json(['message' => 'Error confirming task completion.'], 500);
     }
 }
+
 
 
 

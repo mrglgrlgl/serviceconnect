@@ -21,7 +21,7 @@
                 </p>
             </div>
             <div class="mt-4">
-                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-block px-4 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600">
+                <a href="{{ route('agencies.edit', $agency->id) }}" class="inline-flex items-center px-4 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600">
                     <span class="material-icons-round mr-1">edit</span> Edit Agency
                 </a>
             </div>
@@ -41,61 +41,57 @@
                 @else
                     <ul class="space-y-2">
                         @foreach($agency->users as $user)
-                            <li class="flex justify-between items-center">
-                                <div>
-                                    <strong>{{ $user->name }}</strong> ({{ $user->email }})
-                                </div>
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="px-3 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600">
-                                        <span class="material-icons-round mr-1">edit</span>
-                                    </a>
-                                    <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="px-3 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600">
-                                            <span class="material-icons-round mr-1">delete</span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </li>
+<li class="flex justify-between items-center">
+    <div>
+        <strong>{{ $user->name }}</strong> ({{ $user->email }})
+    </div>
+    <div class="flex space-x-2">
+        <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="inline-flex items-center px-3 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600 h-10">
+            <span class="material-icons-round mr-1">edit</span>
+            <span class="hidden md:inline">Edit</span>
+        </a>
+        <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST" onsubmit="return confirmDelete();">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="inline-flex items-center px-3 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600 h-10">
+                <span class="material-icons-round mr-1">delete</span>
+            </button>
+        </form>
+    </div>
+</li>
+
+
+
                         @endforeach
                     </ul>
                 @endif
             </div>
         </div>
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> a5004108e8bd1bd39cc9e1032089e3e69ee760e6
-
-    <div class="card">
-    <div class="card-header">
-        <h3>Agency Updates</h3>
-    </div>
-    <div class="card-body">
-        @if($agency->pendingUpdates && !$agency->pendingUpdates->isEmpty())
-            <ul>
-                @foreach($agency->pendingUpdates as $update)
-                    <li>
-                        <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->status }}
-                        <a href="{{ route('admin.agency.update.review', $update->id) }}" class="btn btn-info btn-sm">Review</a>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p>No pending updates.</p>
-        @endif
-    </div>
-</div>
-<<<<<<< HEAD
+        <div class="card bg-gray-500 mt-4 rounded-lg">
+            <div class="card-header text-lg text-white font-semibold p-4">
+                <h3>Agency Updates</h3>
+            </div>
+            <div class="card-body text-gray-300 p-4">
+                @if($agency->pendingUpdates && !$agency->pendingUpdates->isEmpty())
+                    <ul>
+                        @foreach($agency->pendingUpdates as $update)
+                            <li>
+                                <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->status }}
+                                <a href="{{ route('admin.agency.update.review', $update->id) }}" class="btn btn-info btn-sm">Review</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p>No pending updates.</p>
+                @endif
+            </div>
+        </div>
     </div>
 @endsection
-=======
-</div>
 
-
-
-
-</x-dashboard>
->>>>>>> a5004108e8bd1bd39cc9e1032089e3e69ee760e6
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this user? This action cannot be undone.");
+    }
+</script>

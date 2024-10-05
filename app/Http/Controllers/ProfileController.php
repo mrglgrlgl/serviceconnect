@@ -24,17 +24,17 @@ class ProfileController extends Controller
          ]);
      }
 
-    public function edit(Request $request): View
+/**    public function edit(Request $request): View
     {
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
-    }
+    }**/
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+/**    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -45,7 +45,7 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
+    } **/
 
     /**
      * Delete the user's account.
@@ -78,6 +78,47 @@ class ProfileController extends Controller
         return view('profile.profile', compact('user', 'providerDetail', 'ratings', 'certifications'));
     }
 
+    public function edit(Request $request): View
+    {
+        return view('seekerprofile-edit', [
+            'user' => $request->user(),
+        ]);
+    }
+    
+        public function update(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'cell_no' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
+            'profile_picture' => 'nullable|image|max:2048', // Adjust as needed
+        ]);
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Update user details
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->cell_no = $request->cell_no;
+        $user->address = $request->address;
+
+        // Handle the profile picture upload if it exists
+        if ($request->hasFile('profile_picture')) {
+            // Store the uploaded file and get the path
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $user->profile_picture = $path; // Save the path in the user's profile
+        }
+
+        // Save the user
+        $user->save();
+
+        return redirect()->route('seekerprofile')->with('success', 'Profile updated successfully.');
+    }
+
+
     public function seekerProfile()
     {
         $user = Auth::user();
@@ -89,6 +130,13 @@ class ProfileController extends Controller
         return view('seekerprofile', compact('user', 'providerDetail', 'ratings', 'certifications'));
     }
 
+public function about()
+{
+    return view('aboutus');
+
 }
+}
+
+
 
 

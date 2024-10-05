@@ -21,7 +21,7 @@ class AdminUserController extends Controller
         \Log::info('Guard Provider:', ['provider' => Auth::guard('admin_user')->getProvider()]);
         
         if (Auth::guard('admin_user')->attempt($credentials)) {
-            return redirect()->route('admin.dashboard');
+           return redirect()->route('agencies.index');
         }
 
         return back()->withErrors([

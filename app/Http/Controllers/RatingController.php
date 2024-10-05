@@ -5,47 +5,49 @@ namespace App\Http\Controllers;
 use App\Models\Channel;
 use App\Models\User;
 use App\Models\Rating;
+use App\Models\ServiceRequest; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
 class RatingController extends Controller
 {
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'channel_id' => 'required|exists:channel,id',
-    //         'rated_for_id' => 'required|exists:users,id',
-    //         'rating_communication' => 'nullable|integer|min:0|max:10',
-    //         'rating_fairness' => 'nullable|integer|min:0|max:10',
-    //         'rating_respectfulness' => 'nullable|integer|min:0|max:10',
-    //         'rating_preparation' => 'nullable|integer|min:0|max:10',
-    //         'rating_responsiveness' => 'nullable|integer|min:0|max:10',
-    //         'feedback' => 'nullable|string|max:255',
-    //     ]);
+     public function store(Request $request)
+     {
+         $validated = $request->validate([
+             'channel_id' => 'required|exists:channel,id',
+             'rated_for_id' => 'required|exists:users,id',
+             'rating_communication' => 'nullable|integer|min:0|max:10',
+             'rating_fairness' => 'nullable|integer|min:0|max:10',
+             'rating_respectfulness' => 'nullable|integer|min:0|max:10',
+             'rating_preparation' => 'nullable|integer|min:0|max:10',
+             'rating_responsiveness' => 'nullable|integer|min:0|max:10',
+             'feedback' => 'nullable|string|max:255',
+         ]);
     
-    //     $existingRating = Rating::where('channel_id', $validated['channel_id'])
-    //                             ->where('rated_by_id', Auth::id())
-    //                             ->first();
+         $existingRating = Rating::where('channel_id', $validated['channel_id'])
+                                 ->where('rated_by_id', Auth::id())
+                                 ->first();
     
-    //     if ($existingRating) {
-    //         return redirect()->back()->with('error', 'You have already rated this channel.');
-    //     }
+         if ($existingRating) {
+             return redirect()->back()->with('error', 'You have already rated this channel.');
+         }
     
-    //     Rating::create([
-    //         'channel_id' => $validated['channel_id'],
-    //         'rated_by_id' => Auth::id(),
-    //         'rated_for_id' => $validated['rated_for_id'],
-    //         'communication' => $validated['rating_communication'],
-    //         'fairness' => $validated['rating_fairness'],
-    //         'respectfulness' => $validated['rating_respectfulness'],
-    //         'preparation' => $validated['rating_preparation'],
-    //         'responsiveness' => $validated['rating_responsiveness'],
-    //         'additional_feedback' => $validated['feedback'],
-    //     ]);
+         Rating::create([
+             'channel_id' => $validated['channel_id'],
+             'rated_by_id' => Auth::id(),
+            'rated_for_id' => $validated['rated_for_id'],
+             'communication' => $validated['rating_communication'],
+             'fairness' => $validated['rating_fairness'],
+             'respectfulness' => $validated['rating_respectfulness'],
+             'preparation' => $validated['rating_preparation'],
+             'responsiveness' => $validated['rating_responsiveness'],
+             'additional_feedback' => $validated['feedback'],
+         ]);
     
-    //     return redirect()->route('provider.dashboard')->with('success', 'Rating submitted successfully.');
-    // }
+         return redirect()->route('provider.dashboard')->with('success', 'Rating submitted successfully.');
+     }
+    
     
     // New method for storing the seeker's rating of the provider
     public function storeSeekerRating(Request $request)
@@ -92,4 +94,39 @@ class RatingController extends Controller
         return redirect()->route('dashboard')->with('success', 'Rating submitted successfully.');
     }
     
+    
+        public function getJobTitles()
+    {
+        return \DB::table('psa_jobs')->pluck('Job_Title');
+    }
+    
+    
+public function index(Request $request)
+{
+    // Retrieve job titles from psa_jobs table
+    $jobTitles = $this->getJobTitles();
+
+    // Default to showing all ratings for the logged-in user's agency
+    $ratingsQuery = Rating::with(['seeker', 'channel.serviceRequest'])
+                          ->whereHas('channel.serviceRequest.agencyuser', function ($query) {
+                              $query->where('agency_id', Auth::user()->agency_id);
+                          });
+
+    // Apply job title filter if present
+    if ($request->filled('job_title')) {
+        $ratingsQuery->whereHas('channel.serviceRequest', function ($query) use ($request) {
+            $query->where('category', $request->job_title);
+        });
+    }
+
+    $ratings = $ratingsQuery->orderBy('created_at', 'desc')->get();
+
+    return view('agencyuser.feedback', compact('ratings', 'jobTitles'));
+}
+
+
+
+
+
+
 }

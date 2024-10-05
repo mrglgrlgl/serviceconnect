@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="my-4">
-    <a href="{{ route('channel.agency', ['serviceRequestId' => $channel->service_request_id]) }}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Return to Channel</a>
+    <a href="{{ route('channel.agency', ['serviceRequestId' => $channel->service_request_id]) }}" class="bg-gray-500 text-white py-2 px-4 rounded transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">Return to Channel</a>
 </div>
 
 @if (session('status'))
@@ -19,6 +19,7 @@
 
     <div class="bg-white rounded-lg border p-6">
         <h2 class="text-xl font-semibold mb-4">Available Employees</h2>
+        <p class="pl-2 text-lg pb-4">Manpower Required: {{ $channel->serviceRequest->manpower_number }} </p>
 
         <!-- Two-column layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

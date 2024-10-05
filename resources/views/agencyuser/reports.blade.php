@@ -6,11 +6,8 @@
     <p>Generate and view reports related to your agency's operations.</p>
     <!-- Reports content will go here -->
 </div>
-</x-agency-dashboard>
-@extends('layouts.agencyuser-navigation')
 
-@section('content')
-<x-app-layout>
+
     <div class="container mx-auto py-12">
         <h1 class="text-2xl font-bold mb-4">Reports</h1>
 

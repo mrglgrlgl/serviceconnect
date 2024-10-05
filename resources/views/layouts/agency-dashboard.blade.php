@@ -46,7 +46,7 @@
 
         {{-- Main Content Area --}}
         <main>
-            <div class="content-container">
+            <div class="container pt-8">
                 @yield('content')
             </div>
         </main>

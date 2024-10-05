@@ -82,61 +82,75 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Performance Chart
-        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(performanceCtx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode(array_keys($performanceData['data'])) !!},
-                datasets: [{
-                    label: '# of Services',
-                    data: {!! json_encode(array_values($performanceData['data'])) !!},
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+<script>
+    // Log performance data
+    console.log("Performance Data:", {!! json_encode($performanceData['data']) !!});
 
-        // Customer Satisfaction Chart
-        const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
-        new Chart(satisfactionCtx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode(['Communication', 'Respectfulness', 'Preparation', 'Responsiveness', 'Fairness']) !!},
-                datasets: [{
-                    label: 'Satisfaction (%)',
-                    data: [
-                        {{ $customerSatisfactionData->communication }},
-                        {{ $customerSatisfactionData->respectfulness }},
-                        {{ $customerSatisfactionData->preparation }},
-                        {{ $customerSatisfactionData->responsiveness }},
-                        {{ $customerSatisfactionData->fairness }}
-                    ],
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y', // This makes the bars horizontal
-                responsive: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100
-                    }
+    // Performance Chart
+    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(performanceCtx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode(array_keys($performanceData['data'])) !!},
+            datasets: [{
+                label: '# of Services',
+                data: {!! json_encode(array_values($performanceData['data'])) !!},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
-    </script>
-</x-dashboard>
+        }
+    });
+
+    // Log customer satisfaction data
+    console.log("Customer Satisfaction Data:", {
+        communication: {{ $customerSatisfactionData->communication ?? 0 }},
+        respectfulness: {{ $customerSatisfactionData->respectfulness ?? 0 }},
+        preparation: {{ $customerSatisfactionData->preparation ?? 0 }},
+        responsiveness: {{ $customerSatisfactionData->responsiveness ?? 0 }},
+        fairness: {{ $customerSatisfactionData->fairness ?? 0 }}
+    });
+
+    // Customer Satisfaction Chart
+    const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
+    new Chart(satisfactionCtx, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode(['Communication', 'Respectfulness', 'Preparation', 'Responsiveness', 'Fairness']) !!},
+            datasets: [{
+                label: 'Satisfaction (%)',
+                data: [
+                    {{ $customerSatisfactionData->communication ?? 0 }},
+                    {{ $customerSatisfactionData->respectfulness ?? 0 }},
+                    {{ $customerSatisfactionData->preparation ?? 0 }},
+                    {{ $customerSatisfactionData->responsiveness ?? 0 }},
+                    {{ $customerSatisfactionData->fairness ?? 0 }}
+                ],
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // This makes the bars horizontal
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+
+
+@endsection

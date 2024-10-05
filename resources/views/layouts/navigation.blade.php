@@ -10,16 +10,16 @@
     <style>
         aside {
             width: 250px;
-    position: fixed;
-    height: 100%;
-    overflow-y: auto;
-    top: 0;
-    left: 0;
-    background-color: #fff;
-    border-right: 1px solid #e5e7eb;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column; /* Added */
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            border-right: 1px solid #e5e7eb;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; /* Added */
         }
 
         main {
@@ -44,6 +44,12 @@
             font-size: 1rem;
             font-weight: 500;
         }
+        
+        .logout-button {
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto; /* Pushes this section to the bottom */
+            padding-top: 1rem; /* Space above the logout button */
+        }
     </style>
 </head>
 
@@ -58,72 +64,53 @@
 
         @php
         $user = Auth::user();
-    @endphp
-{{-- 
-        <div class="profile-section">
-            <span class="material-icons-round text-4xl">account_circle</span>
-            <span class="username">{{ Auth::user()->name }}</span>
-        </div> --}}
+        @endphp
 
-        <div class="flex-grow mt-6">
-            <nav class="-mx-3 space-y-6">
-                <div class="space-y-3">
-                    <label class="px-3 text-xs text-gray-500 uppercase">Service Requests</label>
-                    
-                    <x-nav-link href="{{ route('home') }}" icon="home" :active="request()->routeIs('home')">
-                        Home
-                    </x-nav-link>
+<div class="flex-grow mt-6">
+    <nav class="-mx-3 space-y-6">
+        <div class="space-y-3">
+            <label class="px-3 text-xs text-gray-500 uppercase">Service Requests</label>
+            
+            <x-nav-link href="{{ route('home') }}" icon="home" :active="request()->routeIs('home')">
+                Home
+            </x-nav-link>
 
-                    <x-nav-link href="{{ route('service-requests.create') }}" icon="add" :active="request()->routeIs('service-requests.create')">
-                        Create Request
-                    </x-nav-link>
+            <x-nav-link href="{{ route('service-requests.create') }}" icon="add" :active="request()->routeIs('service-requests.create')">
+                Create Request
+            </x-nav-link>
 
-                    <x-nav-link href="{{ route('dashboard') }}" icon="view_list" :active="request()->routeIs('dashboard')">
-                        View My Requests
-                    </x-nav-link>
-
-                </div>
-
-                <div class="space-y-3">
-                    <label class="px-3 text-xs text-gray-500 uppercase">Other</label>
-                    
-                    <x-nav-link href="{{ route('notifications.index') }}" icon="notifications" :active="request()->routeIs('notifications.index')">
-                        Notifications
-                    </x-nav-link>
-
-                    <x-nav-link href="{{ route('chat') }}" icon="chat" :active="request()->routeIs('chat')">
-                        Chats
-                    </x-nav-link>
-                </div>
-
-                <div class="space-y-3">
-                    <label class="px-3 text-xs text-gray-500 uppercase">User</label>
-                    
-                    <x-nav-link href="{{ $user->role == 3 ? route('seekerprofile') : route('profile.view') }}" icon="account_circle" :active="request()->routeIs('seekerprofile') || request()->routeIs('profile.view')">
-                        Profile
-                    </x-nav-link>
-
-                    <x-nav-link href="{{ route('analytics') }}" icon="bar_chart" :active="request()->routeIs('analytics')">
-                        Analytics
-                    </x-nav-link>
-                           
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="flex w-full text-left text-sm text-red-600 hover:bg-red-50 rounded-lg px-3 py-4 items-center transition-colors duration-300 transform border-t pt-4 mt-8">
-                            <span class="material-icons-round mr-2">logout</span> Log Out
-                        </button>
-                    </form>
-                </div>
-            </nav>
+            <x-nav-link href="{{ route('dashboard') }}" icon="view_list" :active="request()->routeIs('dashboard')">
+                View My Requests
+            </x-nav-link>
         </div>
+
+        <div class="space-y-3">
+            <label class="px-3 text-xs text-gray-500 uppercase">User</label>
+
+            <x-nav-link href="{{ $user->role == 3 ? route('seekerprofile') : route('profile.view') }}" icon="account_circle" :active="request()->routeIs('seekerprofile') || request()->routeIs('profile.view')">
+                Profile
+            </x-nav-link>
+        
+
+        </div>
+    </nav>
+</div>
+
+
+
         <div class="profile-section">
             <span class="material-icons-round text-4xl">account_circle</span>
             <span class="username">{{ Auth::user()->name }}</span>
         </div>
-    </aside>
 
-
+    <div class="space-y-2">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="flex w-full text-left text-sm text-red-600 hover:bg-red-50 rounded-lg px-3 py-4 items-center transition-colors duration-300 transform border-t pt-4 mt-4">
+                <span class="material-icons-round mr-2">logout</span> Log Out
+            </button>
+        </form>
+    </div>
     </aside>
 </body>
-
 </html>
