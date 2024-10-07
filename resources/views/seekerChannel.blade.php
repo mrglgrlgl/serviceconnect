@@ -87,8 +87,7 @@
                                             <p class="text-white">Task is completed.</p>
                                         @else
                                             <button onclick="completeTask()"
-                                                class="bg-custom-lightest-blue hover:bg-cyan-800 text-white py-2 px-4 rounded">Complete
-                                                Task</button>
+                                                class="bg-white hover:bg-white text-cyan-800 py-2 px-4 rounded">Service Completed</button>
                                         @endif
                                         
                                         
@@ -124,8 +123,13 @@
 
                                     <div class="mt-2">
                                         <span
-                                            class="text-2xl text-custom-header font-semibold pl-7">{{ $channel->serviceRequest->title }}</span>
+                                            class="text-2xl text-custom-header font-semibold pl-4">{{ $channel->serviceRequest->title }}</span>
                                     </div>
+
+                                    <p class="mt-4 pl-6 text-custom-header">
+                                        {{ $channel->serviceRequest->description }}
+                                    </p>
+
                                     <div class="mt-2">
                                         <div class="flex items-center pl-6">
                                             <span class="material-icons mr-1 text-red-500">location_on</span>
@@ -156,10 +160,7 @@ group
 </span>
                                             <p class="pl-2">Manpower: {{ $channel->serviceRequest->manpower_number }} </p>
                                         </div>
-                                            <p class="mt-4 pl-6 text-custom-header">
-                                                <strong>Description:</strong>
-                                                {{ $channel->serviceRequest->description }}
-                                            </p>
+
                                             
                                         </div>
                                     </div>
@@ -292,7 +293,7 @@ group
                                                                 <p class="flex space-x-2 pt-2">
                                                                     <span
                                                                         class="material-symbols-outlined text-custom-header">description</span>
-                                                                    <strong>Description:</strong>
+                                                                    <strong>Work Plan:</strong>
                                                                     <div class="pl-2">
                                                                     {{ $channel->bid->bid_description }}
                                                                     </div>

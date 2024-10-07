@@ -35,6 +35,14 @@
 
 <h2 class="text-2xl font-semibold">Dashboard</h2>
 
+<!-- Check if service requests are 5 or less -->
+@if($totalServices <= 5)
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+  <strong class="font-bold">Incomplete Analytics Data!</strong>
+  <span class="block sm:inline">Complete service requests to fill analytics data.</span>
+</div>
+@endif
+
 <div class="flex justify-center">
     <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
 </div>

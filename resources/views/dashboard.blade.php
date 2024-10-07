@@ -76,14 +76,18 @@
                                 <div class="font-semibold text-xl mb-2 text-gray-800">
                                     {{ $serviceRequest->title }}
                                 </div>
+
+                                <div class="mb-4 text-custom-default-text">
+                                    {{ $serviceRequest->description }}
+                                </div>
                                 
-                                <div class="flex items-center p-2">
+                                <div class="flex items-center ">
                                     <span class="material-icons text-red-500">location_on</span>
                                     {{ $serviceRequest->location }}
                                 </div>
 
                                 <!-- Combine Project Type, Price, and Estimated Duration in one line -->
-                                <div class="flex items-center space-x-4 p-2 text-gray-700">
+                                <div class="flex items-center space-x-4 text-gray-700">
                                     <div class="flex items-center">
                                         <span class="material-icons text-gray-500">work</span>
                                         {{ $serviceRequest->job_type }}
@@ -109,9 +113,6 @@ group
                                     
                                 </div>
 
-                                <div class="mb-4 text-custom-default-text">
-                                    {{ $serviceRequest->description }}
-                                </div>
 
                                 <div class="flex justify-between items-center">
                                     @if ($serviceRequest->status == 'open' && !$serviceRequest->hasAcceptedBid())
@@ -367,14 +368,6 @@ group
                         console.error('There was a problem with the fetch operation:', error);
                     }
                 },
-
-
-
-
-
-
-
-        
 
                 closeBidsPanel() {
                     this.showBidsPanel = false;

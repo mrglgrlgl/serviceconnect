@@ -7,14 +7,16 @@
                 <div class="flex flex-wrap">
                     <div class="w-full">
                         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-300">
-                                                                                <div class="flex justify-start space-x-4">
-                                                <div class="mb-4">
-                <a href="{{ route('agency.employees') }}" class="inline-block bg-gray-500 text-white rounded px-4 py-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-                    Back
-                </a>
-            </div>
+                            <div class="flex justify-start space-x-4">
+                                <div class="mb-4">
+                                    <a href="{{ route('agency.employees') }}"
+                                        class="inline-block bg-gray-500 text-white rounded px-4 py-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                                        Back
+                                    </a>
+                                </div>
 
-                            <h1 class="text-2xl font-semibold text-custom-header ">Service Request Details</h1>            </div>
+                                <h1 class="text-2xl font-semibold text-custom-header ">Service Request Details</h1>
+                            </div>
                             <div class="border-b pb-4 mb-4"></div>
 
                             <!-- Status Indicator -->
@@ -22,8 +24,6 @@
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-red-100">
                                     <div>The task has been cancelled.</div>
                                 </div>
-
-                            
                             @elseif ($channel->is_task_completed === 'true')
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-green-100">
                                     <div>The task has been completed.</div>
@@ -44,8 +44,6 @@
                                 <div class="h-12 flex items-center rounded-lg shadow-sm p-6 bg-blue-100">
                                     <div>Start the task</div>
                                 </div>
-
-                                
                             @endif
 
                             {{-- Task actions --}}
@@ -64,8 +62,6 @@
                                             @if ($channel->is_task_completed === 'true')
                                                 <p class="text-white">Task is completed.</p>
                                             @else
-
-                                            
                                                 {{-- <p class="text-gray-500">Click complete task to notify provider you have
                                                     finished the request.</p>
                                                 <button onclick="completeTask()"
@@ -73,22 +69,18 @@
                                                     Task</button> --}}
                                             @endif
                                         @else
-                                                @if ($channel->is_cancelled !== 'true')
-                                            <button onclick="startTask()"
-                                                class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Start
-                                                Task</button>
-                                                
-                                        @endif
+                                            @if ($channel->is_cancelled !== 'true')
+                                                <button onclick="startTask()"
+                                                    class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Start
+                                                    Task</button>
+                                            @endif
                                         @endif
                                     @elseif (is_null($channel->is_on_the_way))
-                                    
-                                     @if ($isEmployeeAssigned)
-                <button onclick="informSeekerOnTheWay()"
-                    class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Inform
-                    Seeker Provider is on the way</button>
-            @endif
-                                            
-                                            
+                                        @if ($isEmployeeAssigned)
+                                            <button onclick="informSeekerOnTheWay()"
+                                                class="bg-cyan-700 hover:bg-gray-200 hover:text-custom-light-blue transform transition-transform duration-300 hover:scale-105 hover:shadow-xl text-white py-2 px-4 rounded">Inform
+                                                Seeker Provider is on the way</button>
+                                        @endif
                                     @elseif ($channel->is_arrived == 'pending')
                                         <div class="text-gray-300">Awaiting seeker's arrival confirmation.</div>
                                     @elseif ($channel->is_task_started == 'pending')
@@ -110,7 +102,11 @@
                                             class="text-2xl text-custom-header font-semibold pl-7">{{ $channel->serviceRequest->title }}</span>
                                     </div>
 
-                                    <div class="mt-2">
+                                    <p class=" pl-8 text-custom-header">
+                                        {{ $channel->serviceRequest->description }}
+                                    </p>
+
+                                    <div class="mt-4">
                                         <div class="flex items-center pl-6">
                                             <span class="material-icons mr-1 text-red-500">location_on</span>
                                             <span>{{ $channel->serviceRequest->location }}</span>
@@ -133,17 +129,13 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            
-                                        <div class="flex items-center pt-2 ">
-                                            <span class="material-icons text-gray-500">group</span>
-                                            <p class="pl-2">Manpower: {{ $serviceRequest->manpower_number }} </p>
-                                        </div>
-                                        
-                                                                                    <p class="mt-4 pl-6 text-custom-header">
-                                                <strong>Description:</strong>
-                                                {{ $channel->serviceRequest->description }}
-                                            </p>
-{{--                                                                    <p class="flex space-x-2 pt-2">
+
+                                            <div class="flex items-center pt-2 ">
+                                                <span class="material-icons text-gray-500">group</span>
+                                                <p class="pl-2">Manpower: {{ $serviceRequest->manpower_number }} </p>
+                                            </div>
+
+                                            {{--                                                                    <p class="flex space-x-2 pt-2">
                                                                     <span
                                                                         class="material-symbols-outlined text-gray-500">description</span>
                                                                     <strong class="text-custom-header">De:</strong>
@@ -163,7 +155,7 @@
                                         <div class="mt-4">
                                             <div class="flex items-center text-xl pb-4">
                                                 {{ $channel->seeker->name }}
-                                            
+
                                             </div>
                                             <div class="flex items-center mt-2 pl-4">
                                                 <span class="material-icons text-gray-400 mr-2">mail</span>
@@ -178,7 +170,7 @@
                                 </div>
                             </div>
 
-                      
+
 
 
                             <div class="flex justify-between pt-4">
@@ -216,7 +208,7 @@
                                             <span class="material-icons text-yellow-800">payments</span>
                                             <p class="text-yellow-800">
                                                 <strong>Total Amount:</strong>
-                                                    ₱{{ $channel->bid->bid_amount }}
+                                                ₱{{ $channel->bid->bid_amount }}
                                             </p>
                                         </div>
                                     @else
@@ -226,8 +218,8 @@
                                         </p>
                                         <p class="flex space-x-2 pt-2">
                                             <span class="material-symbols-outlined text-custom-header">description</span>
-                                            <strong>Work Plan:</strong> 
-                                            <div>{{ $channel->bid->bid_description }}</div>
+                                            <strong>Work Plan:</strong>
+                                        <div>{{ $channel->bid->bid_description }}</div>
                                         </p>
                                     @endif
                                 </div>
@@ -249,15 +241,15 @@
 
                                         <!-- Example Button to Open Modal -->
                                         @if ($channel->is_cancelled !== 'true' && $channel->status !== 'completed')
-
-                                        <button
-                                            onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
-                                            class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
-                                            <span class="material-symbols-outlined text-lg mr-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">person_add</span>
-                                            Assign Employees
-                                        </button>
+                                            <button
+                                                onclick="window.location.href='{{ route('show.assignment.page', $channel->service_request_id) }}'"
+                                                class="flex items-center bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-300">
+                                                <span
+                                                    class="material-symbols-outlined text-lg mr-2 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">person_add</span>
+                                                Assign Employees
+                                            </button>
                                     </div>
-                                      @endif
+                                    @endif
 
                                     <ul class="list-none p-0">
                                         @forelse ($assignedEmployees as $employee)
@@ -306,49 +298,53 @@
     </div>
 
 
-            <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
-                id="completeTaskModal" style="display: none;">
-                <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
-                    <div class="flex justify-between items-center border-b pb-4 mb-4">
-                        <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
-                        <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
-                            onclick="closeModal('completeTaskModal')">&times;</button>
-                    </div>
-                    <div class="mb-4">
-                        <p>The seeker has marked the task as completed. Please confirm if the task is indeed
-                            completed.</p>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
-                            onclick="closeModal('completeTaskModal')">Close</button>
-                        <button type="button"
-                            class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800 "
-                            onclick="confirmTaskCompletion()">Confirm Completion</button>
-                    </div>
-                </div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" id="completeTaskModal"
+        style="display: none;">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6 md:max-w-md">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h5 class="text-xl font-semibold">Confirm Task Completion</h5>
+                <button type="button" class="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onclick="closeModal('completeTaskModal')">&times;</button>
             </div>
-
-    
-<!-- Modal for Agency to Confirm Cancellation -->
-@if ($channel->is_cancelled == 'pending')  <!-- Only show modal if cancellation is pending -->
-<div id="confirm-cancellation-modal-{{ $channel->id }}"
-     class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
-     style="display:none;">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
-        <h2 class="text-xl font-semibold mb-2">Cancellation Request</h2>
-        <p class="mb-2"><strong>Reason for Cancellation:</strong> {{ $channel->cancel_reason }}</p>
-        <p class="mb-4">Do you want to confirm this cancellation?</p>
-        <form id="confirm-cancellation-form-{{ $channel->id }}" action="{{ route('confirm.cancellation') }}" method="POST">
-            @csrf
-            <input type="hidden" name="channel_id" value="{{ $channel->id }}">
-            <div class="flex justify-end mt-4 space-x-2">
-                <button type="button" class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold px-4 py-2 rounded" onclick="closeAgencyCancelModal({{ $channel->id }})">Close</button>
-                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded">Confirm Cancellation</button>
+            <div class="mb-4">
+                <p>The seeker has marked the task as completed. Please confirm if the task is indeed
+                    completed.</p>
             </div>
-        </form>
+            <div class="flex justify-end">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded mr-2 hover:bg-gray-700"
+                    onclick="closeModal('completeTaskModal')">Close</button>
+                <button type="button" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-cyan-800 "
+                    onclick="confirmTaskCompletion()">Confirm Completion</button>
+            </div>
+        </div>
     </div>
-</div>
-@endif
+
+
+    <!-- Modal for Agency to Confirm Cancellation -->
+    @if ($channel->is_cancelled == 'pending')
+        <!-- Only show modal if cancellation is pending -->
+        <div id="confirm-cancellation-modal-{{ $channel->id }}"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50" style="display:none;">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-lg mx-auto p-6">
+                <h2 class="text-xl font-semibold mb-2">Cancellation Request</h2>
+                <p class="mb-2"><strong>Reason for Cancellation:</strong> {{ $channel->cancel_reason }}</p>
+                <p class="mb-4">Do you want to confirm this cancellation?</p>
+                <form id="confirm-cancellation-form-{{ $channel->id }}" action="{{ route('confirm.cancellation') }}"
+                    method="POST">
+                    @csrf
+                    <input type="hidden" name="channel_id" value="{{ $channel->id }}">
+                    <div class="flex justify-end mt-4 space-x-2">
+                        <button type="button"
+                            class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold px-4 py-2 rounded"
+                            onclick="closeAgencyCancelModal({{ $channel->id }})">Close</button>
+                        <button type="submit"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded">Confirm
+                            Cancellation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
 
     <!-- Script to show and close the modal -->
@@ -364,20 +360,19 @@
 
     <!-- Automatically open modal when page loads, if cancellation is pending -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             openAgencyCancelModal({{ $channel->id }});
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-    const successMessage = '{{ session('success') }}';
-    const modalId = '{{ $channel->id }}'; // If you want to close a specific modal
+            const successMessage = '{{ session('success') }}';
+            const modalId = '{{ $channel->id }}'; // If you want to close a specific modal
 
-    if (successMessage) {
-        // Optionally close the modal
-        closeAgencyCancelModal(modalId);
-    }
-});
-
+            if (successMessage) {
+                // Optionally close the modal
+                closeAgencyCancelModal(modalId);
+            }
+        });
     </script>
 
 
@@ -390,13 +385,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/custom-forms@0.3.0/dist/custom-forms.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-         document.addEventListener('DOMContentLoaded', function() {
+            if ('{{ $channel->is_task_completed }}' === 'pending') {
+                document.getElementById('completeTaskModal').style.display = 'block';
+            }
+        });
 
-                            if ('{{ $channel->is_task_completed }}' === 'pending') {
-                                document.getElementById('completeTaskModal').style.display = 'block';
-                            }
-                        });
         function informSeekerOnTheWay() {
             axios.post('{{ route('channel.informSeekerOnTheWay', $channel->id) }}')
                 .then(response => {
