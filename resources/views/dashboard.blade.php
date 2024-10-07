@@ -209,7 +209,7 @@ group
                     <template x-if="bid.bidder.agency">
                         <div class="flex items-center">
                             <template x-if="bid.bidder.agency.logo_path">
-                                <img :src="'/public/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
+                                <img :src="'/storage/' + bid.bidder.agency.logo_path" alt="Agency Logo" class="w-16 h-16 object-cover rounded-full">
                             </template>
                             <template x-if="!bid.bidder.agency.logo_path">
                                 <span class="text-gray-400">No logo available</span>
@@ -222,7 +222,7 @@ group
                     </template>
                 </div>
                                     <div class="flex justify-end space-x-2">
-                                     <a :href="`/public/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
+                                     <a :href="`/profile/${bid.bidder.id}`" @click="console.log(bid.bidder.id)" class="bg-custom-lightest-blue text-white px-4 py-2 rounded hover:bg-blue-600">
     View Profile
 </a>
                                         <button x-show="!bid.confirmed" @click="confirmBid(bid.id, selectedRequestId)" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2">Accept Bid</button>
@@ -308,7 +308,7 @@ group
                 async fetchBids(requestId) {
                     this.selectedRequestId = requestId;
                     try {
-                        const response = await fetch(`/public/api/service-requests/${requestId}/bids`);
+                        const response = await fetch(`/api/service-requests/${requestId}/bids`);
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
@@ -332,7 +332,7 @@ group
                         console.log(`Attempting to confirm bid with ID: ${bidId} for request ID: ${requestId}`);
 
                     try {
-        const response = await fetch(`/public/bids/${bidId}/confirm`, {  // Use dynamic bidId here
+        const response = await fetch(`/bids/${bidId}/confirm`, {  // Add /public if deployed
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
