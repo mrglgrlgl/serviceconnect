@@ -95,10 +95,6 @@
 
                                 <div class="p-2">{{ $serviceRequest->description }}</div>
 
-                                <div class="flex items-center pt-2">
-                                    <span class="material-icons mr-1 text-red-500">location_on</span>
-                                    {{ $serviceRequest->location }}
-                                </div>
 
                                 <div class="flex text-gray-700 items-center space-x-4">
                                     <x-service-status :status="$serviceRequest->status" />
@@ -129,6 +125,11 @@
                                         </span>
                                         Manpower: {{ $serviceRequest->manpower_number }}
                                     </div>
+                                </div>
+
+                                <div class="flex items-center pt-2">
+                                    <span class="material-icons mr-1 text-red-500">location_on</span>
+                                    {{ $serviceRequest->location }}
                                 </div>
 
 

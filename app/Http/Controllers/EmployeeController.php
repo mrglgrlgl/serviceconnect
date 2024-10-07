@@ -45,7 +45,7 @@ class EmployeeController extends Controller
 public function show(Employee $employee)
 {
     // Eager load services, taskAssignments, and channels
-    $employee = $employee->load('services');
+    $employee = $employee->load('services', 'ratings');
     return view('agencyuser.view-employee-profile', compact('employee'));
 }
 

@@ -63,8 +63,5 @@ public function agencyUser()
 {
     return $this->belongsTo(AgencyUser::class, 'provider_id');
 }
-
-
 }
-
 

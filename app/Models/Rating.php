@@ -46,4 +46,10 @@ class Rating extends Model
     {
         return $this->belongsTo(Channel::class);
     }
+
+    public function serviceRequest()
+    {
+        return $this->belongsTo(ServiceRequest::class, 'service_request_id'); // Assuming 'service_request_id' is the foreign key
+    }
 }
+

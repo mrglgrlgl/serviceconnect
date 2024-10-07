@@ -67,14 +67,18 @@ class BidController extends Controller
 }
 
 
-    public function index($serviceRequestId)
-    {
-        $bids = Bid::where('service_request_id', $serviceRequestId)
-            ->with('bidder.agency')
-            ->get();
+public function index($serviceRequestId, Request $request)
+{
+    $sortOrder = $request->get('sort', 'desc'); // Default to 'desc' if no sort is provided
 
-        return response()->json($bids);
-    }
+    $bids = Bid::where('service_request_id', $serviceRequestId)
+        ->with('bidder.agency')
+        ->orderBy('bid_amount', $sortOrder) // Sort bids by bid_amount
+        ->get();
+
+    return response()->json($bids);
+}
+
 
     public function create($id)
     {

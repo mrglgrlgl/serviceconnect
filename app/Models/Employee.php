@@ -41,6 +41,11 @@ public function channels()
     return $this->belongsToMany(Channel::class, 'employee_channel', 'employee_id', 'channel_id');
 }
 
+public function ratings()
+{
+    return $this->hasManyThrough(Rating::class, EmployeeTaskAssignment::class, 'employee_id', 'channel_id', 'id', 'channel_id');
+}
+
 
 
 }

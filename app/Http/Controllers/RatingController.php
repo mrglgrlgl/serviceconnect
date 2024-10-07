@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Channel;
 use App\Models\User;
 use App\Models\Rating;
+use App\Models\Employee;
+use App\Models\EmployeeTaskAssignment;
 use App\Models\ServiceRequest; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class RatingController extends Controller
@@ -97,7 +100,7 @@ class RatingController extends Controller
     
         public function getJobTitles()
     {
-        return \DB::table('psa_jobs')->pluck('Job_Title');
+        return DB::table('psa_jobs')->pluck('Job_Title');
     }
     
     
@@ -124,9 +127,43 @@ public function index(Request $request)
     return view('agencyuser.feedback', compact('ratings', 'jobTitles'));
 }
 
+public function showEmployeeProfile($employeeId)
+{
+    // Retrieve employee and related ratings
+    $employee = Employee::with('ratings.seeker')->findOrFail($employeeId);
 
+    // Calculate the average rating for the employee
+    $averageRating = $employee->ratings()->avg(
+        DB::raw('(communication + quality_of_service + professionalism + cleanliness_tidiness + value_for_money) / 5')
+    );
 
+    // Retrieve the total number of completed service requests
+    $totalServiceRequestsCompleted = EmployeeTaskAssignment::where('employee_id', $employeeId)
+        ->whereNotNull('completed_at') // Ensures only completed tasks are counted
+        ->count();
 
+    return view('employee.profile', compact('employee', 'averageRating', 'totalServiceRequestsCompleted'));
+}
+public function show($id)
+{
+    // Assuming you are fetching the employee by their ID
+    $employee = User::findOrFail($id);
+    
+    // Get all service requests assigned to this employee
+    $serviceRequests = ServiceRequest::where('provider_id', $employee->id)->get();
+    
+    // Calculate the total number of services completed
+    $totalServicesCompleted = $serviceRequests->where('status', 'completed')->count();
+
+    // Calculate the average rating
+    $averageRating = Rating::where('rated_for_id', $employee->id)
+                           ->avg(DB::raw('(
+                               communication + fairness + respectfulness + preparation + responsiveness
+                           ) / 5'));
+
+    return view('employee-profile', compact('employee', 'totalServicesCompleted', 'averageRating'));
+}
 
 
 }
+
