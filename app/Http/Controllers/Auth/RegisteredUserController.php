@@ -33,11 +33,20 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+
+           // Prepend '63' to the user's input for the cellphone number
+    $cell_no_with_prefix = '63' . $request->cell_no; // Simply add '63' without checking for leading zero
+
+    // Merge the modified cell number back into the request data
+    $request->merge([
+        'cell_no' => $cell_no_with_prefix
+    ]);
+
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'cell_no' => ['required', 'integer'],
+            'cell_no' => ['required', 'integer', 'unique:users,cell_no'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'gender' => ['required', 'string', 'max:255'],
             'birth_date_month' => ['integer', 'max:12'],
@@ -52,7 +61,7 @@ class RegisteredUserController extends Controller
         $userData = [
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
-            'cell_no' => '63' . ltrim($request->cell_no, '0'), // Add '63' prefix and remove leading zero if present
+            'cell_no' => $cell_no_with_prefix, // Store the number with '63'
             'password' => Hash::make($request->password),
             'gender' => $request->input('gender'),
             'birth_date' => $birth_date,
@@ -77,19 +86,10 @@ class RegisteredUserController extends Controller
 
         // Redirect to the address form after successful registration
         // return redirect()->route('home', ['userId' => $user->id]);
-        if ($user->role == 2) {
-            return redirect()->route('provider.dashboard');
-        } else {
+    
             return redirect()->route('home');
-        }
+        
     }
 
-    public function registerAs(Request $request)
-    {
-        if ($request->has('role') && $request->input('role') === 'provider') {
-            $request->session()->put('user_role', 2); // Role 2 for providers
-            return redirect()->route('register');
-        }
-        return view('auth.registerAs');
-    }
+
 }
