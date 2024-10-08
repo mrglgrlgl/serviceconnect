@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AnalyticsController extends Controller
 {
@@ -100,11 +101,6 @@ if ($completionData->total_requests > 0) {
 }
 
 
-
-
-
-
-
     // Most availed services by category
     $mostAvailedService = DB::table('service_requests')
         ->select('category', DB::raw('COUNT(*) AS completed_services'))
@@ -115,14 +111,27 @@ if ($completionData->total_requests > 0) {
         ->first();
 
     // Most loyal seeker
-    $mostLoyalSeeker = DB::table('service_requests')
-        ->join('users', 'service_requests.user_id', '=', 'users.id')
-        ->select('users.name', DB::raw('COUNT(service_requests.id) AS completed_services'))
-        ->where('service_requests.status', 'completed')
-        ->where('service_requests.provider_id', $userId)
-        ->groupBy('users.id', 'users.name')
-        ->orderBy('completed_services', 'DESC')
-        ->first();
+    // $mostLoyalSeeker = DB::table('service_requests')
+    //     ->join('users', 'service_requests.user_id', '=', 'users.id')
+    //     ->select('users.name', DB::raw('COUNT(service_requests.id) AS completed_services'))
+    //     ->where('service_requests.status', 'completed')
+    //     ->where('service_requests.provider_id', $userId)
+    //     ->groupBy('users.id', 'users.name')
+    //     ->orderBy('completed_services', 'DESC')
+    //     ->first();
+        // Fetch the top 5 loyal seekers
+        $topSeekers = DB::table('service_requests')
+            ->join('users', 'service_requests.user_id', '=', 'users.id')
+            ->select('users.name', DB::raw('COUNT(service_requests.id) AS completed_services'))
+            ->where('service_requests.status', 'completed')
+            ->where('service_requests.provider_id', $userId)
+            ->groupBy('users.id', 'users.name')
+            ->orderBy('completed_services', 'DESC')
+            ->limit(5)
+            ->get();
+
+    // Get the seekers' names or any other details
+    // $seekersDetails = User::whereIn('id', $topSeekers->pluck('seeker_id'))->get();
 
     // Fetch top 10 frequently used employees (only completed tasks)
     $frequentlyUsedEmployees = DB::table('employee_task_assignment')
@@ -154,7 +163,8 @@ if ($completionData->total_requests > 0) {
         'cancellationRate' => $cancellationRate,
         'completionRate' => $completionRate,
         'mostAvailedService' => $mostAvailedService,
-        'mostLoyalSeeker' => $mostLoyalSeeker,
+        'topSeekers' => $topSeekers, // Pass the top seekers to the view
+        // 'mostLoyalSeeker' => $mostLoyalSeeker,
         'frequentlyUsedEmployees' => $frequentlyUsedEmployees,
         'serviceCategoryNames' => $serviceCategoryNames,
         'serviceCategoryCounts' => $serviceCategoryCounts

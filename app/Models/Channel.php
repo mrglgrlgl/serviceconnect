@@ -58,6 +58,11 @@ class Channel extends Model
     {
         return $this->belongsToMany(Employee::class, 'employee_task_assignment');
     }
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class, 'channel_id');
+    }
+
 
 }
 

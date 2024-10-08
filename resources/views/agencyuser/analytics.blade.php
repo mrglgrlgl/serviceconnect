@@ -3,126 +3,95 @@
 @section('content')
 
 <div class="bg-background">
-    
 
-{{--
-    <!-- Filter Section -->
-    <div class="flex justify-between items-center mb-4">
-        <div>
-            <label for="month" class="mr-2">Month</label>
-            <select id="month" class="p-2 border rounded">
-                <option value="">Select Month</option>
-                @foreach(['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'] as $month)
-                    <option value="{{ $month }}">{{ $month }}</option>
-                @endforeach
-            </select>
-        </div>
+    <h2 class="text-2xl font-semibold">Dashboard</h2>
 
-        <div>
-            <label for="year" class="mr-2">Year</label>
-            <select id="year" class="p-2 border rounded">
-                <option value="">Select Year</option>
-                @for($i = date('Y'); $i >= 2010; $i--)
-                    <option value="{{ $i }}">{{ $i }}</option>
-                @endfor
-            </select>
-        </div>
-
-        <button id="applyFilter" class="p-2 bg-primary text-white rounded">Apply Filter</button>
+    <!-- Check if service requests are 5 or less -->
+    @if($totalServices <= 5)
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+        <strong class="font-bold">Incomplete Analytics Data!</strong>
+        <span class="block sm:inline">Complete service requests to fill analytics data.</span>
     </div>
---}}
+    @endif
 
-
-<h2 class="text-2xl font-semibold">Dashboard</h2>
-
-<!-- Check if service requests are 5 or less -->
-@if($totalServices <= 5)
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
-  <strong class="font-bold">Incomplete Analytics Data!</strong>
-  <span class="block sm:inline">Complete service requests to fill analytics data.</span>
-</div>
-@endif
-
-<div class="flex justify-center">
-    <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
-</div>
-
-<div class="bg-background">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!-- Row 1 -->
-    <div class="col-span-1">
-        <!-- Performance Chart (line graph) -->
-        <div class="col-span-2 bg-white p-4 rounded-lg shadow w-full h-full">
-            <h2 class="text-xl font-semibold text-primary">Performance</h2>
-            <div class="mt-4">
-                <canvas id="performanceChart"></canvas>
-            </div>
-            <p class="mt-2 text-muted">{{ $completedServices }} Services Completed</p>
-        </div>
+    <div class="flex justify-center">
+        <div class="border-t my-2 w-full text-center border-custom-cat-border"></div>
     </div>
 
-
-        <!-- Customer Satisfaction Chart (horizontal bar graph) -->
-        <div class="col-span-2 bg-white p-4 rounded-lg shadow w-full h-auto">
-            <h2 class="text-lg font-semibold text-primary">Customer Satisfaction</h2>
-            <div class="mt-4">
-                <canvas id="satisfactionChart"></canvas>
+    <div class="bg-background">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- First Row -->
+            <div class="bg-white p-4 rounded-lg shadow w-full h-full">
+                <h2 class="text-xl font-semibold text-primary">Performance</h2>
+                <div class="mt-4">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <p class="mt-2 text-muted">{{ $completedServices }} Services Completed</p>
             </div>
-            <p class="mt-2 text-muted">{{ $completedServices }} Ratings</p>
-        </div>
-        
-                <!-- Most Availed Services Pie Chart -->
-        <div class="bg-white p-4 rounded-lg shadow w-full">
-            <h2 class="text-xl font-semibold text-primary">Service Categories Availed</h2>
-            <div class="mt-4">
-                <canvas id="categoryChart"></canvas>
+
+            <div class="bg-white p-4 rounded-lg shadow w-full h-full">
+                <h2 class="text-lg font-semibold text-primary">Customer Satisfaction</h2>
+                <div class="mt-4">
+                    <canvas id="satisfactionChart"></canvas>
+                </div>
+                <p class="mt-2 text-muted">{{ $completedServices }} Ratings</p>
             </div>
         </div>
-        
-        
-    </div>
 
-    <!-- Second Row: Completion Rate + Most Loyal Seeker in one row -->
-    <div class="flex flex-col md:flex-row mt-4 gap-4">
-        <!-- Completion Rate Card -->
-        <div class="bg-white p-4 rounded-lg shadow w-full flex items-center justify-between">
-            <div>
-                <h2 class="text-lg font-semibold text-primary">Completion Rate</h2>
-                <div class="mt-2">
-                    <p class="text-xl font-bold">{{ number_format($completionRate, 2) }}%</p>
+
+        <!-- Second Row: Service Categories Availed, Completion Rate, and Top 5 Loyal Seekers -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <!-- Service Categories Availed -->
+
+
+            <!-- Completion Rate Card -->
+            <div class="bg-white p-4 rounded-lg shadow w-full flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-primary">Completion Rate</h2>
+                    <div class="mt-2">
+                        <p class="text-xl font-bold">{{ number_format($completionRate, 2) }}%</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="mt-2 text-muted">Completed: {{ $completedServices }} / {{ $totalServices }} Total</p>
                 </div>
             </div>
-            <div class="text-right">
-                <p class="mt-2 text-muted">Completed: {{ $completedServices }} / {{ $totalServices }} Total</p>
-            </div>
-        </div>
 
-        <!-- Most Loyal Seeker Card -->
-        <div class="bg-white p-4 rounded-lg shadow w-full flex items-center justify-between">
-            <div>
-                <h2 class="text-lg font-semibold text-primary">Most Loyal Seeker</h2>
-                <div class="mt-2">
-                    <p class="text-xl font-bold">{{ $mostLoyalSeeker ? $mostLoyalSeeker->name : 'N/A' }}</p>
+            <!-- Top 5 Loyal Seekers Card -->
+            <div class="bg-white p-4 rounded-lg shadow w-full">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-primary">Top 5 Loyal Seekers</h2>
+                    <p class="mt-2 text-muted">Total Services Availed: <span class="font-semibold">{{ $topSeekers->sum('completed_services') }}</span></p>
                 </div>
+                <ul class="mt-2 list-disc pl-5">
+                    @foreach($topSeekers as $seeker)
+                        <li class="text-xl font-bold flex justify-between">
+                            <span>{{ $seeker->name }}</span>
+                            <span class="text-muted">{{ $seeker->completed_services }}</span>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
-            <div class="text-right">
-                <p class="mt-2 text-muted">Services Availed: {{ $mostLoyalSeeker ? $mostLoyalSeeker->completed_services : '0' }} / {{ $completedServices }}</p>
-            </div>
+        </div>
+
+<!-- Third Row: Top 10 Frequently Used Employees -->
+<div class="grid grid-cols-1 md:grid-cols-3 mt-4 gap-4">
+    <div class="bg-white p-4 rounded-lg shadow w-full  md:col-span-2">
+        <h2 class="text-xl font-semibold text-primary">Top 10 Frequently Used Employees</h2>
+        <div class="mt-4">
+            <canvas id="employeesChart" class="w-full h-full"></canvas> <!-- Use h-full to fill parent height -->
         </div>
     </div>
 
-<!-- Third Row: Charts -->
-<div class="grid grid-cols-1 md:grid-cols-1 mt-4 gap-4 h-56">
-
-<!-- Frequently Used Employees Horizontal Bar Chart -->
-<div class="bg-white p-4 rounded-lg shadow w-full h-56">
-    <h2 class="text-xl font-semibold text-primary">Top 10 Frequently Used Employees</h2>
-    <div class="mt-4">
-        <canvas id="employeesChart" class="w-full h-full"></canvas> <!-- Use h-full to fill parent height -->
+    <div class="bg-white p-4 rounded-lg shadow w-full">
+        <h2 class="text-xl font-semibold text-primary">Service Categories Availed</h2>
+        <div class="mt-4">
+            <canvas id="categoryChart"></canvas>
+        </div>
     </div>
 </div>
-</div>
-</div>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

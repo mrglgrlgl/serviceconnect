@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\AgencyService;
+use App\Models\Channel;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
@@ -42,12 +44,27 @@ class EmployeeController extends Controller
         return view('agencyuser.employee-list', compact('employees', 'services', 'agency'));
     }
 
-public function show(Employee $employee)
-{
-    // Eager load services, taskAssignments, and channels
-    $employee = $employee->load('services', 'ratings');
-    return view('agencyuser.view-employee-profile', compact('employee'));
-}
+    public function show(Employee $employee)
+    {
+        // Eager load ratings and their associated channels
+        $employee->load('ratings.channel');
+    
+        // Count the number of completed service requests through ratings and channels
+        $completedServicesCount = $employee->ratings->filter(function ($rating) {
+            // Check if the channel exists and if is_task_completed is true
+            return $rating->channel && $rating->channel->is_task_completed;
+        })->count();
+    
+        // Log for debugging
+        Log::info("Employee ID: {$employee->id}, Completed Services Count: {$completedServicesCount}");
+    
+        // Pass the data to the view
+        return view('agencyuser.view-employee-profile', compact('employee', 'completedServicesCount'));
+    }
+    
+
+    
+    
 
     public function create()
     {
