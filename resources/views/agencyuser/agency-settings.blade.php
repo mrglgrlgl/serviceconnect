@@ -40,6 +40,16 @@
         </div>
 
         <!-- Service Management -->
+
+@if($pendingServiceCreations)
+    <div class="alert alert-info mt-4 border border-blue-300 p-4 rounded-lg bg-blue-50 text-blue-800">
+        <strong class="font-semibold">Notice:</strong> You have a pending service creation awaiting admin approval.
+        <p class="mt-2">Pending service creations will be reviewed by an admin before being applied.</p>
+    </div>
+@endif
+
+
+
         <h3 class="text-xl font-semibold mb-4 pt-4">Services Offered</h3>
         <a href="{{ route('agencies.services.create', $agency->id) }}" class="bg-custom-agency-secondary text-white px-4 py-2 rounded-lg">Add New Service</a>
 
@@ -63,9 +73,10 @@
                                 <button onclick="location.href='{{ route('agencies.services.edit', [$agency->id, $service->id]) }}'" class="text-gray-500 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                                     <span class="material-icons-round">edit</span>
                                 </button>
-                                <button onclick="confirmDelete('{{ route('agencies.services.destroy', [$agency->id, $service->id]) }}')" class="text-red-500 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-                                    <span class="material-icons-round">delete</span>
-                                </button>
+                           <button onclick="confirmDelete('{{ route('agencies.services.destroy', [$agency->id, $service->id]) }}')" class="text-red-500 transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+    <span class="material-icons-round">delete</span>
+</button>
+
                             </td>
                         </tr>
                     @endforeach
@@ -82,26 +93,35 @@
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-xs w-full">
         <h3 class="text-lg font-semibold mb-4">Confirm Deletion</h3>
         <p class="mb-4">Are you sure you want to delete this service?</p>
-        <form id="deleteForm" action="" method="POST">
-            @csrf
-            @method('DELETE')
-            <div class="flex justify-between">
-                <button type="button" id="cancelBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
-                <button type="submit" id="deleteBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Delete</button>
-            </div>
-        </form>
+   <form id="deleteForm" action="" method="POST">
+    @csrf
+    @method('DELETE')
+    <div class="flex justify-between">
+        <button type="button" id="cancelBtn" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
+        <button type="submit" id="deleteBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Delete</button>
+    </div>
+</form>
+
     </div>
 </div>
 
 <script>
     function confirmDelete(url) {
-        document.getElementById('deleteForm').action = url;
-        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteForm').action = url; // Set the form action to the delete URL
+        document.getElementById('deleteModal').classList.remove('hidden'); // Show the modal
     }
 
     document.getElementById('cancelBtn').addEventListener('click', function() {
-        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.add('hidden'); // Hide modal on cancel
+    });
+
+    // Prevent form submission if delete modal is closed
+    window.addEventListener('click', function(event) {
+        if (event.target === document.getElementById('deleteModal')) {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
     });
 </script>
+
 
 @endsection

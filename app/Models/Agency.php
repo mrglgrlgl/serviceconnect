@@ -35,5 +35,9 @@ class Agency extends Model
     {
         return $this->hasMany(AgencyService::class);
     }
-  
+    public function serviceUpdates()
+    {
+        return $this->hasMany(AgencyServiceUpdate::class);
+    }
+    
 }

@@ -54,6 +54,19 @@ Route::post('admin/logout', [AdminUserController::class, 'logout'])->name('admin
 
 // Admin Dashboard and Protected Routes
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], function () {
+    Route::get('/admin/agency/service-update/{id}', [AdminAgencyReviewController::class, 'showServiceUpdate'])->name('admin.agency.service.update.show');
+
+    Route::post('/agency/service-update/{id}/approve', [AdminAgencyReviewController::class, 'approveServiceUpdate'])
+        ->name('admin.agency.service.update.approve');
+
+        Route::get('admin/agencies/{agency}', [AdminAgencyReviewController::class, 'show'])->name('admin.agencies.show');
+        Route::get('/agency/service-updates', [AdminAgencyReviewController::class, 'index'])
+        ->name('admin.agency.service.updates');
+    
+
+
+    Route::post('/agency/service-update/{id}/reject', [AdminAgencyReviewController::class, 'rejectServiceUpdate'])->name('admin.agency.service.update.reject');
+
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('agencies', AgencyController::class); // This creates all CRUD routes for the Agency resource
     Route::resource('agencies.users', CreateAgencyUserController::class)->scoped([

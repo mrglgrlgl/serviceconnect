@@ -24,13 +24,28 @@
         <!-- Two-column layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @foreach($employees as $employee)
-                <div class="p-4 border rounded-lg flex items-center">
+                <div class="p-4 border rounded-lg flex items-start">
                     @if($employee->photo)
                         <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-16 h-16 rounded-md shadow-sm object-cover">
                     @else
                         <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-16 h-16 rounded-md shadow-sm object-cover">
                     @endif
-                    <span class="ml-4">{{ $employee->name }}</span>
+                    <div class="ml-4 flex-1">
+                        <span class="font-semibold">{{ $employee->name }}</span>
+                        <div class="mt-1 text-sm text-gray-600">
+                            <!-- Displaying the services assigned to the employee -->
+                            @if($employee->services->isNotEmpty())
+                                <span>Services:</span>
+                                <ul class="list-disc list-inside">
+                                    @foreach($employee->services as $service)
+                                        <li>{{ $service->name }}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <span>No assigned services</span>
+                            @endif
+                        </div>
+                    </div>
                     <input type="checkbox" name="employee_ids[]" value="{{ $employee->id }}" class="ml-auto">
                 </div>
             @endforeach

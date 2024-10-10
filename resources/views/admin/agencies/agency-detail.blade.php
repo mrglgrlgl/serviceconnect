@@ -41,33 +41,31 @@
                 @else
                     <ul class="space-y-2">
                         @foreach($agency->users as $user)
-<li class="flex justify-between items-center">
-    <div>
-        <strong>{{ $user->name }}</strong> ({{ $user->email }})
-    </div>
-    <div class="flex space-x-2">
-        <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="inline-flex items-center px-3 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600 h-10">
-            <span class="material-icons-round mr-1">edit</span>
-            <span class="hidden md:inline">Edit</span>
-        </a>
-        <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST" onsubmit="return confirmDelete();">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="inline-flex items-center px-3 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600 h-10">
-                <span class="material-icons-round mr-1">delete</span>
-            </button>
-        </form>
-    </div>
-</li>
-
-
-
+                            <li class="flex justify-between items-center">
+                                <div>
+                                    <strong>{{ $user->name }}</strong> ({{ $user->email }})
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('agencies.users.edit', [$agency->id, $user->id]) }}" class="inline-flex items-center px-3 py-2 border border-gray-200 text-white font-bold rounded-md hover:bg-gray-600 h-10">
+                                        <span class="material-icons-round mr-1">edit</span>
+                                        <span class="hidden md:inline">Edit</span>
+                                    </a>
+                                    <form action="{{ route('agencies.users.destroy', [$agency->id, $user->id]) }}" method="POST" onsubmit="return confirmDelete();">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center px-3 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600 h-10">
+                                            <span class="material-icons-round mr-1">delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
                         @endforeach
                     </ul>
                 @endif
             </div>
         </div>
 
+        <!-- Section for Agency Updates -->
         <div class="card bg-gray-500 mt-4 rounded-lg">
             <div class="card-header text-lg text-white font-semibold p-4">
                 <h3>Agency Updates</h3>
@@ -87,7 +85,33 @@
                 @endif
             </div>
         </div>
+
+  <!-- Section for Service Updates -->
+<div class="card bg-gray-500 mt-4 rounded-lg">
+    <div class="card-header text-lg text-white font-semibold p-4">
+        <h3>Service Updates</h3>
     </div>
+    <div class="card-body text-gray-300 p-4">
+        @php
+            // Filter the service updates to include only those with status 'pending'
+            $pendingServiceUpdates = $agency->serviceUpdates->where('status', 'pending');
+        @endphp
+
+        @if($pendingServiceUpdates && !$pendingServiceUpdates->isEmpty())
+            <ul>
+                @foreach($pendingServiceUpdates as $update)
+                    <li>
+                        <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->service_name }}: {{ $update->description }}
+                        <a href="{{ route('admin.agency.service.update.show', $update->id) }}" class="btn btn-info btn-sm">Review</a>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p>No pending service updates.</p>
+        @endif
+    </div>
+</div>
+
 @endsection
 
 <script>
