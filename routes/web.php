@@ -34,6 +34,7 @@ use App\Http\Controllers\AgencySettingsController;
 use App\Http\Controllers\AdminAgencyReviewController;
 use App\Http\Controllers\AgencyServiceController;
 use App\Http\Controllers\EmployeeTaskAssignmentController;
+use App\Http\Controllers\PsaJobController;
 
 Route::get('/agency-profile/{agencyId}', [SearchController::class, 'viewAgencyProfile'])->name('view-agency-profile');
 Route::post('/cancel-request/{channel}', [ChannelController::class, 'cancelRequest'])->name('cancel.request');
@@ -54,6 +55,15 @@ Route::post('admin/logout', [AdminUserController::class, 'logout'])->name('admin
 
 // Admin Dashboard and Protected Routes
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin_user']], function () {
+   
+
+// Routes for managing PSA jobs
+Route::get('/psajobs', [PsaJobController::class, 'index'])->name('admin.psajobs.index'); // List all PSA jobs
+Route::post('/psajobs', [PsaJobController::class, 'store'])->name('admin.psajobs.store'); // Store a new PSA job
+Route::get('/psajobs/{id}/edit', [PsaJobController::class, 'edit'])->name('admin.psajobs.edit'); // Edit a specific PSA job
+Route::put('/psajobs/{id}', [PsaJobController::class, 'update'])->name('admin.psajobs.update'); // Update a specific PSA job
+Route::delete('/psajobs/{id}', [PsaJobController::class, 'destroy'])->name('admin.psajobs.destroy'); // Delete a specific PSA job
+   
     Route::get('/admin/agency/service-update/{id}', [AdminAgencyReviewController::class, 'showServiceUpdate'])->name('admin.agency.service.update.show');
 
     Route::post('/agency/service-update/{id}/approve', [AdminAgencyReviewController::class, 'approveServiceUpdate'])

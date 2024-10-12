@@ -48,6 +48,13 @@
                 </a>
             </div>
 
+            <div class="space-y-3 ">
+
+<a href="{{ route('admin.psajobs.index') }}" class="flex items-center ...">
+                    <span class="material-icons-round">services</span>
+                    <span class="mx-2 text-sm font-medium">Services</span>
+                </a>
+            </div>
 
             <div class="space-y-3 ">
 {{--             <label class="px-3 text-xs text-gray-500 uppercase dark:text-gray-400">Customization</label> --}}
