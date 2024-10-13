@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\ServiceRequest; // Add ServiceRequest model
 
 use App\Models\EmployeeTaskAssignment;
 use App\Models\Employee;
@@ -13,36 +14,63 @@ use Illuminate\Support\Facades\Log;
 class EmployeeTaskAssignmentController extends Controller
 {
 
-     public function showAssignmentPage($serviceRequestId)
-{
-    $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
+    public function showAssignmentPage($serviceRequestId)
+    {
+        // Get the currently authenticated agency user
+        $agencyUser = Auth::guard('agency_users')->user();
     
-    try {
-        $channel = Channel::where('service_request_id', $serviceRequestId)
-                          ->where('provider_id', $agencyUser->id)
-                          ->with(['serviceRequest', 'bid', 'seeker'])
-                          ->firstOrFail();
-    } catch (\Exception $e) {
-        Log::error('Channel not found: ' . $e->getMessage());
-        abort(404, 'Channel not found.');
+        try {
+            // Fetch the related channel and service request details
+            $channel = Channel::where('service_request_id', $serviceRequestId)
+                              ->where('provider_id', $agencyUser->id)
+                              ->with(['serviceRequest', 'bid', 'seeker'])
+                              ->firstOrFail();
+        } catch (\Exception $e) {
+            abort(404, 'Channel not found.');
+        }
+    
+        // Store channel ID in session
+        session(['current_channel_id' => $channel->id]);
+    
+        // Retrieve the requested service request (PSA job) category
+        $serviceRequest = ServiceRequest::findOrFail($serviceRequestId); 
+        $requestedCategory = $serviceRequest->category;
+    
+        // Debug: Dump the requested category
+    
+        // Get employees available for assignment based on their services and agency
+        $employees = Employee::where('availability', 'available')
+                             ->where('agency_id', $agencyUser->agency_id)
+                             ->with('services') // Load related services
+                             ->get();
+    
+        // Debug: Dump the employees retrieved
+    
+        // Filter employees based on service names matching the requested category
+        $filteredEmployees = $employees->filter(function ($employee) use ($requestedCategory) {
+            // Debug: Dump each employee's services
+    
+            return $employee->services->contains(function ($service) use ($requestedCategory) {
+                return strcasecmp($service->service_name, $requestedCategory) === 0; // Case-insensitive comparison
+            });
+        });
+    
+        // Debug: Dump filtered employees
+    
+        // Sort employees to prioritize those with matching services
+        $sortedEmployees = $filteredEmployees->sortByDesc(function ($employee) use ($requestedCategory) {
+            return $employee->services->contains(function ($service) use ($requestedCategory) {
+                return strcasecmp($service->service_name, $requestedCategory) === 0;
+            });
+        });
+    
+        return view('agencyuser.employee-task', [
+            'channel' => $channel,
+            'agencyId' => $agencyUser->id,
+            'employees' => $sortedEmployees // Pass the sorted employees to the view
+        ]);
     }
     
-    // Store channel ID in session
-    session(['current_channel_id' => $channel->id]);
-    
-    // Debug: Log the stored channel ID
-
-    // Retrieve employees filtered by the current agency
-    $employees = Employee::where('availability', 'available')
-                         ->where('agency_id', $agencyUser->agency_id) // Add this condition
-                         ->get();
-    
-    return view('agencyuser.employee-task', [
-        'channel' => $channel,
-        'agencyId' => $agencyUser->id,
-        'employees' => $employees
-    ]);
-}
     
     
 

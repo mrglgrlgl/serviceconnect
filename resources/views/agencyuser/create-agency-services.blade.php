@@ -9,9 +9,14 @@
 
         <div class="space-y-2">
             <label for="service_name" class="block text-lg text-gray-700">
-                Service Name <span class="text-red-500">*</span>
+                Service Name / PSA Job <span class="text-red-500">*</span>
             </label>
-            <input type="text" name="service_name" id="service_name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+            <input type="text" name="service_name" id="service_name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" list="psaJobs" placeholder="Type or select a PSA Job" required>
+            <datalist id="psaJobs">
+                @foreach($psaJobs as $psaJob)
+                    <option value="{{ $psaJob->Job_Title }}">{{ $psaJob->Job_Title }} (₱{{ number_format($psaJob->Occupational_Wage_in_Peso, 2) }})</option>
+                @endforeach
+            </datalist>
         </div>
 
         <div class="space-y-2">
