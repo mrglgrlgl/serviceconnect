@@ -1,7 +1,6 @@
 @extends('layouts.agency-dashboard')
 
 @section('content')
-
 <div class="my-4">
     <a href="{{ route('channel.agency', ['serviceRequestId' => $channel->service_request_id]) }}" class="bg-gray-500 text-white py-2 px-4 rounded transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">Return to Channel</a>
 </div>
@@ -11,6 +10,27 @@
         {{ session('status') }}
     </div>
 @endif
+
+<!-- Filter and Search Form -->
+<div class="mb-4 flex items-center">
+    <form method="GET" action="{{ route('show.assignment.page', ['serviceRequestId' => $channel->service_request_id]) }}" class="flex-grow mr-2">
+        <div class="flex space-x-2">
+            <!-- Search Bar -->
+            <input type="text" name="search" placeholder="Search Employees" class="w-1/5 p-2 border rounded text-gray-900 bg-white" value="{{ request('search') }}">
+            
+            <!-- Filter by Service -->
+            <select name="service_id" id="service_id" class="w-1/5 p-2 border rounded text-gray-900 bg-white">
+                <option value="">Select a service</option>
+                @foreach ($services as $service)
+                    <option value="{{ $service->id }}" {{ $selectedServiceId == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300">
+                Filter
+            </button>
+        </div>
+    </form>
+</div>
 
 <form method="POST" action="{{ route('assign.employees', ['channel_id' => $channel->id]) }}">
     @csrf
@@ -44,5 +64,4 @@
         </button>
     </div>
 </form>
-
 @endsection

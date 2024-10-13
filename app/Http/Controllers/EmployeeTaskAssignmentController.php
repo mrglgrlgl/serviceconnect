@@ -6,43 +6,71 @@ use App\Models\EmployeeTaskAssignment;
 use App\Models\Employee;
 use App\Models\Channel;
 use App\Models\AgencyUser;
+use App\Models\AgencyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+
 class EmployeeTaskAssignmentController extends Controller
 {
 
-     public function showAssignmentPage($serviceRequestId)
-{
-    $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
+    public function showAssignmentPage(Request $request, $serviceRequestId) 
+    {
+        $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
     
-    try {
-        $channel = Channel::where('service_request_id', $serviceRequestId)
-                          ->where('provider_id', $agencyUser->id)
-                          ->with(['serviceRequest', 'bid', 'seeker'])
-                          ->firstOrFail();
-    } catch (\Exception $e) {
-        Log::error('Channel not found: ' . $e->getMessage());
-        abort(404, 'Channel not found.');
+        try {
+            $channel = Channel::where('service_request_id', $serviceRequestId)
+                              ->where('provider_id', $agencyUser->id)
+                              ->with(['serviceRequest', 'bid', 'seeker'])
+                              ->firstOrFail();
+        } catch (\Exception $e) {
+            Log::error('Channel not found: ' . $e->getMessage());
+            abort(404, 'Channel not found.');
+        }
+    
+        // Store channel ID in session
+        session(['current_channel_id' => $channel->id]);
+    
+        // Get only the services assigned to the logged-in user's employees
+        $services = AgencyService::whereHas('employees', function ($query) use ($agencyUser) {
+            $query->where('employees.agency_id', $agencyUser->agency_id);
+        })->get();
+    
+        // Filter employees by selected service and search query if present
+        $serviceId = $request->input('service_id');
+        $searchQuery = $request->input('search');
+    
+        $employeesQuery = Employee::where('availability', 'available')
+                                  ->where('agency_id', $agencyUser->agency_id);
+    
+        // Apply service filtering
+        if ($serviceId) {
+            $employeesQuery->whereHas('services', function ($query) use ($serviceId) {
+                $query->where('service_id', $serviceId);
+            });
+        }
+    
+        // Apply name search filtering
+        if ($searchQuery) {
+            $employeesQuery->where('name', 'like', '%' . $searchQuery . '%');
+        }
+    
+        // Get the filtered employees
+        $employees = $employeesQuery->get();
+    
+        return view('agencyuser.employee-task', [
+            'channel' => $channel,
+            'agencyId' => $agencyUser->id,
+            'employees' => $employees,
+            'services' => $services, // Pass filtered services to the view
+            'selectedServiceId' => $serviceId,
+            'search' => $searchQuery // Pass search query to the view
+        ]);
     }
     
-    // Store channel ID in session
-    session(['current_channel_id' => $channel->id]);
     
-    // Debug: Log the stored channel ID
-
-    // Retrieve employees filtered by the current agency
-    $employees = Employee::where('availability', 'available')
-                         ->where('agency_id', $agencyUser->agency_id) // Add this condition
-                         ->get();
     
-    return view('agencyuser.employee-task', [
-        'channel' => $channel,
-        'agencyId' => $agencyUser->id,
-        'employees' => $employees
-    ]);
-}
     
     
 
