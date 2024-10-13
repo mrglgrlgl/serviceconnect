@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers;
-
+use App\Models\AgencyServiceUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Agency;
@@ -9,21 +9,28 @@ use App\Models\AgencyUpdate;
 class AgencySettingsController extends Controller
 {
     public function showSettings(Request $request)
-    {
-        $user = Auth::guard('agency_users')->user();
-        $agency = $user->agency;
-    
-        if (!$agency) {
-            return redirect()->route('agency.settings')->with('error', 'No agency data found.');
-        }
-    
-        // Check for pending updates
-        $pendingUpdate = AgencyUpdate::where('agency_id', $agency->id)
-                                      ->where('status', 'pending')
-                                      ->first();
-    
-        return view('agencyuser.agency-settings', compact('agency', 'pendingUpdate'));
+{
+    $user = Auth::guard('agency_users')->user();
+    $agency = $user->agency;
+
+    if (!$agency) {
+        return redirect()->route('agency.settings')->with('error', 'No agency data found.');
     }
+
+    // Check for pending agency updates
+    $pendingUpdate = AgencyUpdate::where('agency_id', $agency->id)
+                                  ->where('status', 'pending')
+                                  ->first();
+
+    // Retrieve pending service creations for this agency
+    $pendingServiceCreations = AgencyServiceUpdate::where('agency_id', $agency->id)
+                                                  ->where('status', 'pending')
+                                                  ->get(); // Use get() to retrieve actual records
+
+    return view('agencyuser.agency-settings', compact('agency', 'pendingUpdate', 'pendingServiceCreations'));
+}
+
+
     
 
     public function editSettings(Request $request)

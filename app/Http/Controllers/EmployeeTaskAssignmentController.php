@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\ServiceRequest; // Add ServiceRequest model
 
 use App\Models\EmployeeTaskAssignment;
 use App\Models\Employee;
@@ -11,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-
 class EmployeeTaskAssignmentController extends Controller
 {
 
@@ -20,6 +20,7 @@ class EmployeeTaskAssignmentController extends Controller
         $agencyUser = Auth::guard('agency_users')->user(); // Get the currently authenticated agency user
     
         try {
+            // Fetch the related channel and service request details
             $channel = Channel::where('service_request_id', $serviceRequestId)
                               ->where('provider_id', $agencyUser->id)
                               ->with(['serviceRequest', 'bid', 'seeker'])
@@ -32,12 +33,16 @@ class EmployeeTaskAssignmentController extends Controller
         // Store channel ID in session
         session(['current_channel_id' => $channel->id]);
     
+        // Get the requested service request (PSA job) category
+        $serviceRequest = ServiceRequest::findOrFail($serviceRequestId); 
+        $requestedCategory = $serviceRequest->category;
+    
         // Get only the services assigned to the logged-in user's employees
         $services = AgencyService::whereHas('employees', function ($query) use ($agencyUser) {
             $query->where('employees.agency_id', $agencyUser->agency_id);
         })->get();
     
-        // Filter employees by selected service and search query if present
+        // Filter employees based on selected service and search query if present
         $serviceId = $request->input('service_id');
         $searchQuery = $request->input('search');
     
@@ -57,18 +62,31 @@ class EmployeeTaskAssignmentController extends Controller
         }
     
         // Get the filtered employees
-        $employees = $employeesQuery->get();
+        $employees = $employeesQuery->with('services')->get();
+    
+        // Filter employees based on service names matching the requested category
+        $filteredEmployees = $employees->filter(function ($employee) use ($requestedCategory) {
+            return $employee->services->contains(function ($service) use ($requestedCategory) {
+                return strcasecmp($service->service_name, $requestedCategory) === 0; // Case-insensitive comparison
+            });
+        });
+    
+        // Sort employees to prioritize those with matching services
+        $sortedEmployees = $filteredEmployees->sortByDesc(function ($employee) use ($requestedCategory) {
+            return $employee->services->contains(function ($service) use ($requestedCategory) {
+                return strcasecmp($service->service_name, $requestedCategory) === 0;
+            });
+        });
     
         return view('agencyuser.employee-task', [
             'channel' => $channel,
             'agencyId' => $agencyUser->id,
-            'employees' => $employees,
+            'employees' => $sortedEmployees, // Pass the sorted employees to the view
             'services' => $services, // Pass filtered services to the view
             'selectedServiceId' => $serviceId,
             'search' => $searchQuery // Pass search query to the view
         ]);
     }
-    
     
     
     

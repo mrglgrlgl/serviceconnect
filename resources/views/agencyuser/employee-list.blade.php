@@ -76,7 +76,7 @@
                                         @if($employee->services->isEmpty())
                                             <span class="text-gray-500">No services</span>
                                         @else
-                                            <ul class="list-disc list-inside pl-5">
+                                            <ul class="list-none list-inside">
                                                 @foreach($employee->services as $service)
                                                     <li>{{ $service->service_name }}</li>
                                                 @endforeach

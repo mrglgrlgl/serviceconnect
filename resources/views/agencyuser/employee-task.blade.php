@@ -44,13 +44,39 @@
         <!-- Two-column layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @foreach($employees as $employee)
-                <div class="p-4 border rounded-lg flex items-center">
+                <div class="p-4 border rounded-lg flex items-start">
+                    <!-- Employee photo -->
                     @if($employee->photo)
                         <img src="{{ asset('storage/' . $employee->photo) }}" alt="{{ $employee->name }}" class="w-16 h-16 rounded-md shadow-sm object-cover">
                     @else
                         <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile" class="w-16 h-16 rounded-md shadow-sm object-cover">
                     @endif
-                    <span class="ml-4">{{ $employee->name }}</span>
+
+                    <div class="ml-4 flex-1">
+                        <span class="font-semibold">{{ $employee->name }}</span>
+                        <div class="mt-1 text-sm text-gray-600">
+                            <!-- Displaying the services assigned to the employee -->
+                            @if($employee->services->isEmpty())
+                                            <span class="text-gray-500">No services</span>
+                                        @else
+                                            <ul class="list-none list-inside">
+                                                @foreach($employee->services as $service)
+                                                    <li>{{ $service->service_name }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                        </div>
+
+                        <!-- Highlight if service matches PSA category -->
+                        @if($employee->services->contains(function ($service) use ($channel) {
+                            return strtolower($service->name) === strtolower($channel->serviceRequest->category);
+                        }))
+                            <span class="badge bg-green-500 text-white mt-2">Matches PSA Category</span>
+                        @else
+                            <span class="badge bg-gray-300 text-gray-700 mt-2">No Match</span>
+                        @endif
+                    </div>
+
                     <input type="checkbox" name="employee_ids[]" value="{{ $employee->id }}" class="ml-auto">
                 </div>
             @endforeach
