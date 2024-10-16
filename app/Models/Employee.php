@@ -18,6 +18,7 @@ class Employee extends Model
         'birthdate',
         'availability',
         'photo',
+        'is_archived',
     ];
 
     public function agency()

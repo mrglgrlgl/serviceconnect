@@ -5,30 +5,37 @@
         <div class="max-w-8xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Employee List</h1>
 
-            <!-- Filter Form -->
-            <form action="{{ route('agency.employees') }}" method="GET" class="mb-6 flex items-center justify-between">
-                <div class="flex space-x-4">
-                    <!-- Name Filter -->
-                    <input type="text" name="name" value="{{ request('name') }}" placeholder="Filter by name"
-                        class="py-2 px-4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+         <!-- Filter Form -->
+<form action="{{ route('agency.employees') }}" method="GET" class="mb-6 flex items-center justify-between">
+    <div class="flex space-x-4">
+        <!-- Name Filter -->
+        <input type="text" name="name" value="{{ request('name') }}" placeholder="Filter by name"
+            class="py-2 px-4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
 
-                    <!-- Service Filter Dropdown -->
-                    <select name="service" class="py-2 px-4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Filter by Service</option>
-                        @foreach($services as $service)
-                            <option value="{{ $service->id }}" {{ request('service') == $service->id ? 'selected' : '' }}>
-                                {{ $service->service_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                          <!-- Filter Button (Styled to Match the Assign Employee Button) -->
-    <button type="submit" class="bg-custom-agency-secondary text-white py-2 px-6 rounded-md font-semibold shadow-md duration-300 hover:bg-gray-700 hover:shadow-lg transition-transform hover:scale-105">
-        Filter
-    </button>
-                </div>
+        <!-- Service Filter Dropdown -->
+        <select name="service" class="py-2 px-4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Filter by Service</option>
+            @foreach($services as $service)
+                <option value="{{ $service->id }}" {{ request('service') == $service->id ? 'selected' : '' }}>
+                    {{ $service->service_name }}
+                </option>
+            @endforeach
+        </select>
 
-       
-            </form>
+        <!-- Archived Employees Filter Checkbox -->
+        <div class="flex items-center">
+            <input type="checkbox" name="show_archived" value="true" id="show_archived"
+                {{ request('show_archived') == 'true' ? 'checked' : '' }}>
+            <label for="show_archived" class="ml-2">Show Archived Employees</label>
+        </div>
+
+        <!-- Filter Button -->
+        <button type="submit" class="bg-custom-agency-secondary text-white py-2 px-6 rounded-md font-semibold shadow-md duration-300 hover:bg-gray-700 hover:shadow-lg transition-transform hover:scale-105">
+            Filter
+        </button>
+    </div>
+</form>
+
 
             <!-- Button to navigate to the Create Employee page -->
             <div class="text-right mb-4">

@@ -9,6 +9,8 @@ use App\Models\AgencyServiceUpdate;
 use App\Models\Agency;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\PsaJob;
+
 
 class AdminAgencyReviewController extends Controller
 {
@@ -168,16 +170,6 @@ public function approveServiceUpdate($id)
                 break;
             
             
-            
-            
-
-            
-            
-
-            
-            
-            
-            
 
         case 'deleted':
             // Delete the corresponding service record from agency_services
@@ -220,9 +212,5 @@ public function rejectServiceUpdate($id)
     return redirect()->route('admin.agency.updates')->with('success', 'Service update approved successfully!');
 
 }
-
-
-
-    
 }
 

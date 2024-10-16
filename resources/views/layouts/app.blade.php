@@ -51,7 +51,7 @@
             @endif
         @endif
         
-        --}}
+   
                 @include('layouts.navigation')
         {{-- Main Content Area --}}
         <main>

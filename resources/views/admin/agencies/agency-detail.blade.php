@@ -86,32 +86,27 @@
             </div>
         </div>
 
-  <!-- Section for Service Updates -->
-<div class="card bg-gray-500 mt-4 rounded-lg">
-    <div class="card-header text-lg text-white font-semibold p-4">
-        <h3>Service Updates</h3>
+        <!-- Section for Service Updates -->
+        <div class="card bg-gray-500 mt-4 rounded-lg">
+            <div class="card-header text-lg text-white font-semibold p-4">
+                <h3>Service Updates</h3>
+            </div>
+            <div class="card-body text-gray-300 p-4">
+                @if($agency->serviceUpdates && !$agency->serviceUpdates->isEmpty())
+                    <ul>
+                        @foreach($agency->serviceUpdates as $update)
+                            <li>
+                                <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->service_name }}: {{ $update->description }}
+<a href="{{ route('admin.agency.service.update.show', $update->id) }}" class="btn btn-info btn-sm">Review</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p>No pending service updates.</p>
+                @endif
+            </div>
+        </div>
     </div>
-    <div class="card-body text-gray-300 p-4">
-        @php
-            // Filter the service updates to include only those with status 'pending'
-            $pendingServiceUpdates = $agency->serviceUpdates->where('status', 'pending');
-        @endphp
-
-        @if($pendingServiceUpdates && !$pendingServiceUpdates->isEmpty())
-            <ul>
-                @foreach($pendingServiceUpdates as $update)
-                    <li>
-                        <strong>{{ $update->created_at->format('Y-m-d H:i:s') }}</strong> - {{ $update->service_name }}: {{ $update->description }}
-                        <a href="{{ route('admin.agency.service.update.show', $update->id) }}" class="btn btn-info btn-sm">Review</a>
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p>No pending service updates.</p>
-        @endif
-    </div>
-</div>
-
 @endsection
 
 <script>
