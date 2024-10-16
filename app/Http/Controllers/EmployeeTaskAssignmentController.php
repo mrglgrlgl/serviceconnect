@@ -37,11 +37,9 @@ class EmployeeTaskAssignmentController extends Controller
         $serviceRequest = ServiceRequest::findOrFail($serviceRequestId); 
         $requestedCategory = $serviceRequest->category;
     
-        // Get all services assigned to the logged-in user's employees
-        $services = AgencyService::whereHas('employees', function ($query) use ($agencyUser) {
-            $query->where('employees.agency_id', $agencyUser->agency_id);
-        })->get();
-    
+        $services = AgencyService::where('agency_id', $agencyUser->agency_id)->get();
+//dd($services);
+
         // Filter employees based on selected service and search query if present
         $serviceId = $request->input('service_id');
         $searchQuery = $request->input('search');

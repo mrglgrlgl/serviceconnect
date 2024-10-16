@@ -19,12 +19,17 @@
             <input type="text" name="search" placeholder="Search Employees" class="w-1/5 p-2 border rounded text-gray-900 bg-white" value="{{ request('search') }}">
             
             <!-- Filter by Service -->
-            <select name="service_id" id="service_id" class="w-1/5 p-2 border rounded text-gray-900 bg-white">
-                <option value="">Select a service</option>
-                @foreach ($services as $service)
-                    <option value="{{ $service->id }}" {{ $selectedServiceId == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
-                @endforeach
-            </select>
+    <label for="service_id" class="block text-sm font-medium text-gray-700">Filter by Service</label>
+<!-- Filter by Service -->
+<select name="service_id" id="service_id" class="w-1/5 p-2 border rounded text-gray-900 bg-white">
+    <option value="">Select a service</option>
+    @foreach ($services as $service)
+        <option value="{{ $service->id }}" {{ $selectedServiceId == $service->id ? 'selected' : '' }}>
+            {{ $service->service_name }} <!-- Use 'service_name' instead of 'name' -->
+        </option>
+    @endforeach
+</select>
+
             <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300">
                 Filter
             </button>
