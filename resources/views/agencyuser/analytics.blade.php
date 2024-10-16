@@ -77,7 +77,7 @@
 <!-- Third Row: Top 10 Frequently Used Employees -->
 <div class="grid grid-cols-1 md:grid-cols-3 mt-4 gap-4">
     <div class="bg-white p-4 rounded-lg shadow w-full  md:col-span-2">
-        <h2 class="text-xl font-semibold text-primary">Top 10 Frequently Used Employees</h2>
+        <h2 class="text-xl font-semibold text-primary">Top 10 Frequently Deployed Employees</h2>
         <div class="mt-4">
             <canvas id="employeesChart" class="w-full h-full"></canvas> <!-- Use h-full to fill parent height -->
         </div>

@@ -37,7 +37,7 @@ class EmployeeTaskAssignmentController extends Controller
         $serviceRequest = ServiceRequest::findOrFail($serviceRequestId); 
         $requestedCategory = $serviceRequest->category;
     
-        // Get only the services assigned to the logged-in user's employees
+        // Get all services assigned to the logged-in user's employees
         $services = AgencyService::whereHas('employees', function ($query) use ($agencyUser) {
             $query->where('employees.agency_id', $agencyUser->agency_id);
         })->get();
@@ -64,29 +64,26 @@ class EmployeeTaskAssignmentController extends Controller
         // Get the filtered employees
         $employees = $employeesQuery->with('services')->get();
     
-        // Filter employees based on service names matching the requested category
-        $filteredEmployees = $employees->filter(function ($employee) use ($requestedCategory) {
+        // Separate employees into matching and non-matching based on service names
+        $matchingEmployees = $employees->filter(function ($employee) use ($requestedCategory) {
             return $employee->services->contains(function ($service) use ($requestedCategory) {
                 return strcasecmp($service->service_name, $requestedCategory) === 0; // Case-insensitive comparison
             });
         });
     
-        // Sort employees to prioritize those with matching services
-        $sortedEmployees = $filteredEmployees->sortByDesc(function ($employee) use ($requestedCategory) {
-            return $employee->services->contains(function ($service) use ($requestedCategory) {
-                return strcasecmp($service->service_name, $requestedCategory) === 0;
-            });
-        });
+        $nonMatchingEmployees = $employees->diff($matchingEmployees); // Employees not matching the requested category
     
         return view('agencyuser.employee-task', [
             'channel' => $channel,
             'agencyId' => $agencyUser->id,
-            'employees' => $sortedEmployees, // Pass the sorted employees to the view
+            'matchingEmployees' => $matchingEmployees, // Pass matching employees to the view
+            'nonMatchingEmployees' => $nonMatchingEmployees, // Pass non-matching employees to the view
             'services' => $services, // Pass filtered services to the view
             'selectedServiceId' => $serviceId,
             'search' => $searchQuery // Pass search query to the view
         ]);
     }
+    
     
     
     

@@ -193,7 +193,21 @@ class EmployeeController extends Controller
                 $photoPath = $request->file('photo')->store('photos', 'public');
                 $updates['photo'] = $photoPath; // Update photo path
             }
+        // Ensure $request->services is an array, even if it's empty
+        $services = $request->input('services', []);
     
+        // Retrieve the agency ID of the currently logged-in user
+        $agencyId = auth()->user()->agency_id;
+    
+        // Sync services with the assigned_at timestamp and agency_id
+        $servicesWithTimestamps = [];
+        foreach ($services as $serviceId) {
+            $servicesWithTimestamps[$serviceId] = [
+                'assigned_at' => now(),
+                'agency_id' => $agencyId  // Ensure agency_id is included
+            ];
+        }
+        $employee->services()->sync($servicesWithTimestamps);
             // Only update if there are changes
             $employee->update(array_filter($updates)); // This will ignore null values
         }
